@@ -1,6 +1,9 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@4.0.0/schema.json",
-  "changelog": "@changesets/cli/changelog",
+  "changelog": [
+    "@changesets/changelog-github",
+    {"repo": "andreww2012/typescript-project-template", "disableThanks": true}
+  ],
   "access": "public",
   "baseBranch": "origin/main",
   "updateInternalDependencies": "patch"
