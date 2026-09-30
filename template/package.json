@@ -1,23 +1,12 @@
 {
-  "name": "@andreww2012/typescript-project-template",
+  "name": "typescript-project-template",
   "version": "0.0.0",
-  "description": "@andreww2012's personal generic TypeScript project template",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/andreww2012/typescript-project-template.git"
-  },
+  "private": true,
+  "description": "",
   "license": "MIT",
   "author": "andreww2012",
   "type": "module",
-  "bin": "dist/cli.js",
-  "files": [
-    "dist/files.json",
-    "dist/template.js"
-  ],
   "scripts": {
-    "build": "node scripts/snapshot.ts && tsc -p tsconfig.build.json",
-    "dev": "node scripts/snapshot.ts && tsx src/cli.ts",
-    "prepack": "nr build",
     "u": "ncu",
     "u:m": "ncu -t minor",
     "u:pm": "ncu --dep packageManager",
@@ -31,7 +20,7 @@
     "check:format": "prettier --check . --log-level warn",
     "format": "prettier --write . --log-level warn",
     "eslint:inspect": "eslint-config-inspector --open false",
-    "eslint": "eslint --cache --config eslint.config.ts",
+    "eslint": "eslint --cache",
     "ts": "tsc --noEmit",
     "ts6": "tsc6 --noEmit",
     "knip:main": "knip --no-progress",
@@ -41,27 +30,28 @@
     "check:deps": "nr \"/^(deps:audit|check:deps:peers)$/\"",
     "check:deps:strict": "nr \"/^(deps:audit|check:deps:(?!strict).+)$/\"",
     "check:fix": "nr format && nr eslint --fix && nr format",
-    "test": "nr check:deps && nr check",
-    "ch": "changeset add --message \"___REPLACE_ME___\"",
-    "release": "changeset publish"
+    "t": "vitest",
+    "t:ui": "vitest --ui",
+    "t:cov": "vitest --coverage",
+    "test:vitest": "nr t run",
+    "test:vitest:cov": "nr t:cov run",
+    "test": "nr check:deps && nr check && nr test:vitest"
   },
   "dependencies": {
-    "bingo": "0.13.0",
-    "zod": "4.6.5"
+    "@andreww2012/unutils": "0.1.0"
   },
   "devDependencies": {
     "@antfu/ni": "30.6.0",
-    "@changesets/cli": "3.0.3",
     "@commitlint/cli": "21.2.3",
     "@commitlint/config-conventional": "21.2.3",
     "@commitlint/types": "21.2.3",
     "@eslint/config-inspector": "3.5.0",
     "@types/node": "22.20.4",
     "actions-up": "1.21.0",
+    "cross-env": "10.1.0",
     "cspell": "10.3.4",
     "eslint": "10.11.0",
     "eslint-config-un": "1.0.0-rc.3",
-    "eslint-plugin-github-action": "0.4.0",
     "eslint-plugin-sentences-per-line": "0.1.6",
     "eslint-plugin-sonarjs": "4.2.1",
     "knip": "6.38.0",

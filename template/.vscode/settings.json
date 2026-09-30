@@ -1,0 +1,12 @@
+{
+  "[javascript][typescript][typescriptreact][vue][css][scss][postcss]": {
+    // Note: do NOT set `editor.formatOnSaveMode` to any value with `modifications` -
+    // may incorrectly run prettier with `prettier-disabled` directives
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode", // cspell:disable-line
+  },
+
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+
+  "cSpell.enabled": true,
+}

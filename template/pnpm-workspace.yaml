@@ -1,0 +1,23 @@
+# shamefullyHoist: true
+saveExact: true
+autoDedupe: true
+saveTypes: true
+
+minimumReleaseAge: 960 # 16 hours in minutes
+minimumReleaseAgeExcludePrune: true
+
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 43200 # 30 days in minutes
+trustPolicyExclude: []
+
+audit:
+  ignore: []
+  ignorePrune: true
+
+allowBuilds:
+  esbuild: false
+  lefthook@2.1.14: true
+  unrs-resolver: false
+
+dedupePeers: true
+strictPeerDependencies: false

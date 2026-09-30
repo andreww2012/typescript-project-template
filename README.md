@@ -1,52 +1,64 @@
-# About
+# @andreww2012/typescript-project-template
 
-This is [@andreww2012](https://github.com/andreww2012) personal [generic TypeScript project template](https://github.com/andreww2012/typescript-project-basic-template).
+This is [@andreww2012](https://github.com/andreww2012)'s personal generic TypeScript project template, powered by [Bingo](https://create.bingo).
 
 ## Usage
 
-Just copy the whole repo, change/review at least these things around and you're good to go:
+Create a new project in the `my-project` directory:
 
-### `package.json`
+```sh
+pnpm dlx @andreww2012/typescript-project-template --directory my-project
+```
 
-- [ ] Change the author and the project name in [`package.json`](./package.json), review the license
-- [ ] Review the installed dependencies, `engines` and `devEngines` fields
-- [ ] Review the scripts section
+The CLI asks for everything it can't infer.
+Template options:
 
-### pnpm settings
+- `--repository`: repository name, also used as the package name (defaults to the directory name)
+- `--owner`: GitHub user or organization (inferred from the GitHub CLI if you're logged in)
+- `--author`: `package.json` author (defaults to `--owner`)
+- `--description`: short description for `package.json` and `README.md`
+- `--utils`: utility library to install, `@andreww2012/unutils` (default) or `none`
 
-- [ ] Review [the pnpm workspace config file](./pnpm-workspace.yaml) (even if you don't use workspace/monorepo features, this file is the only way of configuring pnpm)
+Outside of an interactive terminal (for example in CI), pass `--utils`, because the CLI can't ask for it there.
+Add `--remote` to also create the repository on GitHub.
+See [the Bingo CLI docs](https://create.bingo/cli) for all other flags.
 
-### Prettier
+After that, install the dependencies and go through the setup checklist in the new `README.md`.
 
-- [ ] Review if you're satisfied with [the Prettier ignores](./.prettierignore)
-- [ ] Review the commented out lines [in the Prettier config file](./prettier.config.ts)
+### With "Use this template" button on GitHub
 
-### TypeScript
+Create a repository from this template on GitHub, clone it and run the same command inside it (without `--directory`).
+Bingo sees that the repository was created from this template, removes the template files and creates the project in their place.
 
-- [ ] Review the [TypeScript config file](./tsconfig.json)
+### Existing projects
 
-### ESLint
+Running the command inside an existing git repository updates it to the latest template version (Bingo's "transition" mode).
+It overwrites files with the template versions, *including* `package.json` and `README.md`, so review the changes with `git diff` before committing.
 
-- [ ] Review the commented out lines [in the ESLint config file](./eslint.config.ts)
+## How it works
 
-### CSpell
+The files of new projects live in [`template/`](./template).
+They are completely independent from the files of this repository, which only builds and publishes the CLI:
+the tools here (ESLint, Prettier, CSpell, knip and so on) ignore `template/` and use their own configs.
 
-- [ ] Review [the CSpell config file](./cspell.config.ts)
+Every file in `template/` is copied as is, except these:
 
-### knip
+- `package.json`: name, description and author come from the options, and `@andreww2012/unutils` is removed if not wanted
+- `README.md`: gets the project name and description on top
 
-- [ ] Review [the knip config file](./knip.config.ts)
+Files ignored by git are skipped.
+Symlinks (like `CLAUDE.md`) are created again with `ln -s`, because npm packages can't contain them.
+The lockfile isn't part of the template, so dependencies are resolved on the first install.
 
-### Git
+The CLI code is in [`src/`](./src): [`src/template.ts`](./src/template.ts) describes the options and how the files are changed.
 
-- [ ] Review [the `.gitignore` file](./.gitignore)
-- [ ] Review [the `commitlint` config file](./commitlint.config.ts)
-- [ ] Review [the `lefthook` config file](./lefthook.yml)
+## Development
 
-### AI
+`nr build` saves the files from `template/` into `dist/files.json` and compiles the CLI.
+It runs automatically before publishing.
 
-- [ ] Review [the `AGENTS.md` file] (`CLAUDE.md` is a symlink to it)
+To try the template from source:
 
-### ⚠️ Final TODO item
-
-- [ ] Clear this `README.md` file :-)
+```sh
+nr dev --directory ../my-test-project
+```

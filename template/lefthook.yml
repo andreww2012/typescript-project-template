@@ -2,7 +2,7 @@ pre-push:
   parallel: true
   commands:
     eslint:
-      run: pnpm exec eslint --config eslint.config.ts --no-warn-ignored {push_files}
+      run: pnpm exec eslint --no-warn-ignored {push_files}
     prettier:
       run: pnpm exec prettier --check --ignore-unknown --no-error-on-unmatched-pattern {push_files}
     cspell:
