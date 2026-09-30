@@ -9,6 +9,9 @@
   "license": "MIT",
   "author": "andreww2012",
   "type": "module",
+  "exports": {
+    "./package.json": "./package.json"
+  },
   "bin": "dist/cli.js",
   "files": [
     "dist/files.json",
