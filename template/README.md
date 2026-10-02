@@ -42,7 +42,7 @@ Review these things and you're good to go:
 
 ### AI
 
-- [ ] Review [the `AGENTS.md` file](./AGENTS.md) (`CLAUDE.md` is a symlink to it)
+- [ ] Review [the `AGENTS.md` file](./AGENTS.md)
 
 ### ⚠️ Final TODO item
 

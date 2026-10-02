@@ -47,7 +47,7 @@ Every file in `template/` is copied as is, except these:
 - `README.md`: gets the project name and description on top
 
 Files ignored by git are skipped.
-Symlinks (like `CLAUDE.md`) are created again with `ln -s`, because npm packages can't contain them.
+Symlinks (like `.claude/skills`) are created again with `ln -s`, because npm packages can't contain them.
 The lockfile isn't part of the template, so dependencies are resolved on the first install.
 
 The CLI code is in [`src/`](./src): [`src/template.ts`](./src/template.ts) describes the options and how the files are changed.
