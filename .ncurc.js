@@ -42,7 +42,6 @@ const PACKAGE_GROUPS = Object.entries({
   '@cspell': {
     packages: ['cspell'],
   },
-  // '@commitlint': {packages: []},
 }).reduce((result, [groupName, {packages: packagesInGroup, ...groupMeta}]) => {
   const isScopedGroup = groupName.startsWith('@');
   const groupInfo = {
