@@ -1,4 +1,3 @@
-<!-- eslint-disable markdown-preferences/heading-casing, markdown-preferences/padding-line-between-blocks -->
 <!-- prettier-ignore -->
 <!-- cspell:disable -->
 
