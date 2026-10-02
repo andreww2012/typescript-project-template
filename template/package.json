@@ -28,7 +28,7 @@
     "knip": "nr \"/^knip:.+$/\"",
     "check": "nr \"/^(knip|check:(spelling|format)|ts|eslint)$/\"",
     "check:deps": "nr \"/^(deps:audit|check:deps:peers)$/\"",
-    "check:deps:strict": "nr \"/^(deps:audit|check:deps:(?!strict).+)$/\"",
+    "check:deps:strict": "nr \"/^(deps:audit|check:deps:(dedupe|peers))$/\"",
     "check:fix": "nr format && nr eslint --fix && nr format",
     "t": "vitest",
     "t:ui": "vitest --ui",

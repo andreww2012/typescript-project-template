@@ -42,7 +42,7 @@
     "knip": "nr \"/^knip:.+$/\"",
     "check": "nr \"/^(knip|check:(spelling|format)|ts|eslint)$/\"",
     "check:deps": "nr \"/^(deps:audit|check:deps:peers)$/\"",
-    "check:deps:strict": "nr \"/^(deps:audit|check:deps:(?!strict).+)$/\"",
+    "check:deps:strict": "nr \"/^(deps:audit|check:deps:(dedupe|peers))$/\"",
     "check:fix": "nr format && nr eslint --fix && nr format",
     "test": "nr check:deps && nr check",
     "ch": "changeset add --message \"___REPLACE_ME___\"",
