@@ -1,6 +1,6 @@
 {
   "name": "@andreww2012/typescript-project-template",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "@andreww2012's personal generic TypeScript project template",
   "repository": {
     "type": "git",
