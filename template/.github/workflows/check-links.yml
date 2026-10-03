@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 0
       # Only needed for `node_modules/lychee-config-nick2bad4u/lychee.toml` and the
-      # changed files filtering script below.
+      # changed files filtering script below
       - uses: ./.github/actions/prepare
       - name: Collect changed files
         id: changed-files
@@ -29,13 +29,14 @@ jobs:
           set -o pipefail
           # `github.event.before` is all zeroes for a newly pushed branch and may
           # point at a commit dropped by a force push. Diff against the empty tree
-          # in that case, which checks every file in the repo.
+          # in that case, which checks every file in the repo
           if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
             base="${BASE_SHA}"
           else
             base=$(git hash-object -t tree /dev/null)
           fi
-          # Explicitly listed inputs bypass lychee's `extensions` allowlist, so we're intersecting them with the same allowlist
+          # Explicitly listed inputs bypass lychee's `extensions` allowlist,
+          # so we're intersecting them with the same allowlist
           git diff --name-only --diff-filter=ACMR "${base}" HEAD |
             node scripts/filter-lychee-inputs.ts \
               node_modules/lychee-config-nick2bad4u/lychee.toml lychee.toml \
@@ -54,7 +55,7 @@ jobs:
         if: steps.changed-files.outputs.count != '0'
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
-          # Changed files containing no links at all is a normal outcome here.
+          # Changed files containing no links at all is a normal outcome here
           failIfEmpty: false
           args: >-
             --config node_modules/lychee-config-nick2bad4u/lychee.toml

@@ -63,11 +63,11 @@ const MARKER_REGEX = /^(?:\/\/|#|<!--) @(?:if (!?)([\w-]+)|endif)(?: -->)?$/;
 // Things that are only created with the given feature
 const FILE_FEATURES: Record<string, string> = {
   '.all-contributorsrc': 'contributors',
+  '.changeset': 'changesets',
   '.github/actions': 'ci',
   '.github/dependabot.yml': 'dependabot',
   '.github/workflows': 'ci',
   '.github/workflows/check-links.yml': 'lychee',
-  '.changeset': 'changesets',
   '.ncurc.js': 'ncu', // cspell:disable-line
   '.prettierignore': 'prettier',
   'commitlint.config.ts': 'commitlint',
@@ -85,10 +85,10 @@ const FILE_FEATURES: Record<string, string> = {
   'vitest.config.ts': 'vitest',
 };
 const PACKAGE_FEATURES: Record<string, string> = {
-  [UTILITY_LIBRARY]: 'unutils',
-  '@arethetypeswrong/cli': 'lib',
   'actions-up': 'actions-up',
   'all-contributors-cli': 'contributors',
+  [UTILITY_LIBRARY]: 'unutils',
+  '@arethetypeswrong/cli': 'lib',
   '@changesets/changelog-github': 'changelog-github',
   '@changesets/cli': 'changesets',
   '@commitlint/cli': 'commitlint',
@@ -200,6 +200,10 @@ const applyMarkersToText = (text: string, features: ReadonlySet<string>) => {
     })
     .join('\n');
 };
+
+const updateJson =
+  (update: (json: Record<string, unknown>) => Record<string, unknown>) => (text: string) =>
+    JSON.stringify(update(JSON_OBJECT_SCHEMA.parse(JSON.parse(text))), null, 2);
 
 const hasFeature = (features: ReadonlySet<string>, feature: string | undefined) =>
   feature == null || features.has(feature);
@@ -345,10 +349,6 @@ export const template = createTemplate({
             ...(dictionaries.length > 0 ? [formatArray('  import: ', dictionaries, ',')] : []),
           ]
         : [];
-
-    const updateJson =
-      (update: (json: Record<string, unknown>) => Record<string, unknown>) => (text: string) =>
-        JSON.stringify(update(JSON_OBJECT_SCHEMA.parse(JSON.parse(text))), null, 2);
 
     const transforms: Record<string, (text: string) => string> = {
       '.all-contributorsrc': updateJson((config) => ({

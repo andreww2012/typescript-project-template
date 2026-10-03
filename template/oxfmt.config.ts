@@ -10,7 +10,8 @@ export default {
     '!.*/',
     '!.*.*',
 
-    // This might conflict with ESLint rules for these files, plus the resulting formatting is more opinionated
+    // This might conflict with ESLint rules for these files,
+    // plus the resulting formatting is more opinionated
     '*.html',
     '*.json',
     '*.md',

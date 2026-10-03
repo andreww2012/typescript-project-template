@@ -1,6 +1,6 @@
 import type {CSpellSettings} from 'cspell';
 
-const GLOBALLY_IGNORED_WORDS = {
+const GLOBALLY_IGNORED_WORDS: Record<string, string[]> = {
   // @if unutils
   names: ['andreww', 'unutils', 'verkit'],
   // @endif
@@ -14,23 +14,21 @@ const GLOBALLY_IGNORED_WORDS = {
   misc: ['knipignore'],
   // @endif
   englishIshWords: [],
-} satisfies Record<string, string[]>;
+};
 
 export default {
   useGitignore: true,
   enableGlobDot: true,
-  // @if contributors
   ignorePaths: [
     '**/.gitignore',
     '**/.git/**',
     '**/pnpm-lock.yaml',
     'patches/**',
+    '.agents/style-guide.md',
+    // @if contributors
     '.all-contributorsrc',
+    // @endif
   ],
-  // @endif
-  // @if !contributors
-  ignorePaths: ['**/.gitignore', '**/.git/**', '**/pnpm-lock.yaml', 'patches/**'],
-  // @endif
   dictionaries: ['npm', 'node', 'typescript', 'fullstack'],
   words: Object.values(GLOBALLY_IGNORED_WORDS).flat(),
   overrides: [],

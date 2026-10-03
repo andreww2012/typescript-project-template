@@ -8,7 +8,7 @@ const flags = await promptForOptions(process.argv.slice(2));
 
 if (flags) {
   process.argv.push(...flags);
-  // @ts-expect-error -- bingo's types reject templates with required options under `strictFunctionTypes`
+  // @ts-expect-error -- Bingo's types reject required options under `strictFunctionTypes`
   process.exitCode = await runTemplateCLI(template);
 } else {
   prompts.cancel('Operation cancelled');

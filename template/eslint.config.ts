@@ -27,7 +27,8 @@ export default eslintConfig({
     // @if oxfmt
     format: {
       files: [
-        // TODO replace with `GLOB_MARKDOWN_SUPPORTED_CODE_BLOCKS` from eslint-config-un once it's exported
+        // TODO replace with `GLOB_MARKDOWN_SUPPORTED_CODE_BLOCKS` from eslint-config-un
+        // once it's exported
         `${GLOB_MARKDOWN}/**/*.{${GLOB_JS_TS_X_EXTENSION},json,jsonc,json5,${GLOB_YML_YAML_EXTENSION}}`,
       ],
       formatter: [

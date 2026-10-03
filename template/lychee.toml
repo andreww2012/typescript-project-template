@@ -3,22 +3,22 @@
 #
 # Repo-specific overrides layered on top of `lychee-config-nick2bad4u`, which is
 # always passed first (see `check-links.yml`).
-# Scalars here win over the baseline, list values are merged into it.
+# Scalars here win over the baseline, list values are merged into it
 
 # Report broken links only. The baseline's "info" also streams a line per working
 # link, and "warn" still streams excluded ones. Note that this leaves a local run
 # printing nothing at all: the results go to the baseline's `output` file, and
 # lychee never announces where that is. In CI the action supplies its own
-# `--output` and echoes the report to the job log.
+# `--output` and echoes the report to the job log
 # verbose = "error"
 
 # Reject redirects instead of following them: with a limit of 0 lychee returns
 # the 3xx itself, which is not in `accept`, so a moved link fails loudly instead
-# of silently passing as its redirect target.
+# of silently passing as its redirect target
 max_redirects = 0
 
 # Wayback snapshots are not a useful answer to a rejected redirect: the archived
-# copy is suggested instead of the URL the link actually moved to.
+# copy is suggested instead of the URL the link actually moved to
 suggest = false
 remap = [
   '^https://npmx\.dev/((?:[\w.-]+|@[\w.-]+/[\w.-]+)(?:\?[^/]*)?)$ https://npmx.dev/package/$1',

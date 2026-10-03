@@ -2,15 +2,15 @@ import {parseArgs} from 'node:util';
 import * as prompts from '@clack/prompts';
 import {DEFAULT_OPTIONS, LANGUAGES, OPTION_FLAGS, TOOLS, readNodeVersionRanges} from './options.js';
 
-const TOOL_HINTS = {
+const TOOL_HINTS: Record<(typeof TOOLS)[number], string> = {
   knip: 'unused files, exports and dependencies',
   cspell: 'spell checking',
   commitlint: 'commit message linting',
   lefthook: 'Git hooks',
   vitest: 'unit tests',
-} satisfies Record<(typeof TOOLS)[number], string>;
+};
 
-const ARGS_OPTIONS = {
+const PARSE_ARGS_OPTIONS = {
   ...Object.fromEntries(Object.keys(OPTION_FLAGS).map((key) => [key, {type: 'string' as const}])),
   help: {type: 'boolean'},
   version: {type: 'boolean'},
@@ -20,8 +20,8 @@ const ARGS_OPTIONS = {
  * Asks the questions Bingo can't ask on its own.
  * @returns Flags with the answers to pass to Bingo, or `null` if the user cancelled
  */
-export const promptForOptions = async (args: string[]) => {
-  const {values} = parseArgs({args, options: ARGS_OPTIONS, strict: false});
+export const promptForOptions = async (cliArguments: string[]) => {
+  const {values} = parseArgs({args: cliArguments, options: PARSE_ARGS_OPTIONS, strict: false});
   if (values.help || values.version) {
     return [];
   }

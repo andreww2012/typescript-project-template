@@ -17,8 +17,9 @@ const IGNORED_PACKAGES = new Set();
 
 /**
  * Blocks *updating to* any version matching the given semver range for a package
- * (it does not restrict the version we update *from*). Use to skip a known-broken
- * release until a fix ships. Each entry should document why it is blocked
+ * (it does not restrict the version we update *from*).
+ * Use to skip a known-broken release until a fix ships.
+ * Each entry should document why it is blocked
  * @type {Record<string, string>}
  */
 const IGNORED_PACKAGE_RANGES_TO_UPDATE = {};
@@ -96,10 +97,10 @@ export default defineConfig({
       return false;
     }
 
-    const [currentVersion, upgradedVersion] = [currentVersionRaw, upgradedVersionRaw].map((v) =>
-      v.split('@').at(-1),
+    const [currentVersion, upgradedVersion] = [currentVersionRaw, upgradedVersionRaw].map(
+      (version) => version.split('@').at(-1),
     );
-    // Unlike `target`, this gets alias names (like `@types/node24`) instead of the real package names
+    // Unlike `target`, this gets alias names (like `@types/node24`) instead of real package names
     const [, aliasedPackageName = packageName] = NPM_ALIAS_REGEX.exec(currentVersionRaw) || [];
 
     const blockedVersionRange = IGNORED_PACKAGE_RANGES_TO_UPDATE[packageName];
@@ -108,7 +109,7 @@ export default defineConfig({
     }
 
     const [currentVersionSemver, upgradedVersionSemver] = [currentVersion, upgradedVersion].map(
-      (v) => tryParse(v || ''),
+      (version) => tryParse(version || ''),
     );
     return !(
       PACKAGES_WITH_PINNED_MAJOR_VERSION.has(aliasedPackageName) &&

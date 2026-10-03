@@ -91,7 +91,8 @@ jobs:
           # For the changelog generator, the action passes it on its own
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Exits with 1 if there are no unreleased changesets, in which case the version stays the same
+          # Exits with 1 if there are no unreleased changesets,
+          # in which case the version stays the same
           pnpm changeset version || true
           echo "NEW_VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
           git restore .

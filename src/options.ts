@@ -53,10 +53,10 @@ export const DEFAULT_OPTIONS = OPTIONS_SCHEMA.parse({});
 
 // Bingo passes the raw flag values to `produce`, so these only describe the flags
 export const OPTION_FLAGS = {
-  ci: OPTIONS_SCHEMA.shape.ci.optional().describe('whether to set up CI with GitHub Actions'),
   changesets: OPTIONS_SCHEMA.shape.changesets
     .optional()
     .describe('changesets setup with the GitHub or the default changelog format (only for `lib`)'),
+  ci: OPTIONS_SCHEMA.shape.ci.optional().describe('whether to set up CI with GitHub Actions'),
   contributors: OPTIONS_SCHEMA.shape.contributors
     .optional()
     .describe('whether to set up all-contributors (only for `lib`)'),
