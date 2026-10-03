@@ -2,9 +2,21 @@
   // cspell:disable
   "recommendations": [
     "dbaeumer.vscode-eslint",
+    // @if prettier
     "esbenp.prettier-vscode",
+    // @endif
+    // @if oxfmt
+    "oxc.oxc-vscode",
+    // @endif
+    // @if cspell
     "streetsidesoftware.code-spell-checker",
+    // @endif
+    // @if knip
     "webpro.vscode-knip",
+    // @endif
+    // @if vitest
+    "vitest.explorer",
+    // @endif
     // "bradlc.vscode-tailwindcss",
   ],
   // cspell:enable

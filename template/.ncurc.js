@@ -5,6 +5,9 @@ import {defineConfig} from 'npm-check-updates';
 import {satisfies, tryParse} from 'verkit';
 import packageJson from './package.json' with {type: 'json'};
 
+// Like `npm:@types/node@24.0.0`
+const NPM_ALIAS_REGEX = /^npm:(@?[^@]+)@/;
+
 const CACHE_DIRECTORY = path.join(import.meta.dirname, 'node_modules/.cache/npm-check-updates');
 // eslint-disable-next-line unicorn/no-top-level-side-effects
 fs.mkdirSync(CACHE_DIRECTORY, {recursive: true});
@@ -23,8 +26,13 @@ const IGNORED_PACKAGE_RANGES_TO_UPDATE = {};
 /** @type {Set<string>} */
 const PACKAGES_WITH_PINNED_MAJOR_VERSION = new Set(['@types/node']);
 
-/** Their `latest` dist-tag lags behind the prerelease channel we actually follow. */
-const PACKAGES_ON_PRERELEASE_CHANNEL = new Set(['eslint-config-un']);
+const PACKAGES_ON_PRERELEASE_CHANNEL = new Set([
+  // Their `latest` dist-tag lags behind the prerelease channel we actually follow
+  'eslint-config-un',
+  // @if contributors
+  'all-contributors-cli',
+  // @endif
+]);
 
 /**
  * @type {Record<string, {packages: string[]; groupName?: string; icon?: string; priority?: number | null}>}
@@ -42,6 +50,11 @@ const PACKAGE_GROUPS = Object.entries({
   '@cspell': {
     packages: ['cspell'],
   },
+  // @if vitest
+  '@vitest': {
+    packages: ['vitest'],
+  },
+  // @endif
   // '@commitlint': {packages: []},
 }).reduce((result, [groupName, {packages: packagesInGroup, ...groupMeta}]) => {
   const isScopedGroup = groupName.startsWith('@');
@@ -63,6 +76,10 @@ export default defineConfig({
   cacheExpiration: 30,
   cacheFile: path.join(CACHE_DIRECTORY, 'cache.json'),
 
+  // Catalogs in `pnpm-workspace.yaml` are only updated in workspace mode
+  workspaces: true,
+  root: true,
+
   target: (packageName) => {
     if (PACKAGES_WITH_PINNED_MAJOR_VERSION.has(packageName)) {
       return 'minor';
@@ -82,6 +99,8 @@ export default defineConfig({
     const [currentVersion, upgradedVersion] = [currentVersionRaw, upgradedVersionRaw].map((v) =>
       v.split('@').at(-1),
     );
+    // Unlike `target`, this gets alias names (like `@types/node24`) instead of the real package names
+    const [, aliasedPackageName = packageName] = NPM_ALIAS_REGEX.exec(currentVersionRaw) || [];
 
     const blockedVersionRange = IGNORED_PACKAGE_RANGES_TO_UPDATE[packageName];
     if (blockedVersionRange && satisfies(upgradedVersion || '', blockedVersionRange)) {
@@ -92,7 +111,7 @@ export default defineConfig({
       (v) => tryParse(v || ''),
     );
     return !(
-      PACKAGES_WITH_PINNED_MAJOR_VERSION.has(packageName) &&
+      PACKAGES_WITH_PINNED_MAJOR_VERSION.has(aliasedPackageName) &&
       currentVersionSemver?.major !== upgradedVersionSemver?.major
     );
   },

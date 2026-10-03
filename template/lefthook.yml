@@ -3,24 +3,50 @@ pre-push:
   commands:
     eslint:
       run: pnpm exec eslint --no-warn-ignored {push_files}
+    # @if prettier
     prettier:
       run: pnpm exec prettier --check --ignore-unknown --no-error-on-unmatched-pattern {push_files}
+    # @endif
+    # @if oxfmt
+    oxfmt:
+      run: pnpm exec oxfmt --check --no-error-on-unmatched-pattern {push_files}
+    # @endif
+    # @if cspell
     cspell:
       run: pnpm exec cspell --exclude '**/.*' --no-must-find-files {push_files}
+    # @endif
+    # @if knip
     knip:
       run: nr knip
+    # @endif
     types:
       run: nr ts
+
+post-merge: &install-on-lockfile-change
+  commands:
+    install:
+      glob: '{pnpm-lock.yaml,pnpm-workspace.yaml,patches/*}'
+      run: ni
+post-checkout: *install-on-lockfile-change
 
 pre-commit:
   parallel: true
   skip: [merge, rebase]
   commands:
+    # @if prettier
     prettier:
       run: pnpm exec prettier --write --ignore-unknown --no-error-on-unmatched-pattern {staged_files}
       stage_fixed: true
+    # @endif
+    # @if oxfmt
+    oxfmt:
+      run: pnpm exec oxfmt --no-error-on-unmatched-pattern {staged_files}
+      stage_fixed: true
+    # @endif
+# @if commitlint
 
 commit-msg:
   commands:
     commitlint:
       run: pnpm exec commitlint --edit {0}
+# @endif

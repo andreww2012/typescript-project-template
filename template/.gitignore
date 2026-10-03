@@ -1,6 +1,10 @@
 ### `typescript-project-template` additions:
 
 .claude/worktrees/
+# @if lychee
+.lycheecache
+.lychee.report.md
+# @endif
 
 ### Node.JS gitignore: https://github.com/github/gitignore/blob/3780fff86c705155792fb3e1787cebd6281ba8cf/Node.gitignore
 

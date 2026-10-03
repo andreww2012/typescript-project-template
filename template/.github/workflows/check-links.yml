@@ -1,0 +1,62 @@
+# cspell:ignore ACMR lycheeverse lycheecache pipefail
+name: Check links (lychee)
+on:
+  # After https://github.com/SchemaStore/schemastore/commit/195da2efaeb9c5b7aa77f1cd8de25b22a53b13f0
+  # change, a bare `workflow_call:` (i.e. null) now fails schema validation
+  workflow_call: {}
+
+permissions:
+  contents: read
+
+jobs:
+  check-links:
+    name: Lychee
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      # Only needed for `node_modules/lychee-config-nick2bad4u/lychee.toml` and the
+      # changed files filtering script below.
+      - uses: ./.github/actions/prepare
+      - name: Collect changed files
+        id: changed-files
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha ||
+            github.event.before }}
+        run: |
+          # Neither half of the pipeline below may fail silently
+          set -o pipefail
+          # `github.event.before` is all zeroes for a newly pushed branch and may
+          # point at a commit dropped by a force push. Diff against the empty tree
+          # in that case, which checks every file in the repo.
+          if git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+            base="${BASE_SHA}"
+          else
+            base=$(git hash-object -t tree /dev/null)
+          fi
+          # Explicitly listed inputs bypass lychee's `extensions` allowlist, so we're intersecting them with the same allowlist
+          git diff --name-only --diff-filter=ACMR "${base}" HEAD |
+            node scripts/filter-lychee-inputs.ts \
+              node_modules/lychee-config-nick2bad4u/lychee.toml lychee.toml \
+            > "${RUNNER_TEMP}/changed-files.txt"
+          echo "Changed files:"
+          cat "${RUNNER_TEMP}/changed-files.txt"
+          echo "count=$(wc -l < "${RUNNER_TEMP}/changed-files.txt")" >> "$GITHUB_OUTPUT"
+      - name: Restore lychee cache
+        if: steps.changed-files.outputs.count != '0'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .lycheecache
+          key: lychee-${{ github.run_id }}
+          restore-keys: lychee-
+      - name: Check links
+        if: steps.changed-files.outputs.count != '0'
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          # Changed files containing no links at all is a normal outcome here.
+          failIfEmpty: false
+          args: >-
+            --config node_modules/lychee-config-nick2bad4u/lychee.toml
+            --config lychee.toml
+            --files-from ${{ runner.temp }}/changed-files.txt

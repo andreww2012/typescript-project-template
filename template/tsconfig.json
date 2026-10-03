@@ -14,7 +14,12 @@
     "moduleDetection": "force",
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
-    "types": [],
+    // @if vitest
+    "types": ["node", "vitest/globals"],
+    // @endif
+    // @if !vitest
+    "types": ["node"],
+    // @endif
 
     /* Strictness */
     "noUncheckedIndexedAccess": true,

@@ -3,10 +3,29 @@
   "version": "0.0.0",
   "private": true,
   "description": "",
+  "homepage": "https://github.com/andreww2012/typescript-project-template",
+  "bugs": {
+    "url": "https://github.com/andreww2012/typescript-project-template/issues/new"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreww2012/typescript-project-template.git"
+  },
   "license": "MIT",
   "author": "andreww2012",
   "type": "module",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/index.d.mts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "tsdown",
+    "prepack": "nr build",
+    "prepublishOnly": "nr check:public-types",
     "u": "ncu",
     "u:m": "ncu -t minor",
     "u:pm": "ncu --dep packageManager",
@@ -29,43 +48,72 @@
     "check": "nr \"/^(knip|check:(spelling|format)|ts|eslint)$/\"",
     "check:deps": "nr \"/^(deps:audit|check:deps:peers)$/\"",
     "check:deps:strict": "nr \"/^(deps:audit|check:deps:(dedupe|peers))$/\"",
+    "check:public-types": "pnpm pack --out temp/package.tgz && attw temp/package.tgz --profile esm-only",
     "check:fix": "nr format && nr eslint --fix && nr format",
     "t": "vitest",
     "t:ui": "vitest --ui",
     "t:cov": "vitest --coverage",
     "test:vitest": "nr t run",
     "test:vitest:cov": "nr t:cov run",
-    "test": "nr check:deps && nr check && nr test:vitest"
+    "test": "nr check:deps && nr check && nr test:vitest",
+    "ch": "changeset add --message \"___REPLACE_ME___\"",
+    "release": "changeset publish",
+    "contrib:add": "all-contributors add",
+    "contrib:gen": "all-contributors generate"
   },
   "dependencies": {
     "@andreww2012/unutils": "0.1.0"
   },
   "devDependencies": {
     "@antfu/ni": "30.6.0",
+    "@arethetypeswrong/cli": "0.18.5",
+    "@changesets/changelog-github": "1.0.1",
+    "@changesets/cli": "3.0.3",
     "@commitlint/cli": "21.2.3",
     "@commitlint/config-conventional": "21.2.3",
     "@commitlint/types": "21.2.3",
+    "@cspell/dict-de-de": "4.1.2",
+    "@cspell/dict-es-es": "3.0.8",
+    "@cspell/dict-fr-fr": "2.3.2",
+    "@cspell/dict-it-it": "3.1.6",
+    "@cspell/dict-nl-nl": "2.4.2",
+    "@cspell/dict-pl_pl": "3.0.6",
+    "@cspell/dict-pt-br": "2.4.2",
+    "@cspell/dict-ru_ru": "2.3.2",
+    "@cspell/dict-tr-tr": "3.0.6",
+    "@cspell/dict-uk-ua": "4.0.6",
     "@eslint/config-inspector": "3.5.0",
     "@types/node": "22.20.4",
+    "@types/node24": "npm:@types/node@24.19.1",
+    "@types/node26": "npm:@types/node@26.6.4",
+    "@vitest/coverage-v8": "5.0.3",
+    "@vitest/eslint-plugin": "1.6.27",
+    "@vitest/ui": "5.0.3",
     "actions-up": "1.21.0",
+    "all-contributors-cli": "6.27.0-rc.1",
     "cross-env": "10.1.0",
     "cspell": "10.3.6",
     "eslint": "10.11.0",
     "eslint-config-un": "1.0.0-rc.3",
+    "eslint-plugin-format": "2.0.1",
+    "eslint-plugin-github-action": "0.4.0",
     "eslint-plugin-sentences-per-line": "0.1.6",
     "eslint-plugin-sonarjs": "4.2.2",
     "knip": "6.39.0",
     "lefthook": "2.1.16",
+    "lychee-config-nick2bad4u": "3.0.2",
     "npm-check-updates": "23.1.0",
+    "oxfmt": "catalog:format",
     "prettier": "3.9.9",
+    "smol-toml": "1.9.0",
+    "tsdown": "0.23.0",
     "tsx": "4.23.15",
     "typescript": "npm:@typescript/typescript6@6.0.2",
     "typescript7": "npm:typescript@7.0.2",
-    "verkit": "0.5.0"
+    "verkit": "0.5.0",
+    "vitest": "5.0.3"
   },
-  "engines": {
-    "node": "^22.23.1 || >=24"
-  },
+  "engines": {},
   "devEngines": {
     "packageManager": {
       "name": "pnpm",

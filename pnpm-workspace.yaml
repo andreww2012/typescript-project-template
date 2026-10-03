@@ -14,7 +14,8 @@ trustPolicyIgnoreAfter: 43200 # 30 days in minutes
 trustPolicyExclude: []
 
 audit:
-  ignore: []
+  ignore: # []
+    - GHSA-ch52-4w7c-c8xp # `http-cache-semantics` from `eslint-config-un` has no patched version yet
   ignorePrune: true
 
 allowBuilds:
