@@ -4,7 +4,7 @@
 # Generated projects resolve their dependencies on the first install
 /template/pnpm-lock.yaml
 
-### Node.JS gitignore: https://github.com/github/gitignore/blob/3780fff86c705155792fb3e1787cebd6281ba8cf/Node.gitignore
+### Node.JS gitignore: https://github.com/github/gitignore/blob/0e5d690153ca3da8a4a1aef2d053406f408f531c/Node.gitignore
 
 # Logs
 logs
@@ -130,7 +130,7 @@ dist
 # TernJS port file
 .tern-port
 
-# Stores VSCode versions used for testing VSCode extensions
+# Stores Visual Studio Code versions used for testing Visual Studio Code extensions
 .vscode-test
 
 # pnpm
@@ -150,7 +150,13 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 
-### MacOS gitignore: https://github.com/github/gitignore/blob/3780fff86c705155792fb3e1787cebd6281ba8cf/Global/macOS.gitignore
+# Astro generated types
+.astro/
+
+# Turbo Repo
+.turbo
+
+### MacOS gitignore: https://github.com/github/gitignore/blob/0e5d690153ca3da8a4a1aef2d053406f408f531c/Global/macOS.gitignore
 
 # General
 .DS_Store
@@ -212,7 +218,7 @@ Backups.backupdb
 MobileBackups.trash
 tmbootpicker.efi
 
-### JetBrains gitignore: https://github.com/github/gitignore/blob/3780fff86c705155792fb3e1787cebd6281ba8cf/Global/JetBrains.gitignore
+### JetBrains gitignore: https://github.com/github/gitignore/blob/0e5d690153ca3da8a4a1aef2d053406f408f531c/Global/JetBrains.gitignore
 
 # Covers JetBrains IDEs: IntelliJ, GoLand, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
@@ -302,7 +308,7 @@ http-client.private.env.json
 # Github Copilot persisted session migrations, see: https://github.com/microsoft/copilot-intellij-feedback/issues/712#issuecomment-3322062215
 .idea/**/copilot.data.migration.*.xml
 
-### Agents gitignore: https://github.com/github/gitignore/blob/3780fff86c705155792fb3e1787cebd6281ba8cf/Global/Agents.gitignore
+### Agents gitignore: https://github.com/github/gitignore/blob/0e5d690153ca3da8a4a1aef2d053406f408f531c/Global/Agents.gitignore
 
 # AI agents and assistants
 #
