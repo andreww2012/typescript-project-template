@@ -48,7 +48,12 @@
     "check:deps:strict": "nr \"/^(deps:audit|check:deps:(dedupe|peers))$/\"",
     "check:package": "pnpm pack --out temp/package.tgz && publint temp/package.tgz --strict",
     "check:fix": "nr format && nr eslint --fix && nr format",
-    "test": "nr check:deps && nr check",
+    "t": "vitest",
+    "t:ui": "vitest --ui",
+    "t:cov": "vitest --coverage",
+    "test:vitest": "nr t run",
+    "test:vitest:cov": "nr t:cov run",
+    "test": "nr check:deps && nr check && nr test:vitest",
     "ch": "changeset add --message \"___REPLACE_ME___\"",
     "release": "changeset publish"
   },
@@ -59,6 +64,7 @@
     "zod": "4.6.5"
   },
   "devDependencies": {
+    "@andreww2012/npm-check-updates-config": "workspace:*",
     "@antfu/ni": "30.6.0",
     "@changesets/changelog-github": "1.0.1",
     "@changesets/cli": "3.0.3",
@@ -67,6 +73,9 @@
     "@commitlint/types": "21.2.3",
     "@eslint/config-inspector": "3.5.0",
     "@types/node": "24.19.1",
+    "@vitest/coverage-v8": "5.0.3",
+    "@vitest/eslint-plugin": "1.6.27",
+    "@vitest/ui": "5.0.3",
     "actions-up": "1.21.0",
     "cspell": "10.3.6",
     "eslint": "10.11.0",
@@ -82,7 +91,7 @@
     "tsx": "4.23.15",
     "typescript": "npm:@typescript/typescript6@6.0.2",
     "typescript7": "npm:typescript@7.0.2",
-    "verkit": "0.5.0"
+    "vitest": "5.0.3"
   },
   "engines": {
     "node": "^24.18.0 || >=26.4.0"

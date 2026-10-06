@@ -70,7 +70,7 @@ const FILE_FEATURES: Record<string, string> = {
   '.github/dependabot.yml': 'dependabot',
   '.github/workflows': 'ci',
   '.github/workflows/check-links.yml': 'lychee',
-  '.ncurc.js': 'ncu', // cspell:disable-line
+  '.ncurc.js': 'ncu',
   '.prettierignore': 'prettier',
   'commitlint.config.ts': 'commitlint',
   'cspell.config.ts': 'cspell',

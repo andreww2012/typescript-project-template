@@ -106,4 +106,15 @@ To try the template from source:
 nr dev --directory ../my-test-project
 ```
 
+### Other packages
+
+This repository is a pnpm workspace, and [`packages/`](./packages) has other packages published from it:
+
+- [`@andreww2012/npm-check-updates-config`](./packages/npm-check-updates-config): the npm-check-updates config, used in `.ncurc.js`
+
+Changesets releases them together with the template.
+`nr t` runs their tests with Vitest.
+Their `exports` point to the TypeScript sources, so they work in this repository without building.
+`publishConfig.exports` points to the built files instead, which pnpm uses when it packs a package.
+
 [`src/template.ts`]: ./src/template.ts

@@ -1,0 +1,60 @@
+{
+  "name": "@andreww2012/npm-check-updates-config",
+  "version": "0.0.0",
+  "description": "@andreww2012's configurable npm-check-updates config",
+  "keywords": [
+    "config",
+    "ncu",
+    "ncurc",
+    "npm-check-updates"
+  ],
+  "homepage": "https://github.com/andreww2012/typescript-project-template/tree/main/packages/npm-check-updates-config",
+  "bugs": {
+    "url": "https://github.com/andreww2012/typescript-project-template/issues/new"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreww2012/typescript-project-template.git",
+    "directory": "packages/npm-check-updates-config"
+  },
+  "license": "MIT",
+  "author": "andreww2012",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "nr build",
+    "prepublishOnly": "nr check:package",
+    "check:package": "pnpm pack --out temp/package.tgz && publint temp/package.tgz --strict"
+  },
+  "dependencies": {
+    "verkit": "0.5.0",
+    "yaml": "2.9.1"
+  },
+  "devDependencies": {
+    "npm-check-updates": "23.1.0"
+  },
+  "peerDependencies": {
+    "npm-check-updates": ">=19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "npm-check-updates": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": "^22.23.1 || ^24.18.0 || >=26.4.0"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": "./dist/index.js",
+      "./package.json": "./package.json"
+    }
+  }
+}

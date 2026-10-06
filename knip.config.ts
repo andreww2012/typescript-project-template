@@ -1,8 +1,12 @@
 import type {KnipConfig} from 'knip';
 
 export default {
-  entry: ['.ncurc.js'], // cspell:disable-line
-  ignore: ['template/**'],
+  workspaces: {
+    '.': {
+      entry: ['.ncurc.js'],
+      ignore: ['template/**'],
+    },
+  },
   tags: ['-knipignore'],
   treatConfigHintsAsErrors: true,
 } satisfies KnipConfig;

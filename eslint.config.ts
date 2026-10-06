@@ -16,6 +16,7 @@ export default eslintConfig({
         ignores: [
           // Putting every sentence on its own line causes line wraps in the changelog
           '.changeset/**/*.md',
+          'packages/*/LICENSE.md',
         ],
       },
     },
@@ -23,5 +24,13 @@ export default eslintConfig({
     // False positives:
     zod: false,
   },
-  extraConfigs: [],
+  extraConfigs: [
+    {
+      // The lockfile of the workspace is in the root
+      files: ['packages/*/package.json'],
+      rules: {
+        'lockfile/tracked': 'off',
+      },
+    },
+  ],
 });
