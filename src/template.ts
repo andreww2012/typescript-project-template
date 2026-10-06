@@ -9,6 +9,7 @@ import {
   OPTION_FLAGS,
   SNAPSHOT_PATH,
   UTILITY_LIBRARY,
+  isToolAvailable,
   readNodeVersionRanges,
 } from './options.js';
 
@@ -104,6 +105,7 @@ const PACKAGE_FEATURES: Record<string, string> = {
   'npm-check-updates': 'ncu',
   oxfmt: 'oxfmt',
   prettier: 'prettier',
+  publint: 'publint',
   'smol-toml': 'lychee', // cspell:disable-line
   tsdown: 'lib',
   verkit: 'ncu',
@@ -120,7 +122,9 @@ const PACKAGE_FEATURES: Record<string, string> = {
 const SCRIPT_FEATURES: Record<string, string> = {
   build: 'lib',
   ch: 'changesets',
-  'check:public-types': 'lib',
+  'check:package': 'lib',
+  'check:package:attw': 'lib',
+  'check:package:publint': 'publint',
   'check:spelling': 'cspell',
   'contrib:add': 'contributors',
   'contrib:gen': 'contributors',
@@ -151,6 +155,9 @@ const SCRIPT_REPLACEMENTS: Record<string, Record<string, [search: string, replac
   check: {
     cspell: ['check:(spelling|format)', 'check:format'],
     knip: ['knip|', ''],
+  },
+  'check:package': {
+    publint: [' && nr check:package:publint', ''],
   },
   test: {
     vitest: [' && nr test:vitest', ''],
@@ -300,7 +307,7 @@ export const template = createTemplate({
       kind,
       formatter,
       `pnpm${pnpm}`,
-      ...tools,
+      ...tools.filter((tool) => isToolAvailable(tool, kind)),
       ...spellCheckedLanguages.map(({id}) => id),
       ...(changesets === 'none' ? [] : ['changesets']),
       ...(changesets === 'github' ? ['changelog-github'] : []),

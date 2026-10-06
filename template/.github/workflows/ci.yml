@@ -111,13 +111,18 @@ jobs:
   # @if lib
 
   build:
-    name: Build (tsdown) & lint public types (attw)
+    # @if publint
+    name: Build (tsdown) & lint package (attw, publint)
+    # @endif
+    # @if !publint
+    name: Build (tsdown) & lint package (attw)
+    # @endif
     needs: install
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/prepare
-      - run: pnpm check:public-types
+      - run: pnpm check:package
   # @endif
   # @if changesets
 

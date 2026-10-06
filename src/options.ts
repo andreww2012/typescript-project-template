@@ -8,7 +8,12 @@ export const SNAPSHOT_PATH = path.join(import.meta.dirname, '../dist/files.json'
 
 export const UTILITY_LIBRARY = '@andreww2012/unutils';
 
-export const TOOLS = ['knip', 'cspell', 'commitlint', 'lefthook', 'vitest'] as const;
+export const TOOLS = ['knip', 'cspell', 'commitlint', 'lefthook', 'publint', 'vitest'] as const;
+
+const LIB_ONLY_TOOLS = new Set<string>(['publint']);
+
+export const isToolAvailable = (tool: string, kind: string | undefined) =>
+  kind === 'lib' || !LIB_ONLY_TOOLS.has(tool);
 
 // CSpell only checks American English by default. British English is bundled with it
 export const LANGUAGES = [
@@ -44,7 +49,7 @@ export const OPTIONS_SCHEMA = z.object({
   node: z.string().optional(),
   pnpm: z.literal(['12', '11']).default('12'),
   formatter: z.literal(['oxfmt', 'prettier']).default('oxfmt'),
-  tools: commaSeparatedList(TOOLS).default(['knip', 'cspell', 'commitlint', 'lefthook']),
+  tools: commaSeparatedList(TOOLS).default(['knip', 'cspell', 'commitlint', 'lefthook', 'publint']),
   languages: commaSeparatedList(LANGUAGES.map(({id}) => id)).default([]),
   updater: z.literal(['ncu', 'dependabot', 'renovate', 'none']).default('ncu'),
   ci: z.literal(['yes', 'no']).default('yes'),
@@ -84,7 +89,9 @@ export const OPTION_FLAGS = {
   tools: z
     .string()
     .optional()
-    .describe(`comma-separated tools to set up (${TOOLS.join(', ')})`),
+    .describe(
+      `comma-separated tools to set up (${TOOLS.join(', ')}; ${[...LIB_ONLY_TOOLS].join(', ')} only for \`lib\`)`,
+    ),
   updater: OPTIONS_SCHEMA.shape.updater.optional().describe('dependency updater'),
 };
 

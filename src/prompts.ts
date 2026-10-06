@@ -1,12 +1,20 @@
 import {parseArgs} from 'node:util';
 import * as prompts from '@clack/prompts';
-import {DEFAULT_OPTIONS, LANGUAGES, OPTION_FLAGS, TOOLS, readNodeVersionRanges} from './options.js';
+import {
+  DEFAULT_OPTIONS,
+  LANGUAGES,
+  OPTION_FLAGS,
+  TOOLS,
+  isToolAvailable,
+  readNodeVersionRanges,
+} from './options.js';
 
 const TOOL_HINTS: Record<(typeof TOOLS)[number], string> = {
   knip: 'unused files, exports and dependencies',
   cspell: 'spell checking',
   commitlint: 'commit message linting',
   lefthook: 'Git hooks',
+  publint: 'package linting',
   vitest: 'unit tests',
 };
 
@@ -114,13 +122,19 @@ export const promptForOptions = async (cliArguments: string[]) => {
     },
     {
       key: 'tools',
-      ask: () =>
-        prompts.multiselect({
+      ask: () => {
+        const kind = answers.get('kind');
+        return prompts.multiselect({
           message: 'Which tools to set up?',
-          options: TOOLS.map((tool) => ({value: tool, label: tool, hint: TOOL_HINTS[tool]})),
-          initialValues: DEFAULT_OPTIONS.tools,
+          options: TOOLS.filter((tool) => isToolAvailable(tool, kind)).map((tool) => ({
+            value: tool,
+            label: tool,
+            hint: TOOL_HINTS[tool],
+          })),
+          initialValues: DEFAULT_OPTIONS.tools.filter((tool) => isToolAvailable(tool, kind)),
           required: false,
-        }),
+        });
+      },
     },
     {
       key: 'languages',
