@@ -58,6 +58,17 @@ const LEFTHOOK_ALLOW_BUILDS_KEY_REGEX = /lefthook@[^\s:]+:/;
 // Same as `printWidth` in the formatter configs of the template
 const PRINT_WIDTH = 100;
 
+// Run with `node -e` instead of `ln -sfn` to work on Windows too.
+// Bingo runs scripts without a shell and splits them by spaces, unless escaped by a backslash
+const CREATE_SYMLINK_SCRIPT = [
+  'const [link, target] = process.argv.slice(1);',
+  'fs.rmSync(link, {force: true});',
+  'fs.mkdirSync(path.dirname(link), {recursive: true});',
+  'fs.symlinkSync(target, link);',
+]
+  .join(' ')
+  .replaceAll(' ', String.raw`\ `);
+
 // A trimmed line like `// @if feature`, `# @if !feature` or `<!-- @endif -->`
 const MARKER_REGEX = /^(?:\/\/|#|<!--) @(?:if (!?)([\w-]+)|endif)(?: -->)?$/;
 
@@ -440,10 +451,9 @@ export const template = createTemplate({
         features,
         transforms,
       ),
-      // Bingo runs scripts without a shell, so each command must be a separate item
-      scripts: Object.entries(symlinks).map(([linkPath, target]) => ({
-        commands: [`mkdir -p ${path.dirname(linkPath)}`, `ln -sfn ${target} ${linkPath}`],
-      })),
+      scripts: Object.entries(symlinks).map(
+        ([linkPath, target]) => `node -e ${CREATE_SYMLINK_SCRIPT} ${linkPath} ${target}`,
+      ),
       suggestions: [
         'Install dependencies with `pnpm install`',
         'Go through the setup checklist in `README.md`',
