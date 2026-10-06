@@ -90,7 +90,7 @@ Review these things and you're good to go:
 <!-- @if ncu -->
 ### npm-check-updates
 
-- [ ] Review [the `ncu` config file](./.ncurc.js)
+- [ ] Review [the `ncu` config file](./.ncurc.js), see [its options](https://github.com/andreww2012/typescript-project-template/tree/main/packages/npm-check-updates-config#options)
 
 <!-- @endif -->
 <!-- @if changesets -->

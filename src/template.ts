@@ -89,6 +89,7 @@ const FILE_FEATURES: Record<string, string> = {
 const PACKAGE_FEATURES: Record<string, string> = {
   'actions-up': 'actions-up',
   'all-contributors-cli': 'contributors',
+  '@andreww2012/npm-check-updates-config': 'ncu',
   [UTILITY_LIBRARY]: 'unutils',
   '@arethetypeswrong/cli': 'lib',
   '@changesets/changelog-github': 'changelog-github',
@@ -108,7 +109,6 @@ const PACKAGE_FEATURES: Record<string, string> = {
   publint: 'publint',
   'smol-toml': 'lychee', // cspell:disable-line
   tsdown: 'lib',
-  verkit: 'ncu',
   vitest: 'vitest',
   '@vitest/coverage-v8': 'vitest',
   '@vitest/eslint-plugin': 'vitest',

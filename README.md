@@ -110,7 +110,7 @@ nr dev --directory ../my-test-project
 
 This repository is a pnpm workspace, and [`packages/`](./packages) has other packages published from it:
 
-- [`@andreww2012/npm-check-updates-config`](./packages/npm-check-updates-config): the npm-check-updates config, used in `.ncurc.js`
+- [`@andreww2012/npm-check-updates-config`](./packages/npm-check-updates-config): the npm-check-updates config, used in `.ncurc.js` here and in new projects
 
 Changesets releases them together with the template.
 `nr t` runs their tests with Vitest.

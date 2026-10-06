@@ -2,10 +2,10 @@ import type {CSpellSettings} from 'cspell';
 
 const GLOBALLY_IGNORED_WORDS: Record<string, string[]> = {
   // @if unutils
-  names: ['andreww', 'unutils', 'verkit'],
+  names: ['andreww', 'unutils'],
   // @endif
   // @if !unutils
-  names: ['andreww', 'verkit'],
+  names: ['andreww'],
   // @endif
   // @if lychee
   misc: ['knipignore', 'smol'],
