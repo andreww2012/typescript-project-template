@@ -24,7 +24,7 @@ export default {
     '**/.git/**',
     '**/pnpm-lock.yaml',
     'patches/**',
-    '.agents/style-guide.md',
+    '.agents/guidelines.md',
     // @if contributors
     '.all-contributorsrc',
     // @endif

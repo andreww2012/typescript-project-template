@@ -49,6 +49,7 @@ export const OPTIONS_SCHEMA = z.object({
   updater: z.literal(['ncu', 'dependabot', 'renovate', 'none']).default('ncu'),
   ci: z.literal(['yes', 'no']).default('yes'),
   lychee: z.literal(['no', 'yes']).default('no'),
+  guidelines: z.literal(['local', 'remote']).default('local'),
 });
 
 export const DEFAULT_OPTIONS = OPTIONS_SCHEMA.parse({});
@@ -63,6 +64,11 @@ export const OPTION_FLAGS = {
     .optional()
     .describe('whether to set up all-contributors (only for `lib`)'),
   formatter: OPTIONS_SCHEMA.shape.formatter.optional().describe('code formatter'),
+  guidelines: OPTIONS_SCHEMA.shape.guidelines
+    .optional()
+    .describe(
+      'how `AGENTS.md` links the AI guidelines: copied into the project (`local`) or on GitHub (`remote`)',
+    ),
   kind: OPTIONS_SCHEMA.shape.kind.optional().describe('project kind: app or published library'),
   languages: z
     .string()

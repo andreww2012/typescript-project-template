@@ -10,10 +10,10 @@ import oxfmtConfig from './oxfmt.config.js';
 
 export default eslintConfig({
   // @if changesets
-  ignores: ['.agents/style-guide.md', 'CHANGELOG.md'],
+  ignores: ['.agents/guidelines.md', 'CHANGELOG.md'],
   // @endif
   // @if !changesets
-  ignores: ['.agents/style-guide.md'],
+  ignores: ['.agents/guidelines.md'],
   // @endif
   // @if lib
   mode: 'lib',

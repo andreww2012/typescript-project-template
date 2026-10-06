@@ -15,7 +15,7 @@ export default {
     '**/pnpm-lock.yaml',
     'patches/**',
     'template/**',
-    '.agents/style-guide.md',
+    '.agents/guidelines.md',
   ],
   dictionaries: ['npm', 'node', 'typescript', 'fullstack'],
   words: Object.values(GLOBALLY_IGNORED_WORDS).flat(),

@@ -5,7 +5,7 @@ export default eslintConfig({
     // This only works with `--config` passed explicitly,
     // otherwise ESLint lints template files with the template's own config
     'template/',
-    '.agents/style-guide.md',
+    '.agents/guidelines.md',
     'CHANGELOG.md',
   ],
   defaultConfigsStatus: 'misc-enabled',

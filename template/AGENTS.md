@@ -1,1 +1,0 @@
-Follow [the project style guide](./.agents/style-guide.md).

@@ -1,9 +1,9 @@
-<!-- prettier-ignore -->
-<!-- cspell:disable -->
+# Guidelines
 
-# Style Guide
+Source: <https://github.com/andreww2012/ai-guidelines/blob/@andreww2012/ai-guidelines@0.2.0/.agents/guidelines.md>
 
-Source: <https://github.com/andreww2012/agents/blob/098151f47b72e975f4098dc4d7d3ec6887767abd/.agents/style-guide.md>
+These are generic guidelines that might be copied or linked from a different repository.
+If anything stated here conflicts with the origin repo or the prompt, prefer them.
 
 ## Communication
 
@@ -25,7 +25,7 @@ This applies to all languages, not only English.
 
 Don't report how extensively you've verified your work - if you need to say that, say *very* briefly.
 
-Don't say (unless asked explicitly) you have been following this style guide; just follow it.
+Don't say (unless asked explicitly) you have been following these guidelines; just follow them.
 In general, don't mention that you followed an instruction - that is implied.
 
 ## Code
@@ -80,6 +80,10 @@ In general, don't mention that you followed an instruction - that is implied.
 - Wrap comments to fit the max line length (usually set in `.editorconfig` or the formatter config).
 - Minimize referencing symbol (variable) names in comments: if they ever get renamed in the codebase, there's a real risk of your reference becoming stale.
 
+### Frontend
+
+Web UIs must adhere to the [Web Content Accessibility Guidelines (WCAG) 2.2](https://www.w3.org/TR/WCAG22) standard, level AA.
+
 ## Workflow
 
 ### Committing
@@ -91,7 +95,37 @@ At the end of your work, *suggest* commit message(s), respecting the project com
 
 ### Other
 
+If someone points out your mistake, check all your changes for other mistakes of the same kind.
+
 Use git stash only if there's no other way: prefer git worktrees or throwaway repos.
+
+### Writing on the hosting platform
+
+These rules apply when you are asked to write content on the platform that hosts the repository (issues/discussions/comments/etc. on GitHub/GitLab/etc.).
+
+#### AI disclosure
+
+- Before you write, read the project's contribution rules (`CONTRIBUTING.md`, README, issue templates, AI policy, etc.)
+- If the project does not accept AI-generated contributions, do not write the content.
+  Tell the user why.
+- If the project has its own rules for marking AI content, follow them.
+  Otherwise, start the content with this preamble:
+  ```md
+    > [!NOTE]
+    > This <issue|discussion|comment|...> was written by AI (<model name>, <harness>), <any additional info>.
+  ```
+
+#### Audience
+
+Write for the people who will read the content.
+Find out:
+
+- The technical level of the maintainers and other readers.
+- Their attitude to AI-generated content.
+- Their expectations for issues: format, level of detail, what they think is noise.
+
+Use the contribution rules, issue templates, recent issues, and maintainer replies as sources.
+If you cannot find this information, assume maintainers are busy people who do not trust AI content: be short and specific, and include only facts you verified.
 
 ## Misc (still VERY important)
 
@@ -133,10 +167,12 @@ If a word to ignore is only found in a single file:
 - To write a CLI, prefer `cleye`, unless a new dependency is unwanted or another tool was suggested.
   Always set `strictFlags: true` when using it.
 - If you're asked to create a changeset (<https://changesets.dev/>), always use its underlying name generator, `human-id`, for file names.
+  Don't use the imperative mood in changesets, i.e. "Add `foo`" form should never be used.
 
 ### Vue
 
-- Move static variables into a separate non-setup `<script>` block in Vue SFCs for performance.
+- Move static variables into a separate non-setup `<script>` block in Vue SFCs for performance (if there are only type declarations to move, this won't change anything).
 - Do use inline composables: <https://alexop.dev/posts/inline-vue-composables-refactoring>
 - Prefer `shallowRef` over `ref`, but only when that actually makes a difference (for example, `shallowRef(false)` does not).
 - Don't add `| null` as a possible type for refs for no reason - usually implicit `undefined` works just fine.
+- Prefer `useTemplateRef` if it's available, and prefer not to add an explicit type parameter to it.

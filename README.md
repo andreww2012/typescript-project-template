@@ -28,6 +28,7 @@ Template options:
 - `--updater`: dependency updater, `ncu` (default, run by hand), `dependabot`, `renovate` or `none`
 - `--ci`: `yes` (default) to set up GitHub Actions like in this repository (checks for every chosen tool, tests on every supported Node.js version, and the changesets release), or `no`
 - `--lychee`: only with `--ci yes`, `no` (default) or `yes` to check links with [lychee](https://lychee.cli.rs) in CI
+- `--guidelines`: how `AGENTS.md` links [the AI guidelines](https://github.com/andreww2012/ai-guidelines), `local` (default) to copy them into `.agents/guidelines.md` or `remote` to link the file on GitHub
 - `--utils`: utility library to install, `@andreww2012/unutils` (default) or `none`
 
 Outside of an interactive terminal (for example in CI), pass all options that have a default, because the CLI can't ask for them there.
@@ -62,7 +63,7 @@ import oxfmtConfig from './oxfmt.config.js';
 ```
 
 `@if !feature` keeps the lines when the feature is *not* used, and `#` and `<!-- -->` comments work too.
-A feature is an option value (like `lib`, `oxfmt` or `knip`), `pnpm11`/`pnpm12`, `changesets`, `changelog-github` or a CSpell language code.
+A feature is an option value (like `lib`, `oxfmt` or `knip`), `pnpm11`/`pnpm12`, `changesets`, `changelog-github`, `local-guidelines` or a CSpell language code.
 Which files, `package.json` scripts and dependencies need which features is listed in [`src/template.ts`].
 `template/package.json` lists all dependencies that might be needed, so that `ncu` keeps all of them up to date.
 That includes `@types/node` for every supported Node.js major version, with aliases like `"@types/node24": "npm:@types/node@24.19.1"`.
@@ -78,6 +79,9 @@ These files are also changed:
 - `LICENSE.md`: gets the current year and the author
 - `cspell.config.ts`: gets the extra languages
 - `.changeset/config.json`: gets the changelog format
+
+`AGENTS.md` and `.agents/guidelines.md` aren't in `template/`.
+They come from [`@andreww2012/ai-guidelines`](https://github.com/andreww2012/ai-guidelines), so updating this dependency updates them too.
 
 Files ignored by git are skipped.
 Symlinks (like `.claude/skills`) are created again with `ln -s`, because npm packages can't contain them.

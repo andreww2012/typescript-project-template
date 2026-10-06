@@ -172,6 +172,18 @@ export const promptForOptions = async (cliArguments: string[]) => {
           initialValue: DEFAULT_OPTIONS.lychee,
         }),
     },
+    {
+      key: 'guidelines',
+      ask: () =>
+        prompts.select({
+          message: 'How should AGENTS.md link the AI guidelines?',
+          options: [
+            {value: 'local', label: 'Local', hint: 'copy the guidelines into the project'},
+            {value: 'remote', label: 'Remote', hint: 'link the file on GitHub'},
+          ],
+          initialValue: DEFAULT_OPTIONS.guidelines,
+        }),
+    },
   ];
 
   const flags: string[] = [];

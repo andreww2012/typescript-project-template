@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import {getInstruction, readDocument} from '@andreww2012/ai-guidelines';
 import {type Creation, createTemplate} from 'bingo';
 import {z} from 'zod';
 import {
@@ -61,6 +62,7 @@ const MARKER_REGEX = /^(?:\/\/|#|<!--) @(?:if (!?)([\w-]+)|endif)(?: -->)?$/;
 
 // Things that are only created with the given feature
 const FILE_FEATURES: Record<string, string> = {
+  '.agents/guidelines.md': 'local-guidelines',
   '.all-contributorsrc': 'contributors',
   '.changeset': 'changesets',
   '.github/actions': 'ci',
@@ -156,7 +158,12 @@ const SCRIPT_REPLACEMENTS: Record<string, Record<string, [search: string, replac
 };
 
 const SNAPSHOT_SCHEMA = z.object({
-  files: z.object({'package.json': z.string()}).catchall(z.custom<CreatedEntry>()),
+  files: z
+    .object({
+      '.agents': z.record(z.string(), z.custom<CreatedEntry>()),
+      'package.json': z.string(),
+    })
+    .catchall(z.custom<CreatedEntry>()),
   symlinks: z.record(z.string(), z.string()),
 });
 
@@ -304,6 +311,7 @@ export const template = createTemplate({
       // Dependabot and Renovate update GitHub Actions on their own
       ...(ci === 'yes' && updater === 'ncu' ? ['actions-up'] : []),
       ...(ci === 'yes' && parsedOptions.lychee === 'yes' ? ['lychee'] : []),
+      ...(parsedOptions.guidelines === 'local' ? ['local-guidelines'] : []),
     ]);
     const author = options.author || options.owner;
     const repositoryUrl = `https://github.com/${options.owner}/${name}`;
@@ -414,7 +422,17 @@ export const template = createTemplate({
     };
 
     return {
-      files: createFiles(files, features, transforms),
+      files: createFiles(
+        {
+          ...files,
+          '.agents': {...files['.agents'], 'guidelines.md': await readDocument('guidelines')},
+          'AGENTS.md': getInstruction(
+            parsedOptions.guidelines === 'local' ? './.agents/guidelines.md' : undefined,
+          ),
+        },
+        features,
+        transforms,
+      ),
       // Bingo runs scripts without a shell, so each command must be a separate item
       scripts: Object.entries(symlinks).map(([linkPath, target]) => ({
         commands: [`mkdir -p ${path.dirname(linkPath)}`, `ln -sfn ${target} ${linkPath}`],
