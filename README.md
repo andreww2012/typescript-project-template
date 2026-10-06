@@ -20,7 +20,7 @@ Template options:
 - `--kind`: `app` (default) or `lib`, a published library: it's built with tsdown, its types are checked with [attw](https://github.com/arethetypeswrong/arethetypeswrong.github.io) before publishing, `package.json` isn't private and has `homepage`, `bugs`, `repository`, `exports`, `types` and `files`, and ESLint uses `mode: 'lib'`
 - `--changesets`: only for `lib`, `none` (default), `github` (with `@changesets/changelog-github`) or `default` (with the default changelog format)
 - `--contributors`: only for `lib`, `no` (default) or `yes` to set up [all-contributors](https://allcontributors.org)
-- `--node`: the lowest Node.js major version to support, out of those in `engines.node` of this repository (the lowest one by default); `@types/node` and `target`/`lib` in `tsconfig.json` match it
+- `--node`: the lowest Node.js major version to support, out of those in `engines.node` of `template/package.json` (the lowest one by default); `@types/node` and `target`/`lib` in `tsconfig.json` match it
 - `--pnpm`: `12` (default) or `11`
 - `--formatter`: `oxfmt` (default) or `prettier`
 - `--tools`: comma-separated tools to set up: `knip`, `cspell`, `commitlint`, `lefthook` (these are the default) and `vitest`
@@ -70,7 +70,7 @@ The `oxfmt` version is in the `format` catalog of `template/pnpm-workspace.yaml`
 
 These files are also changed:
 
-- `package.json`: name, description and author come from the options, and `engines.node` comes from `package.json` of this repository
+- `package.json`: name, description and author come from the options, and `engines.node` only keeps the versions from `--node` on
 - `.github/actions/prepare/action.yml` and `.github/workflows/ci.yml`: Node.js versions match the supported ones
 - `tsconfig.json`: `target` and `lib` match the lowest supported Node.js version, like in [`@tsconfig/bases`](https://github.com/tsconfig/bases)
 - `pnpm-workspace.yaml`: the `allowBuilds` entry of lefthook gets its version from `template/package.json`

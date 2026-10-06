@@ -6,7 +6,6 @@ minimumReleaseAge: 960 # 16 hours in minutes
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeStrict: false
 minimumReleaseAgeExclude: # []
-  - '@types/node@22.20.5'
   - bingo@0.13.1
 
 trustPolicy: no-downgrade

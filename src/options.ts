@@ -4,7 +4,7 @@ import {z} from 'zod';
 
 const NODE_MAJOR_VERSION_REGEX = /\d+/;
 
-const ROOT_PACKAGE_JSON_PATH = path.join(import.meta.dirname, '../package.json');
+export const SNAPSHOT_PATH = path.join(import.meta.dirname, '../dist/files.json');
 
 export const UTILITY_LIBRARY = '@andreww2012/unutils';
 
@@ -25,7 +25,9 @@ export const LANGUAGES = [
   {id: 'uk', name: 'Ukrainian', dictionary: '@cspell/dict-uk-ua'},
 ] as const;
 
-const ROOT_PACKAGE_JSON_SCHEMA = z.object({engines: z.object({node: z.string()})});
+const SNAPSHOT_PACKAGE_JSON_SCHEMA = z.object({files: z.object({'package.json': z.string()})});
+
+const PACKAGE_JSON_ENGINES_SCHEMA = z.object({engines: z.object({node: z.string()})});
 
 const commaSeparatedList = <const Values extends readonly string[]>(values: Values) =>
   z
@@ -38,7 +40,7 @@ export const OPTIONS_SCHEMA = z.object({
   kind: z.literal(['app', 'lib']).default('app'),
   changesets: z.literal(['none', 'github', 'default']).default('none'),
   contributors: z.literal(['no', 'yes']).default('no'),
-  // Its values and default come from `engines.node` of this template
+  // Its values and default come from `engines.node` of `template/package.json`
   node: z.string().optional(),
   pnpm: z.literal(['12', '11']).default('12'),
   formatter: z.literal(['oxfmt', 'prettier']).default('oxfmt'),
@@ -82,9 +84,10 @@ export const OPTION_FLAGS = {
 
 // Supported version ranges by the lowest supported major version, from the lowest one
 export const readNodeVersionRanges = async () => {
-  const {engines} = ROOT_PACKAGE_JSON_SCHEMA.parse(
-    JSON.parse(await fs.readFile(ROOT_PACKAGE_JSON_PATH, 'utf8')),
+  const {files} = SNAPSHOT_PACKAGE_JSON_SCHEMA.parse(
+    JSON.parse(await fs.readFile(SNAPSHOT_PATH, 'utf8')),
   );
+  const {engines} = PACKAGE_JSON_ENGINES_SCHEMA.parse(JSON.parse(files['package.json']));
   const ranges = engines.node.split('||').map((range) => range.trim());
 
   return new Map(

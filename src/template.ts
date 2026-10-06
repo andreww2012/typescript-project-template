@@ -6,13 +6,12 @@ import {
   LANGUAGES,
   OPTIONS_SCHEMA,
   OPTION_FLAGS,
+  SNAPSHOT_PATH,
   UTILITY_LIBRARY,
   readNodeVersionRanges,
 } from './options.js';
 
 type CreatedEntry = Creation['files'][string];
-
-const SNAPSHOT_PATH = path.join(import.meta.dirname, '../dist/files.json');
 
 const PNPM_11_VERSION = '11.28.3';
 
