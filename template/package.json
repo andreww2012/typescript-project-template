@@ -64,7 +64,7 @@
     "contrib:gen": "all-contributors generate"
   },
   "dependencies": {
-    "@andreww2012/unutils": "0.1.0"
+    "@andreww2012/unutils": "0.2.0"
   },
   "devDependencies": {
     "@andreww2012/npm-check-updates-config": "0.1.0",

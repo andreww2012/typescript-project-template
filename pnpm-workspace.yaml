@@ -11,8 +11,8 @@ minimumReleaseAge: 960 # 16 hours in minutes
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeStrict: false
 minimumReleaseAgeExclude: # []
-  - bingo@0.13.1
   - '@andreww2012/ai-guidelines@0.2.0'
+  - '@andreww2012/unutils@0.2.0'
 
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 43200 # 30 days in minutes
