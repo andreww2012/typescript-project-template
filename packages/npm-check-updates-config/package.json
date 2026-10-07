@@ -1,6 +1,6 @@
 {
   "name": "@andreww2012/npm-check-updates-config",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "@andreww2012's configurable npm-check-updates config",
   "keywords": [
     "config",
