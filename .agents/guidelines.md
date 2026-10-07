@@ -1,6 +1,6 @@
 # Guidelines
 
-Source: <https://github.com/andreww2012/ai-guidelines/blob/@andreww2012/ai-guidelines@0.2.0/.agents/guidelines.md>
+Source: <https://github.com/andreww2012/ai-guidelines/blob/@andreww2012/ai-guidelines@0.2.1/.agents/guidelines.md>
 
 These are generic guidelines that might be copied or linked from a different repository.
 If anything stated here conflicts with the origin repo or the prompt, prefer them.
@@ -11,11 +11,11 @@ If anything stated here conflicts with the origin repo or the prompt, prefer the
 Most likely you'll be read by people who are not native or C2-level speakers, so adapt accordingly.
 Avoid:
 
-  - long dashes;
-  - terms and phrases like "load-bearing", "byte-identical", "it's not x; it's y", "earn its place" and similar;
-  - complex metaphors and jargon;
-  - mannered prose;
-  - advanced, fancy or rarely used words.
+- long dashes;
+- terms and phrases like "load-bearing", "byte-identical", "it's not x; it's y", "earn its place" and similar;
+- complex metaphors and jargon;
+- mannered prose;
+- advanced, fancy or rarely used words.
 
 In general, don't be verbose.
 If something can be said shorter and simpler without losing meaning, do it: people shouldn't waste energy just to understand you.
@@ -80,9 +80,19 @@ In general, don't mention that you followed an instruction - that is implied.
 - Wrap comments to fit the max line length (usually set in `.editorconfig` or the formatter config).
 - Minimize referencing symbol (variable) names in comments: if they ever get renamed in the codebase, there's a real risk of your reference becoming stale.
 
+### Documentation (including comments)
+
+If you need to link an npm package, prefer `https://npmx.dev/<package-name>` links over npmjs.org ones or direct repo links.
+
+In Russian, prefer `ё` over `е`.
+
 ### Frontend
 
 Web UIs must adhere to the [Web Content Accessibility Guidelines (WCAG) 2.2](https://www.w3.org/TR/WCAG22) standard, level AA.
+
+On catalog and search pages, sync filter values and the search query with URL query parameters.
+Prefer `q` as the name of the search query parameter.
+If a modal, sidebar, etc. is worth sharing by link, give it its own URL.
 
 ## Workflow
 
@@ -92,12 +102,17 @@ NEVER stage/unstage or commit changes unless explicitly asked to.
 Assume your change may be staged or committed by a user (most likely) or another agent at any point.
 Unless you're asked to, never add yourself as a co-author.
 At the end of your work, *suggest* commit message(s), respecting the project committing style (often it's enforced by `commitlint`).
+Always put package names inside backticks in commit messages.
 
 ### Other
 
 If someone points out your mistake, check all your changes for other mistakes of the same kind.
 
 Use git stash only if there's no other way: prefer git worktrees or throwaway repos.
+
+If you create a package patch, always add comments explaining all the changes.
+Some package managers, for example pnpm, allow free text before the diff in a patch file.
+This is a good place for these comments.
 
 ### Writing on the hosting platform
 
@@ -111,8 +126,8 @@ These rules apply when you are asked to write content on the platform that hosts
 - If the project has its own rules for marking AI content, follow them.
   Otherwise, start the content with this preamble:
   ```md
-    > [!NOTE]
-    > This <issue|discussion|comment|...> was written by AI (<model name>, <harness>), <any additional info>.
+  > [!NOTE]
+  > This <issue|discussion|comment|...> was written by AI (<model name>, <harness>), <any additional info>.
   ```
 
 #### Audience
@@ -135,6 +150,8 @@ Always challenge your implementation for performance, ergonomics and code length
 Adhere to DRY, KISS, YAGNI, Rule of three and other principles/rules of writing clean and maintainable code.
 Don't over-engineer or over-optimize things though - this is not required in most cases.
 
+Make sure the code works on all common platforms (usually Windows, Linux and macOS), unless that's not needed.
+
 Use `kebab-case` for file and directory names, unless they should be called differently by convention (like `README.md`, `AGENTS.md`, etc.).
 
 Avoid British variants of words like *behaviour* or *organisation* unless the project allows them.
@@ -152,6 +169,8 @@ If there's a package.json script for the tool, prefer it over calling the tool d
 
 The commonly used tools are as follows (may and will vary depending on a project): `tsc`, `vue-tsc`, `eslint`, `oxlint`, `prettier`, `oxfmt`, `vitest`, `knip`, `cspell` (use `--no-progress --no-summary`), dependency vulnerability checker (if the lockfile was modified), for example `pnpm audit --audit-level high` (usually only high+ vulnerabilities are important to fix).
 
+Note: TypeScript checkers don't report type errors in files with a `@ts-nocheck` comment, so check such files in other ways.
+
 If you encounter a linter error that can be fixed in multiple ways, always weigh all options INCLUDING disabling the rule for this line (or, much more rarely, for the entire file) before fixing.
 
 ### CSpell
@@ -168,11 +187,13 @@ If a word to ignore is only found in a single file:
   Always set `strictFlags: true` when using it.
 - If you're asked to create a changeset (<https://changesets.dev/>), always use its underlying name generator, `human-id`, for file names.
   Don't use the imperative mood in changesets, i.e. "Add `foo`" form should never be used.
+  Keep changesets short: go straight to the main point and skip details most readers don't need.
 
 ### Vue
 
 - Move static variables into a separate non-setup `<script>` block in Vue SFCs for performance (if there are only type declarations to move, this won't change anything).
 - Do use inline composables: <https://alexop.dev/posts/inline-vue-composables-refactoring>
 - Prefer `shallowRef` over `ref`, but only when that actually makes a difference (for example, `shallowRef(false)` does not).
+- Avoid `reactive`; only use it when strictly necessary.
 - Don't add `| null` as a possible type for refs for no reason - usually implicit `undefined` works just fine.
 - Prefer `useTemplateRef` if it's available, and prefer not to add an explicit type parameter to it.

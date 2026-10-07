@@ -1,14 +1,14 @@
-import type {UserConfig} from '@commitlint/types';
+import {RuleConfigSeverity, type UserConfig} from '@commitlint/types';
 
 export default {
   extends: ['@commitlint/config-conventional'],
   rules: {
-    'body-leading-blank': [2, 'always'],
-    'body-max-line-length': [0],
-    'footer-leading-blank': [2, 'always'],
-    'header-max-length': [2, 'always', 120],
-    'subject-full-stop': [0], // Sometimes full stop is used for shorthands
+    'body-leading-blank': [RuleConfigSeverity.Error, 'always'],
+    'body-max-line-length': [RuleConfigSeverity.Disabled],
+    'footer-leading-blank': [RuleConfigSeverity.Error, 'always'],
+    'header-max-length': [RuleConfigSeverity.Error, 'always', 120],
+    'subject-full-stop': [RuleConfigSeverity.Disabled], // Sometimes full stop is used for shorthands
     // `sentence-case`, `start-case` sometimes useful if commit message starts with a proper name
-    'subject-case': [2, 'never', ['pascal-case', 'upper-case']],
+    'subject-case': [RuleConfigSeverity.Error, 'never', ['pascal-case', 'upper-case']],
   },
 } satisfies UserConfig;

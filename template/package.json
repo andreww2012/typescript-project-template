@@ -97,7 +97,7 @@
     "cross-env": "10.1.0",
     "cspell": "10.3.6",
     "eslint": "10.11.0",
-    "eslint-config-un": "1.0.0-rc.3",
+    "eslint-config-un": "1.0.0-rc.4",
     "eslint-plugin-format": "2.0.1",
     "eslint-plugin-github-action": "0.4.0",
     "eslint-plugin-sentences-per-line": "0.1.6",
