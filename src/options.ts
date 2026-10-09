@@ -49,6 +49,7 @@ export const OPTIONS_SCHEMA = z.object({
   node: z.string().optional(),
   pnpm: z.literal(['12', '11']).default('12'),
   formatter: z.literal(['oxfmt', 'prettier']).default('oxfmt'),
+  'ts-extensions': z.literal(['yes', 'no']).default('yes'),
   tools: commaSeparatedList(TOOLS).default(['knip', 'cspell', 'commitlint', 'lefthook', 'publint']),
   languages: commaSeparatedList(LANGUAGES.map(({id}) => id)).default([]),
   updater: z.literal(['ncu', 'dependabot', 'renovate', 'none']).default('ncu'),
@@ -92,6 +93,9 @@ export const OPTION_FLAGS = {
     .describe(
       `comma-separated tools to set up (${TOOLS.join(', ')}; ${[...LIB_ONLY_TOOLS].join(', ')} only for \`lib\`)`,
     ),
+  'ts-extensions': OPTIONS_SCHEMA.shape['ts-extensions']
+    .optional()
+    .describe('whether to use `.ts` extensions in imports, enforced by ESLint'),
   updater: OPTIONS_SCHEMA.shape.updater.optional().describe('dependency updater'),
 };
 

@@ -25,6 +25,7 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
 
+    // @if !ts-extensions
     /* If transpiling with TypeScript: */
     "module": "NodeNext",
     "outDir": "dist",
@@ -40,6 +41,13 @@
     /* If NOT transpiling with TypeScript: */
     // "module": "preserve",
     // "noEmit": true,
+    // @endif
+    // @if ts-extensions
+    /* NOT transpiling with TypeScript, as it doesn't rewrite `.ts` in imports like `@/foo.ts`: */
+    "module": "NodeNext",
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    // @endif
 
     /* If your code runs in the DOM: */
     // "lib": ["es2022", "dom", "dom.iterable"],

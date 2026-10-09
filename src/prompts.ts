@@ -7,7 +7,7 @@ import {
   TOOLS,
   isToolAvailable,
   readNodeVersionRanges,
-} from './options.js';
+} from './options.ts';
 
 const TOOL_HINTS: Record<(typeof TOOLS)[number], string> = {
   knip: 'unused files, exports and dependencies',
@@ -118,6 +118,18 @@ export const promptForOptions = async (cliArguments: string[]) => {
             {value: 'prettier', label: 'Prettier'},
           ],
           initialValue: DEFAULT_OPTIONS.formatter,
+        }),
+    },
+    {
+      key: 'ts-extensions',
+      ask: () =>
+        prompts.select({
+          message: 'Use .ts extensions in imports?',
+          options: [
+            {value: 'yes', label: 'Yes', hint: 'enforced by ESLint'},
+            {value: 'no', label: 'No', hint: 'use .js extensions'},
+          ],
+          initialValue: DEFAULT_OPTIONS['ts-extensions'],
         }),
     },
     {

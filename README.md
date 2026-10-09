@@ -23,6 +23,7 @@ Template options:
 - `--node`: the lowest Node.js major version to support, out of those in `engines.node` of `template/package.json` (the lowest one by default); `@types/node` and `target`/`lib` in `tsconfig.json` match it
 - `--pnpm`: `12` (default) or `11`
 - `--formatter`: `oxfmt` (default) or `prettier`
+- `--ts-extensions`: `yes` (default) to use `.ts` extensions in imports, enforced by ESLint, or `no` to use `.js` ones; with `yes`, `tsconfig.json` has `allowImportingTsExtensions` and `noEmit`, because TypeScript can't rewrite `.ts` in imports like `@/foo.ts` when it builds the code
 - `--tools`: comma-separated tools to set up: `knip`, `cspell`, `commitlint`, `lefthook`, `publint` (these are the default) and `vitest`; `publint` is only for `lib`: [publint](https://publint.dev) checks the package before publishing, like attw
 - `--languages`: only with `cspell`, comma-separated extra CSpell languages, none by default: `en-GB`, `nl`, `fr`, `de`, `it`, `pl`, `pt`, `ru`, `es`, `tr`, `uk`
 - `--updater`: dependency updater, `ncu` (default, run by hand), `dependabot`, `renovate` or `none`
@@ -58,7 +59,7 @@ Such parts are wrapped in comment lines, which are removed from the result:
 
 ```ts
 // @if oxfmt
-import oxfmtConfig from './oxfmt.config.js';
+import oxfmtConfig from './oxfmt.config.ts';
 // @endif
 ```
 

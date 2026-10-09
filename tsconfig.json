@@ -19,6 +19,7 @@
     /* If transpiling with TypeScript: */
     "module": "NodeNext",
     "outDir": "dist",
+    "rewriteRelativeImportExtensions": true,
 
     "lib": ["es2024"]
   },

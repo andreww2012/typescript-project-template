@@ -1,7 +1,12 @@
 import {eslintConfig} from 'eslint-config-un';
 // @if oxfmt
 import {GLOB_MARKDOWN_SUPPORTED_CODE_BLOCKS} from 'eslint-config-un/globs';
+// @if ts-extensions
+import oxfmtConfig from './oxfmt.config.ts';
+// @endif
+// @if !ts-extensions
 import oxfmtConfig from './oxfmt.config.js';
+// @endif
 // @endif
 
 export default eslintConfig({
@@ -30,6 +35,11 @@ export default eslintConfig({
           singleQuote: oxfmtConfig.singleQuote,
         },
       ],
+    },
+    // @endif
+    // @if ts-extensions
+    import: {
+      requireModuleExtensions: true,
     },
     // @endif
     markdown: {

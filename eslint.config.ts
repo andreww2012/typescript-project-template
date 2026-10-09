@@ -11,6 +11,9 @@ export default eslintConfig({
   defaultConfigsStatus: 'misc-enabled',
   configs: {
     fileProgress: true,
+    import: {
+      requireModuleExtensions: true,
+    },
     markdown: {
       configSentencesPerLine: {
         ignores: [

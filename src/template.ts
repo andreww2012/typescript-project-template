@@ -11,7 +11,7 @@ import {
   UTILITY_LIBRARY,
   isToolAvailable,
   readNodeVersionRanges,
-} from './options.js';
+} from './options.ts';
 
 type CreatedEntry = Creation['files'][string];
 
@@ -330,6 +330,7 @@ export const template = createTemplate({
       ...(ci === 'yes' && updater === 'ncu' ? ['actions-up'] : []),
       ...(ci === 'yes' && parsedOptions.lychee === 'yes' ? ['lychee'] : []),
       ...(parsedOptions.guidelines === 'local' ? ['local-guidelines'] : []),
+      ...(parsedOptions['ts-extensions'] === 'yes' ? ['ts-extensions'] : []),
     ]);
     const author = options.author || options.owner;
     const repositoryUrl = `https://github.com/${options.owner}/${name}`;

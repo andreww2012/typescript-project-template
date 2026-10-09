@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import * as prompts from '@clack/prompts';
 import {runTemplateCLI} from 'bingo';
-import {promptForOptions} from './prompts.js';
-import {template} from './template.js';
+import {promptForOptions} from './prompts.ts';
+import {template} from './template.ts';
 
 const flags = await promptForOptions(process.argv.slice(2));
 

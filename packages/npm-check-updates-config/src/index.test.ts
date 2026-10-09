@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import type {RcOptions} from 'npm-check-updates';
-import {type NcuConfigOptions, ncuConfig} from './index.js';
+import {type NcuConfigOptions, ncuConfig} from './index.ts';
 
 const CACHE_DIRECTORY = 'node_modules/.cache/npm-check-updates';
 
