@@ -5,17 +5,17 @@ import {type Creation, createTemplate} from 'bingo';
 import {z} from 'zod';
 import {
   LANGUAGES,
-  OPTIONS_SCHEMA,
   OPTION_FLAGS,
   SNAPSHOT_PATH,
   UTILITY_LIBRARY,
   isToolAvailable,
+  optionsSchema,
   readNodeVersionRanges,
 } from './options.ts';
 
 type CreatedEntry = Creation['files'][string];
 
-const PNPM_11_VERSION = '11.28.3';
+const PNPM_11_VERSION = '11.28.5';
 
 const TYPES_NODE = '@types/node';
 
@@ -23,7 +23,7 @@ const TYPES_NODE = '@types/node';
 const NPM_ALIAS_REGEX = /^npm:(@?[^@]+)@(.+)$/;
 
 // From https://github.com/tsconfig/bases, by the lowest supported Node.js major version
-const NODE_TSCONFIG_OPTIONS: Record<string, {target: string; lib: string[]}> = {
+const NODE_TSCONFIG_OPTIONS: Readonly<Record<string, {target: string; lib: string[]}>> = {
   22: {target: 'es2022', lib: ['es2024', 'ESNext.Array', 'ESNext.Collection', 'ESNext.Iterator']},
   24: {
     target: 'es2024',
@@ -73,7 +73,7 @@ const CREATE_SYMLINK_SCRIPT = [
 const MARKER_REGEX = /^(?:\/\/|#|<!--) @(?:if (!?)([\w-]+)|endif)(?: -->)?$/;
 
 // Things that are only created with the given feature
-const FILE_FEATURES: Record<string, string> = {
+const FILE_FEATURES: Readonly<Record<string, string>> = {
   '.agents/guidelines.md': 'local-guidelines',
   '.all-contributorsrc': 'contributors',
   '.changeset': 'changesets',
@@ -97,7 +97,7 @@ const FILE_FEATURES: Record<string, string> = {
   'tsdown.config.ts': 'lib',
   'vitest.config.ts': 'vitest',
 };
-const PACKAGE_FEATURES: Record<string, string> = {
+const PACKAGE_FEATURES: Readonly<Record<string, string>> = {
   'actions-up': 'actions-up',
   'all-contributors-cli': 'contributors',
   '@andreww2012/npm-check-updates-config': 'ncu',
@@ -130,7 +130,7 @@ const PACKAGE_FEATURES: Record<string, string> = {
     ),
   ),
 };
-const SCRIPT_FEATURES: Record<string, string> = {
+const SCRIPT_FEATURES: Readonly<Record<string, string>> = {
   build: 'lib',
   ch: 'changesets',
   'check:package': 'lib',
@@ -156,13 +156,15 @@ const SCRIPT_FEATURES: Record<string, string> = {
   'u:pm': 'ncu',
 };
 
-const OXFMT_SCRIPTS: Record<string, string> = {
+const OXFMT_SCRIPTS: Readonly<Record<string, string>> = {
   'check:format': 'oxfmt --check',
   format: 'oxfmt',
 };
 
 // Scripts running other scripts, which only exist with the given feature
-const SCRIPT_REPLACEMENTS: Record<string, Record<string, [search: string, replacement: string]>> = {
+const SCRIPT_REPLACEMENTS: Readonly<
+  Record<string, Record<string, [search: string, replacement: string]>>
+> = {
   check: {
     cspell: ['check:(spelling|format)', 'check:format'],
     knip: ['knip|', ''],
@@ -175,7 +177,7 @@ const SCRIPT_REPLACEMENTS: Record<string, Record<string, [search: string, replac
   },
 };
 
-const SNAPSHOT_SCHEMA = z.object({
+const snapshotSchema = z.object({
   files: z
     .object({
       '.agents': z.record(z.string(), z.custom<CreatedEntry>()),
@@ -186,9 +188,9 @@ const SNAPSHOT_SCHEMA = z.object({
 });
 
 // Not `looseObject` with known fields, because it would move them first and break the key order
-const JSON_OBJECT_SCHEMA = z.record(z.string(), z.unknown());
+const jsonObjectSchema = z.record(z.string(), z.unknown());
 
-const STRING_RECORD_SCHEMA = z.record(z.string(), z.string()).optional();
+const stringRecordSchema = z.record(z.string(), z.string()).optional();
 
 // `template/package.json` has `@types/node` for every supported Node.js major version,
 // with aliases like `"@types/node24": "npm:@types/node@24.0.0"`
@@ -227,7 +229,7 @@ const applyMarkersToText = (text: string, features: ReadonlySet<string>) => {
 
 const updateJson =
   (update: (json: Record<string, unknown>) => Record<string, unknown>) => (text: string) =>
-    JSON.stringify(update(JSON_OBJECT_SCHEMA.parse(JSON.parse(text))), null, 2);
+    JSON.stringify(update(jsonObjectSchema.parse(JSON.parse(text))), null, 2);
 
 const hasFeature = (features: ReadonlySet<string>, feature: string | undefined) =>
   feature == null || features.has(feature);
@@ -290,12 +292,14 @@ export const template = createTemplate({
   },
   produce: async ({options}) => {
     const {kind, node, pnpm, formatter, tools, updater, ci, ...parsedOptions} =
-      OPTIONS_SCHEMA.parse(options);
-    const {files, symlinks} = SNAPSHOT_SCHEMA.parse(
-      JSON.parse(await fs.readFile(SNAPSHOT_PATH, 'utf8')),
-    );
-    const packageJson = JSON_OBJECT_SCHEMA.parse(JSON.parse(files['package.json']));
-    const nodeVersionRanges = await readNodeVersionRanges();
+      optionsSchema.parse(options);
+    const [snapshot, nodeVersionRanges, guidelines] = await Promise.all([
+      fs.readFile(SNAPSHOT_PATH, 'utf8'),
+      readNodeVersionRanges(),
+      readDocument('guidelines'),
+    ]);
+    const {files, symlinks} = snapshotSchema.parse(JSON.parse(snapshot));
+    const packageJson = jsonObjectSchema.parse(JSON.parse(files['package.json']));
     const nodeMajors = [...nodeVersionRanges.keys()];
     const nodeMajor = node || nodeMajors[0] || '';
     const nodeVersionRange = nodeVersionRanges.get(nodeMajor);
@@ -335,7 +339,7 @@ export const template = createTemplate({
     const author = options.author || options.owner;
     const repositoryUrl = `https://github.com/${options.owner}/${name}`;
     const filterPackages = (packages: unknown) => {
-      const entries = Object.entries(STRING_RECORD_SCHEMA.parse(packages) || {})
+      const entries = Object.entries(stringRecordSchema.parse(packages) || {})
         .filter(([packageName]) => hasFeature(features, PACKAGE_FEATURES[packageName]))
         .map(resolveTypesNodeAlias)
         .filter(
@@ -352,7 +356,7 @@ export const template = createTemplate({
     }
 
     const scripts = Object.fromEntries(
-      Object.entries(STRING_RECORD_SCHEMA.parse(packageJson.scripts) || {})
+      Object.entries(stringRecordSchema.parse(packageJson.scripts) || {})
         .filter(([scriptName]) => hasFeature(features, SCRIPT_FEATURES[scriptName]))
         .map(([scriptName, script]) => [
           scriptName,
@@ -366,7 +370,7 @@ export const template = createTemplate({
     );
 
     const dictionaries = spellCheckedLanguages.flatMap((language) =>
-      'dictionary' in language ? [`'${language.dictionary}/cspell-ext.json'`] : [],
+      'dictionary' in language ? `'${language.dictionary}/cspell-ext.json'` : [],
     );
     const cspellLanguageLines =
       spellCheckedLanguages.length > 0
@@ -420,7 +424,7 @@ export const template = createTemplate({
         scripts,
         dependencies: filterPackages(json.dependencies),
         devDependencies,
-        engines: {...STRING_RECORD_SCHEMA.parse(json.engines), node: nodeVersionRange},
+        engines: {...stringRecordSchema.parse(json.engines), node: nodeVersionRange},
         devEngines:
           pnpm === '11'
             ? {packageManager: {name: 'pnpm', version: PNPM_11_VERSION}}
@@ -444,7 +448,7 @@ export const template = createTemplate({
       files: createFiles(
         {
           ...files,
-          '.agents': {...files['.agents'], 'guidelines.md': await readDocument('guidelines')},
+          '.agents': {...files['.agents'], 'guidelines.md': guidelines},
           'AGENTS.md': getInstruction(
             parsedOptions.guidelines === 'local' ? './.agents/guidelines.md' : undefined,
           ),

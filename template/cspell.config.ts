@@ -1,6 +1,6 @@
 import type {CSpellSettings} from 'cspell';
 
-const GLOBALLY_IGNORED_WORDS: Record<string, string[]> = {
+const GLOBALLY_IGNORED_WORDS: Readonly<Record<string, string[]>> = {
   // @if unutils
   names: ['andreww', 'unutils'],
   // @endif

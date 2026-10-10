@@ -9,7 +9,7 @@ import {
   readNodeVersionRanges,
 } from './options.ts';
 
-const TOOL_HINTS: Record<(typeof TOOLS)[number], string> = {
+const TOOL_HINTS: Readonly<Record<(typeof TOOLS)[number], string>> = {
   knip: 'unused files, exports and dependencies',
   cspell: 'spell checking',
   commitlint: 'commit message linting',

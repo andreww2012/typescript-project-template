@@ -9,6 +9,10 @@ saveExact: true
 # @if pnpm12
 autoDedupe: true
 saveTypes: true
+# eslint-disable-next-line json-schema-validator/no-invalid -- The schema is outdated
+lockfile:
+  # Records `autoDedupe`, so that installs don't resolve the lockfile again
+  includeResolutionSettings: true
 # @endif
 
 minimumReleaseAge: 960 # 16 hours in minutes
@@ -26,7 +30,7 @@ audit:
 
 allowBuilds:
   # @if lefthook
-  lefthook@2.1.16: true
+  lefthook@2.2.1: true
 
   # @endif
   esbuild: false
@@ -38,7 +42,7 @@ strictPeerDependencies: false
 
 catalogs:
   format:
-    oxfmt: 0.71.0
+    oxfmt: 0.72.0
 
 overrides:
   # Format Markdown code blocks with the same oxfmt version as all other files

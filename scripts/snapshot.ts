@@ -19,7 +19,7 @@ const entries = execFileSync(
     const absolutePath = path.join(TEMPLATE_DIRECTORY, filePath);
     // Tracked files deleted from disk are still listed
     const stats = fs.lstatSync(absolutePath, {throwIfNoEntry: false});
-    return stats ? [{absolutePath, filePath, stats}] : [];
+    return stats ? {absolutePath, filePath, stats} : [];
   });
 
 const [symlinkEntries, fileEntries] = arrayPartition(entries, ({stats}) => stats.isSymbolicLink());

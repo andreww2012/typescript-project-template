@@ -8,17 +8,18 @@ if (configPaths.length === 0) {
   throw new Error('Expected one or more lychee config paths to read `extensions` from');
 }
 
-const allowedExtensions = new Set<string>();
-for (const configPath of configPaths) {
-  const {extensions} = parseToml(await fs.readFile(configPath, 'utf8'));
-  if (Array.isArray(extensions)) {
-    for (const extension of extensions) {
-      if (typeof extension === 'string') {
-        allowedExtensions.add(extension.toLowerCase());
-      }
-    }
-  }
-}
+const configs = await Promise.all(
+  configPaths.map(async (configPath) => parseToml(await fs.readFile(configPath, 'utf8'))),
+);
+const allowedExtensions = new Set(
+  configs.flatMap(({extensions}) =>
+    Array.isArray(extensions)
+      ? extensions.flatMap((extension) =>
+          typeof extension === 'string' ? extension.toLowerCase() : [],
+        )
+      : [],
+  ),
+);
 
 if (allowedExtensions.size === 0) {
   throw new Error(

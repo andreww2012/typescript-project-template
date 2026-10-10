@@ -12,12 +12,12 @@ const createProject = (files: Record<string, unknown> = {}) => {
     fs.rmSync(directory, {recursive: true, force: true});
   });
 
-  for (const [fileName, content] of Object.entries(files)) {
+  Object.entries(files).forEach(([fileName, content]) => {
     fs.writeFileSync(
       path.join(directory, fileName),
       typeof content === 'string' ? content : JSON.stringify(content),
     );
-  }
+  });
 
   return directory;
 };

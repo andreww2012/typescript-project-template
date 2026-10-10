@@ -10,7 +10,7 @@ export const UTILITY_LIBRARY = '@andreww2012/unutils';
 
 export const TOOLS = ['knip', 'cspell', 'commitlint', 'lefthook', 'publint', 'vitest'] as const;
 
-const LIB_ONLY_TOOLS = new Set<string>(['publint']);
+const LIB_ONLY_TOOLS: ReadonlySet<string> = new Set(['publint']);
 
 export const isToolAvailable = (tool: string, kind: string | undefined) =>
   kind === 'lib' || !LIB_ONLY_TOOLS.has(tool);
@@ -30,9 +30,9 @@ export const LANGUAGES = [
   {id: 'uk', name: 'Ukrainian', dictionary: '@cspell/dict-uk-ua'},
 ] as const;
 
-const SNAPSHOT_PACKAGE_JSON_SCHEMA = z.object({files: z.object({'package.json': z.string()})});
+const snapshotPackageJsonSchema = z.object({files: z.object({'package.json': z.string()})});
 
-const PACKAGE_JSON_ENGINES_SCHEMA = z.object({engines: z.object({node: z.string()})});
+const packageJsonEnginesSchema = z.object({engines: z.object({node: z.string()})});
 
 const commaSeparatedList = <const Values extends readonly string[]>(values: Values) =>
   z
@@ -41,7 +41,7 @@ const commaSeparatedList = <const Values extends readonly string[]>(values: Valu
     .pipe(z.array(z.literal(values)));
 
 // Options asked by our own prompts, because Bingo can't ask conditional and multi-select questions
-export const OPTIONS_SCHEMA = z.object({
+export const optionsSchema = z.object({
   kind: z.literal(['app', 'lib']).default('app'),
   changesets: z.literal(['none', 'github', 'default']).default('none'),
   contributors: z.literal(['no', 'yes']).default('no'),
@@ -58,53 +58,53 @@ export const OPTIONS_SCHEMA = z.object({
   guidelines: z.literal(['local', 'remote']).default('local'),
 });
 
-export const DEFAULT_OPTIONS = OPTIONS_SCHEMA.parse({});
+export const DEFAULT_OPTIONS = Object.freeze(optionsSchema.parse({}));
 
 // Bingo passes the raw flag values to `produce`, so these only describe the flags
 export const OPTION_FLAGS = {
-  changesets: OPTIONS_SCHEMA.shape.changesets
+  changesets: optionsSchema.shape.changesets
     .optional()
     .describe('changesets setup with the GitHub or the default changelog format (only for `lib`)'),
-  ci: OPTIONS_SCHEMA.shape.ci.optional().describe('whether to set up CI with GitHub Actions'),
-  contributors: OPTIONS_SCHEMA.shape.contributors
+  ci: optionsSchema.shape.ci.optional().describe('whether to set up CI with GitHub Actions'),
+  contributors: optionsSchema.shape.contributors
     .optional()
     .describe('whether to set up all-contributors (only for `lib`)'),
-  formatter: OPTIONS_SCHEMA.shape.formatter.optional().describe('code formatter'),
-  guidelines: OPTIONS_SCHEMA.shape.guidelines
+  formatter: optionsSchema.shape.formatter.optional().describe('code formatter'),
+  guidelines: optionsSchema.shape.guidelines
     .optional()
     .describe(
       'how `AGENTS.md` links the AI guidelines: copied into the project (`local`) or on GitHub (`remote`)',
     ),
-  kind: OPTIONS_SCHEMA.shape.kind.optional().describe('project kind: app or published library'),
+  kind: optionsSchema.shape.kind.optional().describe('project kind: app or published library'),
   languages: z
     .string()
     .optional()
     .describe(`comma-separated extra CSpell languages (${LANGUAGES.map(({id}) => id).join(', ')})`),
-  lychee: OPTIONS_SCHEMA.shape.lychee
+  lychee: optionsSchema.shape.lychee
     .optional()
     .describe('whether to check links with lychee in CI (only with `--ci yes`)'),
-  node: OPTIONS_SCHEMA.shape.node.describe(
+  node: optionsSchema.shape.node.describe(
     'lowest supported Node.js major version, out of those in `engines.node` of this template (defaults to the lowest one)',
   ),
-  pnpm: OPTIONS_SCHEMA.shape.pnpm.optional().describe('major version of pnpm'),
+  pnpm: optionsSchema.shape.pnpm.optional().describe('major version of pnpm'),
   tools: z
     .string()
     .optional()
     .describe(
       `comma-separated tools to set up (${TOOLS.join(', ')}; ${[...LIB_ONLY_TOOLS].join(', ')} only for \`lib\`)`,
     ),
-  'ts-extensions': OPTIONS_SCHEMA.shape['ts-extensions']
+  'ts-extensions': optionsSchema.shape['ts-extensions']
     .optional()
     .describe('whether to use `.ts` extensions in imports, enforced by ESLint'),
-  updater: OPTIONS_SCHEMA.shape.updater.optional().describe('dependency updater'),
-};
+  updater: optionsSchema.shape.updater.optional().describe('dependency updater'),
+} as const;
 
 // Supported version ranges by the lowest supported major version, from the lowest one
 export const readNodeVersionRanges = async () => {
-  const {files} = SNAPSHOT_PACKAGE_JSON_SCHEMA.parse(
+  const {files} = snapshotPackageJsonSchema.parse(
     JSON.parse(await fs.readFile(SNAPSHOT_PATH, 'utf8')),
   );
-  const {engines} = PACKAGE_JSON_ENGINES_SCHEMA.parse(JSON.parse(files['package.json']));
+  const {engines} = packageJsonEnginesSchema.parse(JSON.parse(files['package.json']));
   const ranges = engines.node.split('||').map((range) => range.trim());
 
   return new Map(

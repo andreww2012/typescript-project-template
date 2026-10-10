@@ -6,13 +6,16 @@ packages:
 saveExact: true
 autoDedupe: true
 saveTypes: true
+# eslint-disable-next-line json-schema-validator/no-invalid -- The schema is outdated
+lockfile:
+  # Records `autoDedupe`, so that installs don't resolve the lockfile again
+  includeResolutionSettings: true
 
 minimumReleaseAge: 960 # 16 hours in minutes
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeStrict: false
 minimumReleaseAgeExclude: # []
-  - '@andreww2012/ai-guidelines@0.2.1'
-  - '@andreww2012/unutils@0.2.0'
+  - '@andreww2012/ai-guidelines@0.2.4'
 
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 43200 # 30 days in minutes
@@ -24,7 +27,7 @@ audit:
   ignorePrune: true
 
 allowBuilds:
-  lefthook@2.1.16: true
+  lefthook@2.2.1: true
 
   esbuild: false
   unrs-resolver: false

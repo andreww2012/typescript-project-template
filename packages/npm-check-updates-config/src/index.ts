@@ -62,12 +62,12 @@ const NPM_ALIAS_REGEX = /^npm:(@?[^@]+)@/;
 
 const CACHE_FILE = 'node_modules/.cache/npm-check-updates/cache.json';
 
-const DEFAULT_TARGETS: Record<string, Target> = {
+const DEFAULT_TARGETS: Readonly<Record<string, Target>> = {
   // Its major version should match the lowest supported Node.js version
   '@types/node': 'minor',
 };
 
-const DEFAULT_GROUPS: Record<string, PackageGroup> = {
+const DEFAULT_GROUPS: Readonly<Record<string, PackageGroup>> = {
   'Package manager': {
     packages: ['bun', 'npm', 'pnpm', 'yarn'],
     icon: '📦',
@@ -86,10 +86,10 @@ const DEFAULT_GROUPS: Record<string, PackageGroup> = {
 };
 
 // Workspace package globs that match the root
-const ROOT_PACKAGE_GLOBS = new Set<unknown>(['.', './']);
+const ROOT_PACKAGE_GLOBS: ReadonlySet<unknown> = new Set(['.', './']);
 
 // Version parts that can't change with the given target
-const KEPT_VERSION_PARTS = new Map<Target | undefined, ('major' | 'minor')[]>([
+const KEPT_VERSION_PARTS: ReadonlyMap<Target | undefined, ('major' | 'minor')[]> = new Map([
   ['minor', ['major']],
   ['patch', ['major', 'minor']],
 ]);
