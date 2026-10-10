@@ -52,7 +52,8 @@ It overwrites files with the template versions, *including* `package.json` and `
 
 The files of new projects live in [`template/`](./template).
 They are completely independent from the files of this repository, which only builds and publishes the CLI:
-the tools here (ESLint, Prettier, CSpell, knip and so on) ignore `template/` and use their own configs.
+the tools here (ESLint, CSpell, knip and so on) ignore `template/` and use their own configs.
+oxfmt is the exception: it formats `template/` with the template's own config.
 
 Files in `template/` are copied as is, except the parts that depend on the options.
 Such parts are wrapped in comment lines, which are removed from the result:

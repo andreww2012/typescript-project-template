@@ -3,8 +3,8 @@ pre-push:
   commands:
     eslint:
       run: pnpm exec eslint --config eslint.config.ts --no-warn-ignored {push_files}
-    prettier:
-      run: pnpm exec prettier --check --ignore-unknown --no-error-on-unmatched-pattern {push_files}
+    oxfmt:
+      run: pnpm exec oxfmt --check --no-error-on-unmatched-pattern {push_files}
     cspell:
       run: pnpm exec cspell --exclude '**/.*' --no-must-find-files {push_files}
     knip:
@@ -16,8 +16,8 @@ pre-commit:
   parallel: true
   skip: [merge, rebase]
   commands:
-    prettier:
-      run: pnpm exec prettier --write --ignore-unknown --no-error-on-unmatched-pattern {staged_files}
+    oxfmt:
+      run: pnpm exec oxfmt --no-error-on-unmatched-pattern {staged_files}
       stage_fixed: true
 
 commit-msg:

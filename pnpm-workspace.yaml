@@ -34,3 +34,13 @@ allowBuilds:
 
 dedupePeers: true
 strictPeerDependencies: false
+
+catalogs:
+  format:
+    oxfmt: 0.72.0
+
+overrides:
+  # Format Markdown code blocks with the same oxfmt version as all other files
+  eslint-plugin-format>oxfmt: 'catalog:format'
+  # Only used by its Prettier rule. Otherwise, `eslint-config-un` would think Prettier is used
+  eslint-plugin-format>prettier: '-'

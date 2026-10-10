@@ -1,4 +1,6 @@
 import {eslintConfig} from 'eslint-config-un';
+import {GLOB_MARKDOWN_SUPPORTED_CODE_BLOCKS} from 'eslint-config-un/globs';
+import oxfmtConfig from './oxfmt.config.ts';
 
 export default eslintConfig({
   ignores: [
@@ -11,6 +13,17 @@ export default eslintConfig({
   defaultConfigsStatus: 'misc-enabled',
   configs: {
     fileProgress: true,
+    format: {
+      files: [GLOB_MARKDOWN_SUPPORTED_CODE_BLOCKS],
+      formatter: [
+        'oxfmt',
+        {
+          bracketSpacing: oxfmtConfig.bracketSpacing,
+          printWidth: oxfmtConfig.printWidth,
+          singleQuote: oxfmtConfig.singleQuote,
+        },
+      ],
+    },
     import: {
       requireModuleExtensions: true,
     },
@@ -22,6 +35,8 @@ export default eslintConfig({
           'packages/*/LICENSE.md',
         ],
       },
+      // `eslint-config-un` comes with Prettier, which would format code blocks too
+      configFormatFencedCodeBlocks: false,
     },
 
     // False positives:

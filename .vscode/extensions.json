@@ -2,7 +2,7 @@
   // cspell:disable
   "recommendations": [
     "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
+    "oxc.oxc-vscode",
     "streetsidesoftware.code-spell-checker",
     "webpro.vscode-knip",
   ],
