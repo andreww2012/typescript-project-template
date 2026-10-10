@@ -1,5 +1,19 @@
 # @andreww2012/typescript-project-template
 
+## 0.3.0
+
+### Minor Changes
+
+- [`41139da`](https://github.com/andreww2012/typescript-project-template/commit/41139da4c829c52a1e7f95136b7745a80b4f5cff) - New `--ts-extensions` option: by default, new projects use `.ts` extensions in imports, which ESLint enforces, and their `tsconfig.json` has `allowImportingTsExtensions` and `noEmit`. Use `--ts-extensions no` to keep `.js` extensions
+
+### Patch Changes
+
+- [`c92027f`](https://github.com/andreww2012/typescript-project-template/commit/c92027f2a64e367ff0638920c999a22c19add7aa) - New projects get the AI guidelines from [`@andreww2012/ai-guidelines`](https://npmx.dev/@andreww2012/ai-guidelines) v0.2.4
+
+- [`c92027f`](https://github.com/andreww2012/typescript-project-template/commit/c92027f2a64e367ff0638920c999a22c19add7aa) - New projects use `eslint-config-un` 1.0.0-rc.4 and pass its checks: `commitlint.config.ts` uses the `RuleConfigSeverity` enum, and the ESLint config drops the options that are now defaults. With oxfmt, Markdown code blocks are no longer also formatted with Prettier
+
+- [`561c0ff`](https://github.com/andreww2012/typescript-project-template/commit/561c0ff154acba45787645e54d1aea047dbc28d2) - The `u:pm` script of new projects now updates pnpm with `pnpm self-update`, as `ncu` can't update `devEngines`. With pnpm 12, new projects also record `autoDedupe` in the lockfile, so installs don't resolve it again
+
 ## 0.2.0
 
 ### Minor Changes
