@@ -22,8 +22,7 @@ trustPolicyExclude: # []
   - lefthook@2.2.2
 
 audit:
-  ignore: # []
-    - GHSA-ch52-4w7c-c8xp # `http-cache-semantics` from `eslint-config-un` has no patched version yet
+  ignore: []
   ignorePrune: true
 
 allowBuilds:
@@ -34,13 +33,3 @@ allowBuilds:
 
 dedupePeers: true
 strictPeerDependencies: false
-
-catalogs:
-  format:
-    oxfmt: 0.73.0
-
-overrides:
-  # Format Markdown code blocks with the same oxfmt version as all other files
-  eslint-plugin-format>oxfmt: 'catalog:format'
-  # Only used by its Prettier rule. Otherwise, `eslint-config-un` would think Prettier is used
-  eslint-plugin-format>prettier: '-'
