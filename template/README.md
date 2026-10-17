@@ -126,7 +126,7 @@ Review these things and you're good to go:
 
 ## Contributors
 
-<!-- eslint-disable markdown-preferences/padding-line-between-blocks, markdown/require-alt-text -->
+<!-- eslint-disable markdown-preferences/padding-line-between-blocks -->
 <!-- cspell:disable -->
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
@@ -138,7 +138,7 @@ Review these things and you're good to go:
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-<!-- eslint-enable markdown-preferences/padding-line-between-blocks, markdown/require-alt-text -->
+<!-- eslint-enable markdown-preferences/padding-line-between-blocks -->
 
 <!-- cspell:enable -->
 <!-- @endif -->

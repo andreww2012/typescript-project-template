@@ -1,15 +1,8 @@
-# @if ncu
-# `ncu` only updates catalogs in workspace mode, which needs this
-packages:
-  - ./
-
-# @endif
 # shamefullyHoist: true
 saveExact: true
 # @if pnpm12
 autoDedupe: true
 saveTypes: true
-# eslint-disable-next-line json-schema-validator/no-invalid -- The schema is outdated
 lockfile:
   # Records `autoDedupe`, so that installs don't resolve the lockfile again
   includeResolutionSettings: true
@@ -21,16 +14,22 @@ minimumReleaseAgeExcludePrune: true
 
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 43200 # 30 days in minutes
+# @if !lefthook
 trustPolicyExclude: []
+# @endif
+# @if lefthook
+trustPolicyExclude: # []
+  # Published by hand after its release workflow failed. Same code as v2.2.1
+  - lefthook@2.2.2
+# @endif
 
 audit:
-  ignore: # []
-    - GHSA-ch52-4w7c-c8xp # `http-cache-semantics` from `eslint-config-un` has no patched version yet
+  ignore: []
   ignorePrune: true
 
 allowBuilds:
   # @if lefthook
-  lefthook@2.2.1: true
+  lefthook@2.2.2: true
 
   # @endif
   esbuild: false
@@ -38,15 +37,3 @@ allowBuilds:
 
 dedupePeers: true
 strictPeerDependencies: false
-# @if oxfmt
-
-catalogs:
-  format:
-    oxfmt: 0.72.0
-
-overrides:
-  # Format Markdown code blocks with the same oxfmt version as all other files
-  eslint-plugin-format>oxfmt: 'catalog:format'
-  # Only used by its Prettier rule. Otherwise, `eslint-config-un` would think Prettier is used
-  eslint-plugin-format>prettier: '-'
-# @endif

@@ -15,7 +15,7 @@ import {
 
 type CreatedEntry = Creation['files'][string];
 
-const PNPM_11_VERSION = '11.28.5';
+const PNPM_11_VERSION = '11.28.6';
 
 const TYPES_NODE = '@types/node';
 
@@ -109,7 +109,6 @@ const PACKAGE_FEATURES: Readonly<Record<string, string>> = {
   '@commitlint/config-conventional': 'commitlint',
   '@commitlint/types': 'commitlint',
   cspell: 'cspell',
-  'eslint-plugin-format': 'oxfmt',
   'eslint-plugin-github-action': 'ci',
   knip: 'knip',
   lefthook: 'lefthook',

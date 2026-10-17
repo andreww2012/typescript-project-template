@@ -69,7 +69,6 @@ A feature is an option value (like `lib`, `oxfmt` or `knip`), `pnpm11`/`pnpm12`,
 Which files, `package.json` scripts and dependencies need which features is listed in [`src/template.ts`].
 `template/package.json` lists all dependencies that might be needed, so that `ncu` keeps all of them up to date.
 That includes `@types/node` for every supported Node.js major version, with aliases like `"@types/node24": "npm:@types/node@24.19.1"`.
-The `oxfmt` version is in the `format` catalog of `template/pnpm-workspace.yaml`, because the ESLint plugin that formats Markdown code blocks must use the same version.
 
 These files are also changed:
 

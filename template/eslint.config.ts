@@ -1,6 +1,5 @@
 import {eslintConfig} from 'eslint-config-un';
 // @if oxfmt
-import {GLOB_MARKDOWN_SUPPORTED_CODE_BLOCKS} from 'eslint-config-un/globs';
 // @if ts-extensions
 import oxfmtConfig from './oxfmt.config.ts';
 // @endif
@@ -24,9 +23,11 @@ export default eslintConfig({
   // },
   defaultConfigsStatus: 'misc-enabled',
   configs: {
-    // @if oxfmt
     format: {
-      files: [GLOB_MARKDOWN_SUPPORTED_CODE_BLOCKS],
+      // Only Markdown code blocks, other files are formatted by the formatter itself
+      files: [],
+      configFencedCodeBlocks: true,
+      // @if oxfmt
       formatter: [
         'oxfmt',
         {
@@ -35,8 +36,8 @@ export default eslintConfig({
           singleQuote: oxfmtConfig.singleQuote,
         },
       ],
+      // @endif
     },
-    // @endif
     // @if ts-extensions
     import: {
       requireModuleExtensions: true,
@@ -44,10 +45,6 @@ export default eslintConfig({
     // @endif
     markdown: {
       configSentencesPerLine: true,
-      // @if oxfmt
-      // `eslint-config-un` comes with Prettier, which would format code blocks too
-      configFormatFencedCodeBlocks: false,
-      // @endif
     },
 
     // False positives:
