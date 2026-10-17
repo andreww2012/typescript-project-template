@@ -6,7 +6,6 @@ packages:
 saveExact: true
 autoDedupe: true
 saveTypes: true
-# eslint-disable-next-line json-schema-validator/no-invalid -- The schema is outdated
 lockfile:
   # Records `autoDedupe`, so that installs don't resolve the lockfile again
   includeResolutionSettings: true
