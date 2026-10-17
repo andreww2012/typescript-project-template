@@ -37,7 +37,7 @@ strictPeerDependencies: false
 
 catalogs:
   format:
-    oxfmt: 0.72.0
+    oxfmt: 0.73.0
 
 overrides:
   # Format Markdown code blocks with the same oxfmt version as all other files
