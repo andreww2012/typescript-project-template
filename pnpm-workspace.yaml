@@ -14,8 +14,7 @@ lockfile:
 minimumReleaseAge: 960 # 16 hours in minutes
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeStrict: false
-minimumReleaseAgeExclude: # []
-  - '@andreww2012/ai-guidelines@0.2.4'
+minimumReleaseAgeExclude: []
 
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 43200 # 30 days in minutes
