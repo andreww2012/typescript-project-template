@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "npm-check-updates": "23.1.1",
-    "tsdown": "0.23.1",
+    "tsdown": "0.23.2",
     "utilery": "0.3.0"
   },
   "peerDependencies": {

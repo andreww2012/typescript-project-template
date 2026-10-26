@@ -1,6 +1,5 @@
-# The root is listed too, so that changesets releases it with the other packages
 packages:
-  - ./
+  - ./ # The root is listed too, so that changesets releases it with the other packages
   - packages/*
 
 saveExact: true
