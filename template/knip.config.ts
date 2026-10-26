@@ -10,9 +10,9 @@ export default {
     // @if !lib
     'tsx',
     // @endif
-    // @if unutils
+    // @if utilery
     // Nothing uses it until the first code is written
-    '@andreww2012/unutils',
+    'utilery',
     // @endif
     // @if lychee
     // Only passed to lychee in CI

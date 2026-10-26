@@ -1,10 +1,10 @@
 import type {CSpellSettings} from 'cspell';
 
 const GLOBALLY_IGNORED_WORDS: Readonly<Record<string, string[]>> = {
-  // @if unutils
-  names: ['andreww', 'unutils'],
+  // @if utilery
+  names: ['andreww', 'utilery'],
   // @endif
-  // @if !unutils
+  // @if !utilery
   names: ['andreww'],
   // @endif
   // @if lychee

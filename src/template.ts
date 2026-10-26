@@ -2,6 +2,13 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {getInstruction, readDocument} from '@andreww2012/ai-guidelines';
 import {type Creation, createTemplate} from 'bingo';
+import {
+  invariant,
+  isEmptyObject,
+  mapEntries,
+  parseNpmPackageSpecifier,
+  substringAfter,
+} from 'utilery';
 import {z} from 'zod';
 import {
   LANGUAGES,
@@ -18,9 +25,6 @@ type CreatedEntry = Creation['files'][string];
 const PNPM_11_VERSION = '11.28.6';
 
 const TYPES_NODE = '@types/node';
-
-// Like `npm:@types/node@24.0.0`
-const NPM_ALIAS_REGEX = /^npm:(@?[^@]+)@(.+)$/;
 
 // From https://github.com/tsconfig/bases, by the lowest supported Node.js major version
 const NODE_TSCONFIG_OPTIONS: Readonly<Record<string, {target: string; lib: string[]}>> = {
@@ -102,7 +106,7 @@ const PACKAGE_FEATURES: Readonly<Record<string, string>> = {
   'all-contributors-cli': 'contributors',
   '@andreww2012/commitlint-config': 'commitlint',
   '@andreww2012/npm-check-updates-config': 'ncu',
-  [UTILITY_LIBRARY]: 'unutils',
+  [UTILITY_LIBRARY]: 'utilery',
   '@arethetypeswrong/cli': 'lib',
   '@changesets/changelog-github': 'changelog-github',
   '@changesets/cli': 'changesets',
@@ -193,8 +197,10 @@ const stringRecordSchema = z.record(z.string(), z.string()).optional();
 // `template/package.json` has `@types/node` for every supported Node.js major version,
 // with aliases like `"@types/node24": "npm:@types/node@24.0.0"`
 const resolveTypesNodeAlias = ([packageName, version]: [string, string]): [string, string] => {
-  const [, aliasedPackageName, aliasedVersion = version] = NPM_ALIAS_REGEX.exec(version) || [];
-  return aliasedPackageName === TYPES_NODE ? [TYPES_NODE, aliasedVersion] : [packageName, version];
+  const alias = parseNpmPackageSpecifier(substringAfter(version, 'npm:', ''));
+  return alias?.name === TYPES_NODE && alias.version
+    ? [TYPES_NODE, alias.version]
+    : [packageName, version];
 };
 
 const formatArray = (prefix: string, items: string[], suffix: string) => {
@@ -239,28 +245,26 @@ const createFiles = (
   transforms: Record<string, (text: string) => string>,
   directoryPath = '',
 ): Creation['files'] =>
-  Object.fromEntries(
-    Object.entries(directory).flatMap(([name, entry]): [string, CreatedEntry][] => {
-      const entryPath = path.posix.join(directoryPath, name);
-      if (!hasFeature(features, FILE_FEATURES[entryPath])) {
-        return [];
-      }
+  mapEntries(directory, (name, entry): [string, CreatedEntry] | undefined => {
+    const entryPath = path.posix.join(directoryPath, name);
+    if (!hasFeature(features, FILE_FEATURES[entryPath])) {
+      return undefined;
+    }
 
-      const createText = (text: string) =>
-        applyMarkersToText(transforms[entryPath]?.(text) ?? text, features);
-      if (typeof entry === 'string') {
-        return [[name, createText(entry)]];
-      }
+    const createText = (text: string) =>
+      applyMarkersToText(transforms[entryPath]?.(text) ?? text, features);
+    if (typeof entry === 'string') {
+      return [name, createText(entry)];
+    }
 
-      if (Array.isArray(entry)) {
-        const [content, ...metadata] = entry;
-        return [[name, [createText(content), ...metadata]]];
-      }
+    if (Array.isArray(entry)) {
+      const [content, ...metadata] = entry;
+      return [name, [createText(content), ...metadata]];
+    }
 
-      const files = entry && createFiles(entry, features, transforms, entryPath);
-      return files && Object.keys(files).length === 0 ? [] : [[name, files]];
-    }),
-  );
+    const files = entry && createFiles(entry, features, transforms, entryPath);
+    return isEmptyObject(files) ? undefined : [name, files];
+  });
 
 export const template = createTemplate({
   about: {
@@ -301,14 +305,16 @@ export const template = createTemplate({
     const nodeMajors = [...nodeVersionRanges.keys()];
     const nodeMajor = node || nodeMajors[0] || '';
     const nodeVersionRange = nodeVersionRanges.get(nodeMajor);
-    if (nodeVersionRange == null) {
-      throw new Error(`\`--node\` must be one of: ${nodeMajors.join(', ')}, got ${nodeMajor}`);
-    }
+    invariant(
+      nodeVersionRange != null,
+      `\`--node\` must be one of: ${nodeMajors.join(', ')}, got ${nodeMajor}`,
+    );
     const supportedNodeMajors = nodeMajors.slice(nodeMajors.indexOf(nodeMajor));
     const tsconfigOptions = NODE_TSCONFIG_OPTIONS[nodeMajor];
-    if (tsconfigOptions == null) {
-      throw new Error(`There are no TypeScript \`target\` and \`lib\` for Node.js ${nodeMajor}`);
-    }
+    invariant(
+      tsconfigOptions != null,
+      `There are no TypeScript \`target\` and \`lib\` for Node.js ${nodeMajor}`,
+    );
 
     // Bingo defaults the repository to the raw `--directory` value, which can be a path
     const name = path.basename(options.repository);
@@ -325,7 +331,7 @@ export const template = createTemplate({
       ...(changesets === 'none' ? [] : ['changesets']),
       ...(changesets === 'github' ? ['changelog-github'] : []),
       ...(kind === 'lib' && parsedOptions.contributors === 'yes' ? ['contributors'] : []),
-      ...(options.utils === UTILITY_LIBRARY ? ['unutils'] : []),
+      ...(options.utils === UTILITY_LIBRARY ? ['utilery'] : []),
       ...(updater === 'none' ? [] : [updater]),
       ...(ci === 'yes' ? ['ci'] : []),
       // Dependabot and Renovate update GitHub Actions on their own
@@ -347,11 +353,10 @@ export const template = createTemplate({
       return entries.length > 0 ? Object.fromEntries(entries) : undefined;
     };
     const devDependencies = filterPackages(packageJson.devDependencies);
-    if (devDependencies?.[TYPES_NODE] == null) {
-      throw new Error(
-        `\`template/package.json\` has no \`${TYPES_NODE}\` for Node.js ${nodeMajor}`,
-      );
-    }
+    invariant(
+      devDependencies?.[TYPES_NODE] != null,
+      `\`template/package.json\` has no \`${TYPES_NODE}\` for Node.js ${nodeMajor}`,
+    );
 
     const scripts = Object.fromEntries(
       Object.entries(stringRecordSchema.parse(packageJson.scripts) || {})

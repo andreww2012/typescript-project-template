@@ -23,5 +23,5 @@
 
     "lib": ["es2024"]
   },
-  "include": ["src", "scripts", "*.ts", "packages/*/src"]
+  "include": ["src", "scripts", "*.ts", "packages/*/src", "packages/*/*.ts"]
 }

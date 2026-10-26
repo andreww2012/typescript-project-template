@@ -28,7 +28,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsdown",
     "prepack": "nr build",
     "prepublishOnly": "nr check:package",
     "check:package": "pnpm pack --out temp/package.tgz && publint temp/package.tgz --strict"
@@ -38,7 +38,9 @@
     "yaml": "2.9.1"
   },
   "devDependencies": {
-    "npm-check-updates": "23.1.1"
+    "npm-check-updates": "23.1.1",
+    "tsdown": "0.23.1",
+    "utilery": "0.3.0"
   },
   "peerDependencies": {
     "npm-check-updates": ">=19.0.0"
@@ -53,7 +55,7 @@
   },
   "publishConfig": {
     "exports": {
-      ".": "./dist/index.js",
+      ".": "./dist/index.mjs",
       "./package.json": "./package.json"
     }
   }

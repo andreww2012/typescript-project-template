@@ -13,7 +13,8 @@ lockfile:
 minimumReleaseAge: 960 # 16 hours in minutes
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeStrict: false
-minimumReleaseAgeExclude: []
+minimumReleaseAgeExclude: # []
+  - utilery@0.3.0
 
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 43200 # 30 days in minutes

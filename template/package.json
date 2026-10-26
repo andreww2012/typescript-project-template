@@ -64,7 +64,7 @@
     "contrib:gen": "all-contributors generate"
   },
   "dependencies": {
-    "@andreww2012/unutils": "0.2.0"
+    "utilery": "0.3.0"
   },
   "devDependencies": {
     "@andreww2012/commitlint-config": "0.0.1",

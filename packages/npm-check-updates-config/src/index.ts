@@ -1,6 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type {RcOptions} from 'npm-check-updates';
+import {
+  isPlainObject,
+  parseNpmPackageSpecifier,
+  substringAfter,
+  substringAfterLast,
+  substringBefore,
+} from 'utilery';
 import {coerce, satisfies} from 'verkit';
 import {parse as parseYaml} from 'yaml';
 
@@ -57,9 +64,6 @@ export interface NcuConfigOptions extends RcOptions {
   groups?: Record<string, PackageGroup | false>;
 }
 
-// Like `npm:@types/node@24.0.0`
-const NPM_ALIAS_REGEX = /^npm:(@?[^@]+)@/;
-
 const CACHE_FILE = 'node_modules/.cache/npm-check-updates/cache.json';
 
 const DEFAULT_TARGETS: Readonly<Record<string, Target>> = {
@@ -94,22 +98,18 @@ const KEPT_VERSION_PARTS: ReadonlyMap<Target | undefined, ('major' | 'minor')[]>
   ['patch', ['major', 'minor']],
 ]);
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value != null;
-
 const parseFile = (filePath: string, parse: (text: string) => unknown) =>
   fs.existsSync(filePath) ? parse(fs.readFileSync(filePath, 'utf8')) : undefined;
 
 // From `pnpm-workspace.yaml` or `workspaces` of `package.json`, like `{packages: ['./']}` or `['./']`
 const getWorkspacePackages = (workspaces: unknown): unknown[] => {
-  const packages =
-    isRecord(workspaces) && 'packages' in workspaces ? workspaces.packages : workspaces;
+  const packages: unknown = isPlainObject(workspaces) ? workspaces.packages : workspaces;
   return Array.isArray(packages) ? packages : [];
 };
 
 const groupByDependencyType = (packageJson: unknown) => {
   const devDependencies = new Set(
-    isRecord(packageJson) && isRecord(packageJson.devDependencies)
+    isPlainObject(packageJson) && isPlainObject(packageJson.devDependencies)
       ? Object.keys(packageJson.devDependencies)
       : [],
   );
@@ -131,7 +131,7 @@ export const ncuConfig = ({
   const packageJson = parseFile(path.join(cwd, 'package.json'), JSON.parse);
   const workspacePackages = [
     ...getWorkspacePackages(parseFile(path.join(cwd, 'pnpm-workspace.yaml'), parseYaml)),
-    ...getWorkspacePackages(isRecord(packageJson) && packageJson.workspaces),
+    ...getWorkspacePackages(isPlainObject(packageJson) && packageJson.workspaces),
   ];
   const groupOtherPackage = groupFunction || groupByDependencyType(packageJson);
   const targetsByPackage = new Map(
@@ -176,11 +176,13 @@ export const ncuConfig = ({
       (typeof target === 'function' ? target(packageName, versionRange) : target),
     filterResults: (packageName, versions) => {
       // Unlike `target`, this gets alias names (like `@types/node24`) instead of real package names
-      const [, realPackageName = packageName] = NPM_ALIAS_REGEX.exec(versions.currentVersion) || [];
+      const realPackageName =
+        parseNpmPackageSpecifier(substringAfter(versions.currentVersion, 'npm:', ''))?.name ||
+        packageName;
       const [currentVersion = '', upgradedVersion = ''] = [
         versions.currentVersion,
         versions.upgradedVersion,
-      ].map((version) => version.split('@').at(-1));
+      ].map((version) => substringAfterLast(version, '@'));
 
       const blockedVersionRange = blockedVersionsByPackage.get(realPackageName);
       if (blockedVersionRange && satisfies(upgradedVersion, blockedVersionRange)) {
@@ -196,14 +198,10 @@ export const ncuConfig = ({
         filterResults(packageName, versions)
       );
     },
-    groupFunction: (packageName, ...groupFunctionArguments) => {
-      const [scope] = packageName.split('/', 1);
-      return (
-        groupLabelsByPackage.get(packageName) ||
-        groupLabelsByPackage.get(`${scope}/*`) ||
-        groupOtherPackage(packageName, ...groupFunctionArguments)
-      );
-    },
+    groupFunction: (packageName, ...groupFunctionArguments) =>
+      groupLabelsByPackage.get(packageName) ||
+      groupLabelsByPackage.get(`${substringBefore(packageName, '/')}/*`) ||
+      groupOtherPackage(packageName, ...groupFunctionArguments),
   };
 
   // ncu doesn't create the directory of the cache file

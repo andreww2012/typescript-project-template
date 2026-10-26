@@ -6,7 +6,7 @@ const NODE_MAJOR_VERSION_REGEX = /\d+/;
 
 export const SNAPSHOT_PATH = path.join(import.meta.dirname, '../dist/files.json');
 
-export const UTILITY_LIBRARY = '@andreww2012/unutils';
+export const UTILITY_LIBRARY = 'utilery';
 
 export const TOOLS = ['knip', 'cspell', 'commitlint', 'lefthook', 'publint', 'vitest'] as const;
 

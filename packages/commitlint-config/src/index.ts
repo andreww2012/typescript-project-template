@@ -10,32 +10,46 @@ import {
   type UserConfig,
 } from '@commitlint/types';
 import createConventionalCommitsPreset from 'conventional-changelog-conventionalcommits';
+import {
+  allUnionMembers,
+  arrayUnique,
+  isPlainObject,
+  isPropertyNotNullish,
+  mapEntries,
+  objectEntriesUnsafe,
+  toKebabCase,
+} from 'utilery';
 
 /** Lengths in characters, `false` disables a rule */
-// eslint-disable-next-line ts/consistent-type-definitions -- `Object.entries()` returns `any` for interfaces
-export type PartLengths = {
+export interface PartLengths {
   min?: number | false;
   max?: number | false;
-};
+}
 
-export type MultilinePartLengths = PartLengths & {
+export interface MultilinePartLengths extends PartLengths {
   /** Max length of each line */
   maxLine?: number | false;
-};
+}
 
-// eslint-disable-next-line ts/consistent-type-definitions -- `Object.entries()` returns `any` for interfaces
-export type Lengths = {
+export interface Lengths {
   header?: PartLengths;
   type?: PartLengths;
   scope?: PartLengths;
   subject?: PartLengths;
   body?: MultilinePartLengths;
   footer?: MultilinePartLengths;
-};
+}
 
-const SPELLING_PARTS = ['header', 'type', 'scope', 'subject', 'body', 'footer'] as const;
+type SpellingPart = 'header' | 'type' | 'scope' | 'subject' | 'body' | 'footer';
 
-type SpellingPart = (typeof SPELLING_PARTS)[number];
+const SPELLING_PARTS = allUnionMembers<SpellingPart, {readonly: true}>()([
+  'header',
+  'type',
+  'scope',
+  'subject',
+  'body',
+  'footer',
+]);
 
 export interface SpellingOptions {
   /**
@@ -91,9 +105,6 @@ const DEFAULT_LENGTHS: Readonly<Lengths> = {
   footer: {maxLine: 100},
 };
 
-// Like `L` in `maxLine`
-const UPPER_CASE_LETTER_REGEX = /[A-Z]/g;
-
 const WHITESPACE_REGEX = /\s/u;
 
 const DEFAULT_SPELLING_CHECK: Readonly<Record<SpellingPart, boolean | 'warn'>> = {
@@ -136,7 +147,7 @@ const createSpellingRule =
     );
     return [
       issues.length === 0,
-      `unknown words in ${part}: ${[...new Set(issues.map((issue) => issue.text))].join(', ')}`,
+      `unknown words in ${part}: ${arrayUnique(issues.map((issue) => issue.text)).join(', ')}`,
     ];
   };
 
@@ -167,21 +178,19 @@ const DEFAULT_RULES: Readonly<Partial<RulesConfig>> = {
 
 // So that `{foo: undefined}` keeps the default `foo`
 const omitUndefined = <Value>(object: Readonly<Record<string, Value | undefined>> = {}) =>
-  Object.fromEntries(
-    Object.entries(object).filter((entry): entry is [string, Value] => entry[1] != null),
-  );
+  mapEntries(object, (key, value) => (value == null ? undefined : [key, value]));
 
 // Like `['body-max-line-length', [RuleConfigSeverity.Error, 'always', 100]]` for `body.maxLine`
 const getLengthRules = (lengths: Lengths = {}) =>
-  Object.entries(lengths).flatMap(([part, partLengths]) =>
-    Object.entries(omitUndefined(partLengths)).map(
-      ([kind, length]): [string, RuleConfigTuple<number>] => [
-        `${part}-${kind.replaceAll(UPPER_CASE_LETTER_REGEX, '-$&').toLowerCase()}-length`,
+  objectEntriesUnsafe(lengths).flatMap(([part, partLengths = {}]) =>
+    objectEntriesUnsafe(partLengths)
+      .filter(isPropertyNotNullish(1))
+      .map(([kind, length]): [string, RuleConfigTuple<number>] => [
+        `${part}-${toKebabCase(kind)}-length`,
         length === false
           ? [RuleConfigSeverity.Disabled]
           : [RuleConfigSeverity.Error, 'always', length],
-      ],
-    ),
+      ]),
   );
 
 const canImportCspellLib = () => {
@@ -214,17 +223,14 @@ const getSpellingRules = (spelling: boolean | SpellingOptions) => {
   );
 };
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value != null;
-
 const hasCspellDependency = (cwd: string) => {
   const packageJsonPath = path.join(cwd, 'package.json');
   const packageJson: unknown =
     fs.existsSync(packageJsonPath) && JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
   return (
-    isRecord(packageJson) &&
+    isPlainObject(packageJson) &&
     [packageJson.dependencies, packageJson.devDependencies].some(
-      (dependencies) => isRecord(dependencies) && 'cspell' in dependencies,
+      (dependencies) => isPlainObject(dependencies) && 'cspell' in dependencies,
     )
   );
 };

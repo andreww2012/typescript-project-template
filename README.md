@@ -30,7 +30,7 @@ Template options:
 - `--ci`: `yes` (default) to set up GitHub Actions like in this repository (checks for every chosen tool, tests on every supported Node.js version, and the changesets release), or `no`
 - `--lychee`: only with `--ci yes`, `no` (default) or `yes` to check links with [lychee](https://lychee.cli.rs) in CI
 - `--guidelines`: how `AGENTS.md` links [the AI guidelines](https://github.com/andreww2012/ai-guidelines), `local` (default) to copy them into `.agents/guidelines.md` or `remote` to link the file on GitHub
-- `--utils`: utility library to install, `@andreww2012/unutils` (default) or `none`
+- `--utils`: utility library to install, [`utilery`](https://npmx.dev/utilery) (default) or `none`
 
 Outside of an interactive terminal (for example in CI), pass all options that have a default, because the CLI can't ask for them there.
 Add `--remote` to also create the repository on GitHub.

@@ -1,5 +1,6 @@
 import {parseArgs} from 'node:util';
 import * as prompts from '@clack/prompts';
+import {mapValues} from 'utilery';
 import {
   DEFAULT_OPTIONS,
   LANGUAGES,
@@ -19,7 +20,7 @@ const TOOL_HINTS: Readonly<Record<(typeof TOOLS)[number], string>> = {
 };
 
 const PARSE_ARGS_OPTIONS = {
-  ...Object.fromEntries(Object.keys(OPTION_FLAGS).map((key) => [key, {type: 'string' as const}])),
+  ...mapValues(OPTION_FLAGS, () => ({type: 'string' as const})),
   help: {type: 'boolean'},
   version: {type: 'boolean'},
 } as const;

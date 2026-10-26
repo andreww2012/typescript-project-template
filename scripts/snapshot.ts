@@ -1,18 +1,18 @@
-import {execFileSync} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import {arrayPartition, setByPath} from '@andreww2012/unutils';
 import type {Creation} from 'bingo';
+import {arrayPartition, setByPath} from 'utilery';
+import {exec, writeJsonFile} from 'utilery/server';
 
 const TEMPLATE_DIRECTORY = path.join(import.meta.dirname, '../template');
 const OUTPUT_PATH = path.join(import.meta.dirname, '../dist/files.json');
 
-const entries = execFileSync(
-  // eslint-disable-next-line sonar/no-os-command-from-path
+const {stdout} = await exec(
   'git',
   ['ls-files', '-z', '--cached', '--others', '--exclude-standard'],
-  {cwd: TEMPLATE_DIRECTORY, encoding: 'utf8'},
-)
+  {spawnOptions: {cwd: TEMPLATE_DIRECTORY}},
+);
+const entries = stdout
   .split('\0')
   .filter(Boolean)
   .flatMap((filePath) => {
@@ -40,5 +40,4 @@ const snapshot = {
   ),
 };
 
-fs.mkdirSync(path.dirname(OUTPUT_PATH), {recursive: true});
-fs.writeFileSync(OUTPUT_PATH, JSON.stringify(snapshot));
+await writeJsonFile(OUTPUT_PATH, snapshot, {indent: undefined, detectIndent: false});
