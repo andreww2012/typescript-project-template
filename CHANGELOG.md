@@ -1,5 +1,21 @@
 # @andreww2012/typescript-project-template
 
+## 0.4.0
+
+### Minor Changes
+
+- [`996c580`](https://github.com/andreww2012/typescript-project-template/commit/996c580a0c34a19a06bc79a6b141fc355f663d7c) - New `--save-exact` option to keep `saveExact: true` in `pnpm-workspace.yaml` and make ESLint require exact dependency versions
+
+- [`efd5656`](https://github.com/andreww2012/typescript-project-template/commit/efd56568b152310ba9539061d540f0f79c9b1194) - New projects get [`utilery`](https://npmx.dev/utilery) instead of `@andreww2012/unutils`, so `--utils` now accepts `utilery` (default) or `none`
+
+- [`3102c79`](https://github.com/andreww2012/typescript-project-template/commit/3102c799fe013966cd42b82393e476291e32a523) - `commitlint.config.ts` of new projects now uses [`@andreww2012/commitlint-config`](https://npmx.dev/@andreww2012/commitlint-config) instead of extending `@commitlint/config-conventional`. Its rules are the same, except that scopes can't have spaces now (like `feat(foo, bar)`), and that commit messages are spell checked if CSpell is used
+
+### Patch Changes
+
+- [`0183e80`](https://github.com/andreww2012/typescript-project-template/commit/0183e809c522c26431b30d7e233748712cacaf29) - Git hooks of new projects run scripts and install dependencies with `pnpm` instead of `@antfu/ni` commands, which only worked if `@antfu/ni` was installed globally
+
+- [`5e7c5fa`](https://github.com/andreww2012/typescript-project-template/commit/5e7c5fa43d45912dde938febd23a95bc6e864c88) - New projects get the AI guidelines from [`@andreww2012/ai-guidelines`](https://npmx.dev/@andreww2012/ai-guidelines) v0.2.6
+
 ## 0.3.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @andreww2012/npm-check-updates-config
 
+## 0.1.1
+
+### Patch Changes
+
+- [`06bbea7`](https://github.com/andreww2012/typescript-project-template/commit/06bbea7946bbf006999fd3f30c9428f8617ef5ca) - Dev dependencies of workspace packages are now shown as dev dependencies, not direct ones, unless any package has them in `dependencies`
+
 ## 0.1.0
 
 ### Minor Changes
