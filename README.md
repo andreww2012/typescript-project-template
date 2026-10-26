@@ -17,7 +17,7 @@ Template options:
 - `--owner`: GitHub user or organization (inferred from the GitHub CLI if you're logged in)
 - `--author`: `package.json` author (defaults to `--owner`)
 - `--description`: short description for `package.json` and `README.md`
-- `--kind`: `app` (default) or `lib`, a published library: it's built with tsdown, its types are checked with [attw](https://github.com/arethetypeswrong/arethetypeswrong.github.io) before publishing, `package.json` isn't private and has `homepage`, `bugs`, `repository`, `exports`, `types` and `files`, and ESLint uses `mode: 'lib'`
+- `--kind`: `app` (default) or `lib`, a published library: it's built with tsdown, its types are checked with [`attw`](https://npmx.dev/@arethetypeswrong/cli) before publishing, `package.json` isn't private and has `homepage`, `bugs`, `repository`, `exports`, `types` and `files`, and ESLint uses `mode: 'lib'`
 - `--changesets`: only for `lib`, `none` (default), `github` (with `@changesets/changelog-github`) or `default` (with the default changelog format)
 - `--contributors`: only for `lib`, `no` (default) or `yes` to set up [all-contributors](https://allcontributors.org)
 - `--node`: the lowest Node.js major version to support, out of those in `engines.node` of `template/package.json` (the lowest one by default); `@types/node` and `target`/`lib` in `tsconfig.json` match it
@@ -51,8 +51,7 @@ It overwrites files with the template versions, *including* `package.json` and `
 ## How it works
 
 The files of new projects live in [`template/`](./template).
-They are completely independent from the files of this repository, which only builds and publishes the CLI:
-the tools here (ESLint, CSpell, knip and so on) ignore `template/` and use their own configs.
+They are completely independent from the files of this repository, which only builds and publishes the CLI: the tools here (ESLint, CSpell, knip and so on) ignore `template/` and use their own configs.
 oxfmt is the exception: it formats `template/` with the template's own config.
 
 Files in `template/` are copied as is, except the parts that depend on the options.
@@ -82,7 +81,7 @@ These files are also changed:
 - `.changeset/config.json`: gets the changelog format
 
 `AGENTS.md` and `.agents/guidelines.md` aren't in `template/`.
-They come from [`@andreww2012/ai-guidelines`](https://github.com/andreww2012/ai-guidelines), so updating this dependency updates them too.
+They come from [`@andreww2012/ai-guidelines`](https://npmx.dev/@andreww2012/ai-guidelines), so updating this dependency updates them too.
 
 Files ignored by git are skipped.
 Symlinks (like `.claude/skills`) are created again with `ln -s`, because npm packages can't contain them.

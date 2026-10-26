@@ -46,7 +46,8 @@ export interface NcuConfigOptions extends RcOptions {
 
   /**
    * Targets by package name, other packages use `target`.
-   * `minor` and `patch` are kept even when the target is set on the command line, like `ncu -t latest`.
+   * `minor` and `patch` are kept even when the target is set on the command line,
+   * like `ncu -t latest`.
    * Merged with the default ones, `false` removes a default
    */
   targets?: Record<string, Target | false>;
@@ -101,7 +102,8 @@ const KEPT_VERSION_PARTS: ReadonlyMap<Target | undefined, ('major' | 'minor')[]>
 const parseFile = (filePath: string, parse: (text: string) => unknown) =>
   fs.existsSync(filePath) ? parse(fs.readFileSync(filePath, 'utf8')) : undefined;
 
-// From `pnpm-workspace.yaml` or `workspaces` of `package.json`, like `{packages: ['./']}` or `['./']`
+// From `pnpm-workspace.yaml` or `workspaces` of `package.json`,
+// like `{packages: ['./']}` or `['./']`
 const getWorkspacePackages = (workspaces: unknown): unknown[] => {
   const packages: unknown = isPlainObject(workspaces) ? workspaces.packages : workspaces;
   return Array.isArray(packages) ? packages : [];
@@ -149,7 +151,7 @@ export const ncuConfig = ({
 
       const {packages = [], name, icon = '📁', priority = 3} = {...DEFAULT_GROUPS[key], ...group};
       const isScope = key.startsWith('@');
-      const label = `${priority === null ? '' : `${priority}. `}${icon} ${name || (isScope ? key.slice(1) : key)}`;
+      const label = `${priority == null ? '' : `${priority}. `}${icon} ${name || (isScope ? key.slice(1) : key)}`;
       return [isScope ? `${key}/*` : key, ...packages].map(
         (packageName) => [packageName, label] as const,
       );

@@ -1,6 +1,6 @@
 # @andreww2012/npm-check-updates-config [![npm](https://img.shields.io/npm/v/@andreww2012/npm-check-updates-config)](https://npmx.dev/@andreww2012/npm-check-updates-config)
 
-[@andreww2012](https://github.com/andreww2012)'s config for [npm-check-updates](https://github.com/raineorshine/npm-check-updates) (ncu), with per-package targets, blocked versions and named groups.
+[@andreww2012](https://github.com/andreww2012)'s config for [npm-check-updates](https://npmx.dev/npm-check-updates) (ncu), with per-package targets, blocked versions and named groups.
 
 ## Usage
 

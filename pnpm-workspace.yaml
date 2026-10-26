@@ -14,6 +14,7 @@ minimumReleaseAge: 960 # 16 hours in minutes
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeStrict: false
 minimumReleaseAgeExclude: # []
+  - '@andreww2012/ai-guidelines@0.2.6'
   - utilery@0.3.0
 
 trustPolicy: no-downgrade

@@ -58,7 +58,7 @@
     "release": "changeset publish"
   },
   "dependencies": {
-    "@andreww2012/ai-guidelines": "^0.2.5",
+    "@andreww2012/ai-guidelines": "^0.2.6",
     "@clack/prompts": "1.8.1",
     "bingo": "0.13.2",
     "utilery": "0.3.0",

@@ -73,7 +73,8 @@ export interface CommitlintConfigOptions extends UserConfig {
   lengths?: Lengths;
 
   /**
-   * Spell checking with CSpell and the CSpell config of the project, `true` uses the default options.
+   * Spell checking with CSpell and the CSpell config of the project,
+   * `true` uses the default options.
    * Enabled by default if `cspell` is in `dependencies` or `devDependencies` of `package.json`.
    * Needs `cspell-lib`, an optional peer dependency
    */

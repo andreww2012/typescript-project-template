@@ -172,8 +172,8 @@ importers:
   .:
     dependencies:
       '@andreww2012/ai-guidelines':
-        specifier: ^0.2.5
-        version: 0.2.5
+        specifier: ^0.2.6
+        version: 0.2.6
       '@clack/prompts':
         specifier: 1.8.1
         version: 1.8.1
@@ -321,8 +321,8 @@ packages:
   '@altano/repository-tools@2.1.1':
     resolution: {integrity: sha512-YFVhwoSjwkERQoopw3lX/TaPIDud0m6ac/Z51FoQ3YEPf0OaxFxpofbcHO0E2mTJ0lvmuRArIMUP9Pz2jpTMhg==}
 
-  '@andreww2012/ai-guidelines@0.2.5':
-    resolution: {integrity: sha512-DSD+acal4K+yApBcq5+rUB+UiRovydS0d5gZNR55OEpOHLLq0mt2juMLw1+ICKwBBL+DscOqbwa04ixE41OXhw==}
+  '@andreww2012/ai-guidelines@0.2.6':
+    resolution: {integrity: sha512-c4bZMCImW1WnZDU7Bxbhc/dDUkaIcFqMqbZ3mRVD0by5tnJaUvqTNWONJAiVKi9kzdnR8fDDB2FrqI3aSKKomA==}
     engines: {node: ^24.18.0 || >=26.4.0}
     hasBin: true
 
@@ -5750,7 +5750,7 @@ snapshots:
 
   '@altano/repository-tools@2.1.1': {}
 
-  '@andreww2012/ai-guidelines@0.2.5':
+  '@andreww2012/ai-guidelines@0.2.6':
     dependencies:
       '@clack/prompts': 1.8.1
       cleye: 2.7.0

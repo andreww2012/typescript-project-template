@@ -15,7 +15,7 @@
   "[javascript][typescript][typescriptreact][vue][css][scss][postcss]": {
     // Note: do NOT set `editor.formatOnSaveMode` to any value with `modifications` -
     // @if prettier
-    // may incorrectly run prettier with `prettier-disabled` directives
+    // may incorrectly run prettier with `prettier-ignore` directives
     // @endif
     // @if oxfmt
     // may incorrectly run the formatter with `prettier-ignore`/`oxfmt-ignore` directives
