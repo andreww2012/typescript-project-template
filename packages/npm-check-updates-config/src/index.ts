@@ -99,6 +99,9 @@ const KEPT_VERSION_PARTS: ReadonlyMap<Target | undefined, ('major' | 'minor')[]>
   ['patch', ['major', 'minor']],
 ]);
 
+// Same as ncu skips when it looks for workspace packages
+const IGNORED_PACKAGE_GLOBS: readonly string[] = ['**/node_modules/**', '**/.pnpm-store/**'];
+
 const parseFile = (filePath: string, parse: (text: string) => unknown) =>
   fs.existsSync(filePath) ? parse(fs.readFileSync(filePath, 'utf8')) : undefined;
 
@@ -109,11 +112,32 @@ const getWorkspacePackages = (workspaces: unknown): unknown[] => {
   return Array.isArray(packages) ? packages : [];
 };
 
-const groupByDependencyType = (packageJson: unknown) => {
+// From files like `packages/foo/package.json` for `packages/*`
+const readWorkspaceManifests = (cwd: string, workspacePackages: unknown[]) =>
+  fs
+    .globSync(
+      workspacePackages.flatMap((glob) =>
+        typeof glob === 'string' ? path.posix.join(glob, 'package.json') : [],
+      ),
+      {cwd, exclude: IGNORED_PACKAGE_GLOBS},
+    )
+    .map((filePath) => parseFile(path.join(cwd, filePath), JSON.parse));
+
+const getDependencyNames = (manifest: unknown, field: string) => {
+  const dependencies: unknown = isPlainObject(manifest) ? manifest[field] : undefined;
+  return isPlainObject(dependencies) ? Object.keys(dependencies) : [];
+};
+
+// ncu doesn't tell which package it checks, so a package is a dev dependency
+// only if no package has it in `dependencies`
+const groupByDependencyType = (manifests: unknown[]) => {
+  const directDependencies = new Set(
+    manifests.flatMap((manifest) => getDependencyNames(manifest, 'dependencies')),
+  );
   const devDependencies = new Set(
-    isPlainObject(packageJson) && isPlainObject(packageJson.devDependencies)
-      ? Object.keys(packageJson.devDependencies)
-      : [],
+    manifests
+      .flatMap((manifest) => getDependencyNames(manifest, 'devDependencies'))
+      .filter((packageName) => !directDependencies.has(packageName)),
   );
 
   return (packageName: string) =>
@@ -135,7 +159,9 @@ export const ncuConfig = ({
     ...getWorkspacePackages(parseFile(path.join(cwd, 'pnpm-workspace.yaml'), parseYaml)),
     ...getWorkspacePackages(isPlainObject(packageJson) && packageJson.workspaces),
   ];
-  const groupOtherPackage = groupFunction || groupByDependencyType(packageJson);
+  const groupOtherPackage =
+    groupFunction ||
+    groupByDependencyType([packageJson, ...readWorkspaceManifests(cwd, workspacePackages)]);
   const targetsByPackage = new Map(
     Object.entries({...DEFAULT_TARGETS, ...targets}).flatMap(([packageName, packageTarget]) =>
       packageTarget === false ? [] : [[packageName, packageTarget] as const],

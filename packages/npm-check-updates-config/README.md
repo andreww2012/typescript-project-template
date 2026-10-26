@@ -43,7 +43,8 @@ export default ncuConfig({
   - `ESLint` with `@eslint/*`, `eslint` and `eslint-config-un`.
   - `cspell` with `@cspell/*` and `cspell`.
   - `vitest` with `@vitest/*` and `vitest`.
-- Packages that aren't in `groups` are split into `1. 📦 Direct dependencies` and `2. 🧑‍💻 Dev dependencies`, as listed in `package.json`.
+- Packages that aren't in `groups` are split into `1. 📦 Direct dependencies` and `2. 🧑‍💻 Dev dependencies`, as listed in `package.json` of the root and workspace packages.
+  ncu doesn't tell which package it checks, so a package is only a dev dependency if no package has it in `dependencies`.
 
 ## Options
 

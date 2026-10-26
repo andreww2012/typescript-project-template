@@ -13,10 +13,9 @@ const createProject = (files: Record<string, unknown> = {}) => {
   });
 
   Object.entries(files).forEach(([fileName, content]) => {
-    fs.writeFileSync(
-      path.join(directory, fileName),
-      typeof content === 'string' ? content : JSON.stringify(content),
-    );
+    const filePath = path.join(directory, fileName);
+    fs.mkdirSync(path.dirname(filePath), {recursive: true});
+    fs.writeFileSync(filePath, typeof content === 'string' ? content : JSON.stringify(content));
   });
 
   return directory;
@@ -153,6 +152,37 @@ describe('groups', () => {
     expect(getGroup(config, 'typescript')).toBe('2. 🧑‍💻 Dev dependencies');
     expect(getGroup(config, 'zod')).toBe('1. 📦 Direct dependencies');
     expect(getGroup(createConfig(), 'typescript')).toBe('1. 📦 Direct dependencies');
+  });
+
+  it('splits dependencies of workspace packages too', () => {
+    const config = createConfig(
+      {},
+      {
+        'pnpm-workspace.yaml': 'packages:\n  - packages/**\n',
+        'package.json': {devDependencies: {typescript: '6.0.0'}},
+        'packages/foo/package.json': {
+          dependencies: {zod: '4.0.0'},
+          devDependencies: {tsdown: '0.23.0'},
+        },
+        'packages/foo/node_modules/bar/package.json': {dependencies: {tsdown: '0.23.0'}},
+      },
+    );
+
+    expect(getGroup(config, 'typescript')).toBe('2. 🧑‍💻 Dev dependencies');
+    expect(getGroup(config, 'tsdown')).toBe('2. 🧑‍💻 Dev dependencies');
+    expect(getGroup(config, 'zod')).toBe('1. 📦 Direct dependencies');
+  });
+
+  it('treats packages as direct dependencies if any workspace package has them as such', () => {
+    const config = createConfig(
+      {},
+      {
+        'package.json': {workspaces: ['packages/*'], dependencies: {utilery: '0.3.0'}},
+        'packages/foo/package.json': {devDependencies: {utilery: '0.3.0'}},
+      },
+    );
+
+    expect(getGroup(config, 'utilery')).toBe('1. 📦 Direct dependencies');
   });
 
   it('merges `groups` with the default ones', () => {
