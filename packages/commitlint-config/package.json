@@ -1,6 +1,6 @@
 {
   "name": "@andreww2012/commitlint-config",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "@andreww2012's configurable commitlint config",
   "keywords": [
     "commitlint",
