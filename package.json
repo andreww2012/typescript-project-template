@@ -64,14 +64,13 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
+    "@andreww2012/commitlint-config": "workspace:*",
     "@andreww2012/npm-check-updates-config": "workspace:*",
     "@andreww2012/unutils": "0.2.0",
     "@antfu/ni": "30.6.0",
     "@changesets/changelog-github": "1.0.1",
     "@changesets/cli": "3.0.3",
     "@commitlint/cli": "21.2.3",
-    "@commitlint/config-conventional": "21.2.3",
-    "@commitlint/types": "21.2.3",
     "@eslint/config-inspector": "3.5.0",
     "@types/node": "24.19.2",
     "@vitest/coverage-v8": "5.0.5",

@@ -1,12 +1,14 @@
-# @andreww2012/npm-check-updates-config
+# @andreww2012/npm-check-updates-config [![npm](https://img.shields.io/npm/v/@andreww2012/npm-check-updates-config)](https://npmx.dev/@andreww2012/npm-check-updates-config)
 
 [@andreww2012](https://github.com/andreww2012)'s config for [npm-check-updates](https://github.com/raineorshine/npm-check-updates) (ncu), with per-package targets, blocked versions and named groups.
 
 ## Usage
 
 ```sh
-pnpm add -D @andreww2012/npm-check-updates-config npm-check-updates
+pnpm i -D @andreww2012/npm-check-updates-config npm-check-updates
 ```
+
+Replace `pnpm i` with the installation command of your package manager.
 
 Create `.ncurc.js` (or `.ncurc.mjs` if `package.json` has no `"type": "module"`):
 

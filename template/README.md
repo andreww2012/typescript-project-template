@@ -103,7 +103,7 @@ Review these things and you're good to go:
 
 - [ ] Review [the `.gitignore` file](./.gitignore)
 <!-- @if commitlint -->
-- [ ] Review [the `commitlint` config file](./commitlint.config.ts)
+- [ ] Review [the `commitlint` config file](./commitlint.config.ts), see [its options](https://github.com/andreww2012/typescript-project-template/tree/main/packages/commitlint-config#options)
 <!-- @endif -->
 <!-- @if lefthook -->
 - [ ] Review [the `lefthook` config file](./lefthook.yml)

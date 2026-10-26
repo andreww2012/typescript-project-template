@@ -1,4 +1,4 @@
-# @andreww2012/typescript-project-template
+# @andreww2012/typescript-project-template [![npm](https://img.shields.io/npm/v/@andreww2012/typescript-project-template)](https://npmx.dev/@andreww2012/typescript-project-template)
 
 This is [@andreww2012](https://github.com/andreww2012)'s personal generic TypeScript project template, powered by [Bingo](https://create.bingo).
 
@@ -111,6 +111,7 @@ nr dev --directory ../my-test-project
 
 This repository is a pnpm workspace, and [`packages/`](./packages) has other packages published from it:
 
+- [`@andreww2012/commitlint-config`](./packages/commitlint-config): the commitlint config, used in `commitlint.config.ts` here and in new projects
 - [`@andreww2012/npm-check-updates-config`](./packages/npm-check-updates-config): the npm-check-updates config, used in `.ncurc.js` here and in new projects
 
 Changesets releases them together with the template.
