@@ -1,5 +1,7 @@
 # shamefullyHoist: true
+# @if save-exact
 saveExact: true
+# @endif
 # @if pnpm12
 autoDedupe: true
 saveTypes: true

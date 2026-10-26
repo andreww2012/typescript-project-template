@@ -36,6 +36,15 @@ export default eslintConfig({
         ],
       },
     },
+    nodeDependencies: {
+      enforceAbsoluteVersion: {
+        dependencies: 'always',
+        devDependencies: 'always',
+        overridePackages: {
+          '@andreww2012/ai-guidelines': 'ignore',
+        },
+      },
+    },
 
     // False positives:
     zod: false,

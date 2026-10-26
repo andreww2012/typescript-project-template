@@ -46,6 +46,11 @@ export default eslintConfig({
     markdown: {
       configSentencesPerLine: true,
     },
+    // @if save-exact
+    nodeDependencies: {
+      enforceAbsoluteVersion: true,
+    },
+    // @endif
 
     // False positives:
     // @if contributors

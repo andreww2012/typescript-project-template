@@ -110,6 +110,18 @@ export const promptForOptions = async (cliArguments: string[]) => {
         }),
     },
     {
+      key: 'save-exact',
+      ask: () =>
+        prompts.select({
+          message: 'Use exact dependency versions?',
+          options: [
+            {value: 'yes', label: 'Yes', hint: 'pnpm saves them and ESLint requires them'},
+            {value: 'no', label: 'No', hint: 'pnpm saves ^ ranges'},
+          ],
+          initialValue: DEFAULT_OPTIONS['save-exact'],
+        }),
+    },
+    {
       key: 'formatter',
       ask: () =>
         prompts.select({

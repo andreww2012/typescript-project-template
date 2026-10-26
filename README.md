@@ -22,6 +22,7 @@ Template options:
 - `--contributors`: only for `lib`, `no` (default) or `yes` to set up [all-contributors](https://allcontributors.org)
 - `--node`: the lowest Node.js major version to support, out of those in `engines.node` of `template/package.json` (the lowest one by default); `@types/node` and `target`/`lib` in `tsconfig.json` match it
 - `--pnpm`: `12` (default) or `11`
+- `--save-exact`: `yes` (default) to use exact dependency versions: pnpm saves them instead of `^` ranges, and ESLint requires them in `package.json`; or `no`
 - `--formatter`: `oxfmt` (default) or `prettier`
 - `--ts-extensions`: `yes` (default) to use `.ts` extensions in imports, enforced by ESLint, or `no` to use `.js` ones; with `yes`, `tsconfig.json` has `allowImportingTsExtensions` and `noEmit`, because TypeScript can't rewrite `.ts` in imports like `@/foo.ts` when it builds the code
 - `--tools`: comma-separated tools to set up: `knip`, `cspell`, `commitlint`, `lefthook`, `publint` (these are the default) and `vitest`; `publint` is only for `lib`: [publint](https://publint.dev) checks the package before publishing, like attw

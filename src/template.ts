@@ -338,6 +338,7 @@ export const template = createTemplate({
       ...(ci === 'yes' && updater === 'ncu' ? ['actions-up'] : []),
       ...(ci === 'yes' && parsedOptions.lychee === 'yes' ? ['lychee'] : []),
       ...(parsedOptions.guidelines === 'local' ? ['local-guidelines'] : []),
+      ...(parsedOptions['save-exact'] === 'yes' ? ['save-exact'] : []),
       ...(parsedOptions['ts-extensions'] === 'yes' ? ['ts-extensions'] : []),
     ]);
     const author = options.author || options.owner;

@@ -48,6 +48,7 @@ export const optionsSchema = z.object({
   // Its values and default come from `engines.node` of `template/package.json`
   node: z.string().optional(),
   pnpm: z.literal(['12', '11']).default('12'),
+  'save-exact': z.literal(['yes', 'no']).default('yes'),
   formatter: z.literal(['oxfmt', 'prettier']).default('oxfmt'),
   'ts-extensions': z.literal(['yes', 'no']).default('yes'),
   tools: commaSeparatedList(TOOLS).default(['knip', 'cspell', 'commitlint', 'lefthook', 'publint']),
@@ -87,6 +88,11 @@ export const OPTION_FLAGS = {
     'lowest supported Node.js major version, out of those in `engines.node` of this template (defaults to the lowest one)',
   ),
   pnpm: optionsSchema.shape.pnpm.optional().describe('major version of pnpm'),
+  'save-exact': optionsSchema.shape['save-exact']
+    .optional()
+    .describe(
+      'whether to use exact dependency versions: pnpm saves them and ESLint requires them in `package.json`',
+    ),
   tools: z
     .string()
     .optional()
