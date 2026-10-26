@@ -8,9 +8,9 @@ pre-push:
     cspell:
       run: pnpm exec cspell --exclude '**/.*' --no-must-find-files {push_files}
     knip:
-      run: nr knip
+      run: pnpm run knip
     types:
-      run: nr ts
+      run: pnpm run ts
 
 pre-commit:
   parallel: true

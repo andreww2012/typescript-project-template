@@ -17,16 +17,16 @@ pre-push:
     # @endif
     # @if knip
     knip:
-      run: nr knip
+      run: pnpm run knip
     # @endif
     types:
-      run: nr ts
+      run: pnpm run ts
 
 post-merge: &install-on-lockfile-change
   commands:
     install:
       glob: '{pnpm-lock.yaml,pnpm-workspace.yaml,patches/*}'
-      run: ni
+      run: pnpm install
 post-checkout: *install-on-lockfile-change
 
 pre-commit:
