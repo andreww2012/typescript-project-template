@@ -22,7 +22,7 @@ import {
 
 type CreatedEntry = Creation['files'][string];
 
-const PNPM_11_VERSION = '11.28.6';
+const PNPM_11_VERSION = '11.28.8';
 
 const TYPES_NODE = '@types/node';
 
