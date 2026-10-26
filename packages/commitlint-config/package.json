@@ -38,11 +38,11 @@
     "conventional-changelog-conventionalcommits": "10.4.1"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "21.2.3",
-    "@commitlint/lint": "21.2.3",
-    "@commitlint/load": "21.2.3",
+    "@commitlint/config-conventional": "21.2.4",
+    "@commitlint/lint": "21.2.4",
+    "@commitlint/load": "21.2.4",
     "cspell-lib": "10.4.0",
-    "tsdown": "0.23.1",
+    "tsdown": "0.23.2",
     "utilery": "0.3.0"
   },
   "peerDependencies": {
