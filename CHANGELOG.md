@@ -1,5 +1,11 @@
 # @andreww2012/typescript-project-template
 
+## 0.4.1
+
+### Patch Changes
+
+- [`b739b94`](https://github.com/andreww2012/typescript-project-template/commit/b739b94fd44d703874415a9c67c9ddd8b9e00a8a) - Git hooks of new projects only install dependencies when the lockfile, `pnpm-workspace.yaml` or patches change, and do it after a rebase instead of installing the dependencies of its base first
+
 ## 0.4.0
 
 ### Minor Changes
