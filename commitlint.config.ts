@@ -1,3 +1,5 @@
 import {commitlintConfig} from '@andreww2012/commitlint-config';
 
-export default commitlintConfig();
+export default commitlintConfig({
+  coAuthors: {deny: ['ai']},
+});
