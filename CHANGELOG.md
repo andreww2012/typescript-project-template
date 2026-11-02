@@ -1,5 +1,15 @@
 # @andreww2012/typescript-project-template
 
+## 0.5.0
+
+### Minor Changes
+
+- [`983bb40`](https://github.com/andreww2012/typescript-project-template/commit/983bb401316feef21936a4baabc771f5e3af8a4e) - Made `commitlint` in new projects forbid AI tools as co-authors in `Co-authored-by` trailers by default
+
+### Patch Changes
+
+- [`b739b94`](https://github.com/andreww2012/typescript-project-template/commit/b739b94fd44d703874415a9c67c9ddd8b9e00a8a) - Git hooks of new projects only install dependencies when the lockfile, `pnpm-workspace.yaml` or patches change, and do it after a rebase instead of installing the dependencies of its base first
+
 ## 0.4.0
 
 ### Minor Changes
