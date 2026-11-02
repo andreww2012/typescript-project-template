@@ -6,7 +6,7 @@ import path from 'node:path';
 import lint from '@commitlint/lint';
 import load from '@commitlint/load';
 import {RuleConfigSeverity} from '@commitlint/types';
-import {type CommitlintConfigOptions, commitlintConfig} from './index.ts';
+import {type CoAuthorsOptions, type CommitlintConfigOptions, commitlintConfig} from './index.ts';
 
 const loadConfig = (options?: CommitlintConfigOptions, packageJson?: unknown) => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'commitlint-config-'));
@@ -53,6 +53,7 @@ describe('default config', () => {
     'fix(foo,bar): Vue support in docs, etc.',
     `docs: ${'a'.repeat(114)}`,
     `chore: update\n\n${'a'.repeat(200)}`,
+    'feat: add a feature\n\nCo-authored-by: Foo <foo@example.com>',
   ])('accepts %j', async (message) => {
     await expect(lintMessage(message)).resolves.toStrictEqual({errors: [], warnings: []});
   });
@@ -212,6 +213,101 @@ describe('spelling', () => {
     const {errors} = await getLintOutcome('feat: add featuer and featuer', {spelling: true});
 
     expect(errors.map(({message}) => message)).toStrictEqual(['unknown words in subject: featuer']);
+  });
+});
+
+const toTrailers = (...coAuthors: string[]) =>
+  coAuthors.map((coAuthor) => `Co-authored-by: ${coAuthor}`).join('\n');
+
+const toErrors = (...coAuthors: string[]) => [
+  `co-authors are not allowed: ${coAuthors.join(', ')}`,
+];
+
+const getErrors = async (message: string, coAuthors: CommitlintConfigOptions['coAuthors']) => {
+  const {errors} = await getLintOutcome(message, {coAuthors});
+  return errors.map((error) => error.message);
+};
+
+describe('co-authors', () => {
+  const FOO = 'Foo <foo@example.com>';
+  const CLAUDE = 'Claude Opus 5.5 <noreply@anthropic.com>';
+  // eslint-disable-next-line no-secrets/no-secrets -- An email
+  const COPILOT = 'Copilot <175728472+Copilot@users.noreply.github.com>';
+  const CURSOR = 'Cursor <cursoragent@cursor.com>';
+
+  it.each([
+    {message: `feat: add a feature\n\n${toTrailers(FOO)}`, errors: ['co-authored-by']},
+    {message: 'feat: add a feature\n\nCo-Authored-By: Foo', errors: ['co-authored-by']},
+    {message: 'feat: add a feature\n\nco-authored-by : Foo', errors: ['co-authored-by']},
+    {message: `feat: add a feature\n\nCloses #1\n${toTrailers(FOO)}`, errors: ['co-authored-by']},
+    {message: `feat: add a feature\n\n${toTrailers(FOO)}\n\nThe body`, errors: ['co-authored-by']},
+    {message: `feat: add a feature\n\nSigned-off-by: ${FOO}`, errors: []},
+    {message: 'docs: update\n\nHow to add `Co-authored-by: Name <email>`', errors: []},
+  ])('finds co-authors in $message', async ({message, errors}) => {
+    await expect(lintMessage(message, {coAuthors: false})).resolves.toStrictEqual({
+      errors,
+      warnings: [],
+    });
+  });
+
+  it.each<{coAuthors: CommitlintConfigOptions['coAuthors']; errors: string[]}>([
+    {coAuthors: true, errors: []},
+    {coAuthors: false, errors: toErrors(FOO, CLAUDE, COPILOT, CURSOR)},
+    {coAuthors: {}, errors: toErrors(FOO, CLAUDE, COPILOT, CURSOR)},
+    {coAuthors: {deny: ['ai']}, errors: toErrors(CLAUDE, COPILOT, CURSOR)},
+    {coAuthors: {deny: ['ai', /^Foo\b/u]}, errors: toErrors(FOO, CLAUDE, COPILOT, CURSOR)},
+    {coAuthors: {deny: ['claude', 'cursor']}, errors: toErrors(CLAUDE, CURSOR)},
+    {coAuthors: {deny: ['ai'], allow: ['copilot']}, errors: toErrors(CLAUDE, CURSOR)},
+    {coAuthors: {allow: [/@example\.com>$/u]}, errors: toErrors(CLAUDE, COPILOT, CURSOR)},
+    {coAuthors: {allow: ['ai']}, errors: toErrors(FOO)},
+  ])('forbids co-authors with `coAuthors: $coAuthors`', async ({coAuthors, errors}) => {
+    const message = `feat: add a feature\n\n${toTrailers(FOO, CLAUDE, COPILOT, CURSOR)}`;
+
+    await expect(getErrors(message, coAuthors)).resolves.toStrictEqual(errors);
+  });
+
+  it.each([
+    {coAuthor: 'Claude <noreply@anthropic.com>', isAi: true},
+    {coAuthor: 'aider (gpt-4o) <aider@aider.chat>', isAi: true},
+    {coAuthor: 'Copilot <copilot@github.com>', isAi: true},
+    // eslint-disable-next-line no-secrets/no-secrets -- An email
+    {coAuthor: 'Copilot App <223556219+Copilot@users.noreply.github.com>', isAi: true},
+    {
+      coAuthor: 'coderabbitai[bot] <136622811+coderabbitai[bot]@users.noreply.github.com>',
+      isAi: true,
+    },
+    {
+      coAuthor: 'gemini-code-assist[bot] <gemini-code-assist[bot]@users.noreply.github.com>',
+      isAi: true,
+    },
+    {coAuthor: 'Claude <claude@example.com>', isAi: false},
+    {coAuthor: 'Jules <jules@example.com>', isAi: false},
+    {coAuthor: 'Foo <foo+noreply@anthropic.com>', isAi: false},
+    {coAuthor: 'Foo <noreply@anthropic.com.example>', isAi: false},
+  ])('matches $coAuthor with the `ai` preset: $isAi', async ({coAuthor, isAi}) => {
+    const message = `feat: add a feature\n\n${toTrailers(coAuthor)}`;
+
+    await expect(getErrors(message, {deny: ['ai']})).resolves.toStrictEqual(
+      isAi ? toErrors(coAuthor) : [],
+    );
+  });
+
+  it('works with patterns that have the `g` flag', async () => {
+    const message = `feat: add a feature\n\n${toTrailers('Claude Code <noreply@anthropic.com>', 'Claude <noreply@anthropic.com>')}`;
+
+    // With `test`, the last match would start after the end of the previous one
+    await expect(getErrors(message, {deny: [/anthropic/gu]})).resolves.toStrictEqual(
+      toErrors('Claude Code <noreply@anthropic.com>', 'Claude <noreply@anthropic.com>'),
+    );
+  });
+
+  it('throws on unknown presets', async () => {
+    // @ts-expect-error -- Not a preset
+    const coAuthors: CoAuthorsOptions = {deny: ['claud']};
+
+    await expect(
+      getErrors(`feat: add a feature\n\n${toTrailers(CLAUDE)}`, coAuthors),
+    ).rejects.toThrow('Unknown co-author preset `claud`');
   });
 });
 

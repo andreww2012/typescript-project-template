@@ -2,6 +2,20 @@ import type {CSpellSettings} from 'cspell';
 
 const GLOBALLY_IGNORED_WORDS: Readonly<Record<string, string[]>> = {
   names: ['andreww', 'unutils', 'utilery', 'verkit'],
+  aiTools: [
+    'bito',
+    'coderabbit',
+    'coderabbitai',
+    'greptile',
+    'junie',
+    'kiro',
+    'opencode',
+    'openhands',
+    'qodo',
+    'qwen',
+    'roomote',
+    'trae',
+  ],
   misc: ['knipignore', 'ncurc'],
   englishIshWords: [],
 };

@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type configConventional from '@commitlint/config-conventional';
 import {
-  type AsyncRule,
   type Plugin,
   RuleConfigSeverity,
   type RuleConfigTuple,
@@ -11,14 +10,16 @@ import {
 } from '@commitlint/types';
 import createConventionalCommitsPreset from 'conventional-changelog-conventionalcommits';
 import {
-  allUnionMembers,
-  arrayUnique,
+  invariant,
   isPlainObject,
   isPropertyNotNullish,
   mapEntries,
   objectEntriesUnsafe,
   toKebabCase,
 } from 'utilery';
+import {type CoAuthorsOptions, coAuthoredByRule} from './rules/co-authored-by.ts';
+import {scopeNoWhitespaceRule} from './rules/scope-no-whitespace.ts';
+import {SPELLING_PARTS, type SpellingPart, createSpellingRule} from './rules/spelling.ts';
 
 /** Lengths in characters, `false` disables a rule */
 export interface PartLengths {
@@ -40,17 +41,6 @@ export interface Lengths {
   footer?: MultilinePartLengths;
 }
 
-type SpellingPart = 'header' | 'type' | 'scope' | 'subject' | 'body' | 'footer';
-
-const SPELLING_PARTS = allUnionMembers<SpellingPart, {readonly: true}>()([
-  'header',
-  'type',
-  'scope',
-  'subject',
-  'body',
-  'footer',
-]);
-
 export interface SpellingOptions {
   /**
    * Parts to check: `true` reports errors, `'warn'` reports warnings and `false` skips a part.
@@ -63,6 +53,13 @@ export interface SpellingOptions {
 }
 
 export interface CommitlintConfigOptions extends UserConfig {
+  /**
+   * Co-authors to forbid in `Co-authored-by` trailers: `false` forbids all of them,
+   * and an object only some of them. Sets the `co-authored-by` rule
+   * @default true
+   */
+  coAuthors?: boolean | CoAuthorsOptions;
+
   /**
    * Directory with `package.json`
    * @default process.cwd()
@@ -106,8 +103,6 @@ const DEFAULT_LENGTHS: Readonly<Lengths> = {
   footer: {maxLine: 100},
 };
 
-const WHITESPACE_REGEX = /\s/u;
-
 const DEFAULT_SPELLING_CHECK: Readonly<Record<SpellingPart, boolean | 'warn'>> = {
   // It has `type`, `scope` and `subject` in it, so their mistakes would be reported twice
   header: false,
@@ -126,37 +121,9 @@ const SPELLING_SEVERITIES: ReadonlyMap<unknown, RuleConfigSeverity> = new Map<
   ['warn', RuleConfigSeverity.Warning],
 ]);
 
-// Words to ignore are passed as the rule value
-const createSpellingRule =
-  (part: SpellingPart): AsyncRule<readonly string[]> =>
-  async (commit, _when, ignoreWords = []) => {
-    const text = commit[part];
-    if (!text) {
-      return [true];
-    }
-
-    const {spellCheckDocument} = await import('cspell-lib');
-    const {issues} = await spellCheckDocument(
-      {
-        // With an empty URI, CSpell looks for its config in the current directory
-        uri: '',
-        text,
-        languageId: 'plaintext',
-      },
-      {generateSuggestions: false},
-      {ignoreWords: [...ignoreWords]},
-    );
-    return [
-      issues.length === 0,
-      `unknown words in ${part}: ${arrayUnique(issues.map((issue) => issue.text)).join(', ')}`,
-    ];
-  };
-
 const PLUGIN_RULES: Readonly<Plugin['rules']> = {
-  'scope-no-whitespace': ({scope}) => [
-    scope == null || !WHITESPACE_REGEX.test(scope),
-    'scopes must be separated with `,` only, without spaces',
-  ],
+  'co-authored-by': coAuthoredByRule,
+  'scope-no-whitespace': scopeNoWhitespaceRule,
   ...Object.fromEntries(
     SPELLING_PARTS.map((part) => [`${part}-spelling`, createSpellingRule(part)]),
   ),
@@ -207,13 +174,12 @@ const getSpellingRules = (spelling: boolean | SpellingOptions) => {
   if (!spelling) {
     return [];
   }
-  if (!canImportCspellLib()) {
-    throw new Error(
-      'Spell checking (the `spelling` option, enabled by default if `cspell` is in `package.json`) ' +
-        'needs `cspell-lib` v10, which is usually installed with `cspell`. ' +
-        'Install `cspell-lib` or set `spelling` to `false`',
-    );
-  }
+  invariant(
+    canImportCspellLib(),
+    'Spell checking (the `spelling` option, enabled by default if `cspell` is in `package.json`) ' +
+      'needs `cspell-lib` v10, which is usually installed with `cspell`. ' +
+      'Install `cspell-lib` or set `spelling` to `false`',
+  );
 
   const {check, ignoreWords = []}: SpellingOptions = spelling === true ? {} : spelling;
   return Object.entries({...DEFAULT_SPELLING_CHECK, ...omitUndefined(check)}).map(
@@ -237,6 +203,7 @@ const hasCspellDependency = (cwd: string) => {
 };
 
 export const commitlintConfig = ({
+  coAuthors = true,
   cwd = process.cwd(),
   lengths,
   plugins = [],
@@ -278,6 +245,11 @@ export const commitlintConfig = ({
     ],
     ...Object.fromEntries([...getLengthRules(DEFAULT_LENGTHS), ...getLengthRules(lengths)]),
     ...Object.fromEntries(getSpellingRules(spelling)),
+    ...(coAuthors !== true && {
+      'co-authored-by': [RuleConfigSeverity.Error, 'never', coAuthors || {}],
+    }),
     ...omitUndefined(rules),
   },
 });
+
+export {type CoAuthorsOptions} from './rules/co-authored-by.ts';
