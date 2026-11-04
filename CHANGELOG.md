@@ -1,5 +1,11 @@
 # @andreww2012/typescript-project-template
 
+## 0.5.1
+
+### Patch Changes
+
+- [`b21b832`](https://github.com/andreww2012/typescript-project-template/commit/b21b83251270d31476d825f94d81705b080d78f8) - Fixed the `commit-msg` hook of new projects failing in a git worktree when the main repository's path has spaces
+
 ## 0.5.0
 
 ### Minor Changes
