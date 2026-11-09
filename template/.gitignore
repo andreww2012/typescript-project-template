@@ -1,12 +1,11 @@
 ### `typescript-project-template` additions:
 
-.claude/worktrees/
 # @if lychee
 .lycheecache
 .lychee.report.md
 # @endif
 
-### Node.JS gitignore: https://github.com/github/gitignore/blob/0e5d690153ca3da8a4a1aef2d053406f408f531c/Node.gitignore
+### Node.JS gitignore: https://github.com/github/gitignore/blob/8ba69a4220df77b696fe97b60fb70eb668fb00e1/Node.gitignore
 
 # Logs
 logs
@@ -93,6 +92,9 @@ out
 dist
 .output
 
+# NitroJS
+.nitro/
+
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and not Next.js
@@ -158,7 +160,7 @@ vite.config.ts.timestamp-*
 # Turbo Repo
 .turbo
 
-### MacOS gitignore: https://github.com/github/gitignore/blob/0e5d690153ca3da8a4a1aef2d053406f408f531c/Global/macOS.gitignore
+### MacOS gitignore: https://github.com/github/gitignore/blob/8ba69a4220df77b696fe97b60fb70eb668fb00e1/Global/macOS.gitignore
 
 # General
 .DS_Store
@@ -218,7 +220,7 @@ Backups.backupdb
 MobileBackups.trash
 tmbootpicker.efi
 
-### JetBrains gitignore: https://github.com/github/gitignore/blob/0e5d690153ca3da8a4a1aef2d053406f408f531c/Global/JetBrains.gitignore
+### JetBrains gitignore: https://github.com/github/gitignore/blob/8ba69a4220df77b696fe97b60fb70eb668fb00e1/Global/JetBrains.gitignore
 
 # Covers JetBrains IDEs: IntelliJ, GoLand, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
@@ -308,7 +310,10 @@ http-client.private.env.json
 # Github Copilot persisted session migrations, see: https://github.com/microsoft/copilot-intellij-feedback/issues/712#issuecomment-3322062215
 .idea/**/copilot.data.migration.*.xml
 
-### Agents gitignore: https://github.com/github/gitignore/blob/0e5d690153ca3da8a4a1aef2d053406f408f531c/Global/Agents.gitignore
+# Kubernetes Plugin
+.idea/kubernetes/configs/kubeconfig_*
+
+### Agents gitignore: https://github.com/github/gitignore/blob/8ba69a4220df77b696fe97b60fb70eb668fb00e1/Global/Agents.gitignore
 
 # AI agents and assistants
 #
@@ -317,7 +322,7 @@ http-client.private.env.json
 # shared with a team, so only uncomment them if they are local-only in your
 # project.
 
-# GEMINI.md
+# PLAN.md
 # WARP.md
 # CRUSH.md
 # QWEN.md
@@ -336,13 +341,20 @@ http-client.private.env.json
 # Claude Code
 .claude/*.local.json
 .claude/**/*.log
+.claude/worktrees/
 CLAUDE.local.md
 # .claude/
 
 # Gemini CLI
+# GEMINI.md
 gemini-debug.log
 .gemini-clipboard/
 # .gemini/
+
+# Mistral Vibe
+# .vibe/
+# .vibe/config.toml
+# .vibe/hooks.toml
 
 # Cursor AI
 # .cursorrules
