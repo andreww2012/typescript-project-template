@@ -55,7 +55,8 @@ export interface SpellingOptions {
 export interface CommitlintConfigOptions extends UserConfig {
   /**
    * Co-authors to forbid in `Co-authored-by` trailers: `false` forbids all of them,
-   * and an object only some of them. Sets the `co-authored-by` rule
+   * and an object only some of them.
+   * Sets the `co-authored-by` rule
    * @default true
    */
   coAuthors?: boolean | CoAuthorsOptions;
@@ -136,10 +137,10 @@ const DEFAULT_RULES: Readonly<Partial<RulesConfig>> = {
   'footer-leading-blank': [RuleConfigSeverity.Error, 'always'],
   'header-trim': [RuleConfigSeverity.Error, 'always'],
   'scope-no-whitespace': [RuleConfigSeverity.Error, 'always'],
-  // `sentence-case`, `start-case` sometimes useful if commit message starts with a proper name
+  // `sentence-case` and `start-case` are allowed, as a subject may start with a proper name
   'subject-case': [RuleConfigSeverity.Error, 'never', ['pascal-case', 'upper-case']],
   'subject-empty': [RuleConfigSeverity.Error, 'never'],
-  'subject-full-stop': [RuleConfigSeverity.Disabled], // Sometimes full stop is used for shorthands
+  'subject-full-stop': [RuleConfigSeverity.Disabled], // A subject may end with an abbreviation
   'type-case': [RuleConfigSeverity.Error, 'always', 'lower-case'],
   'type-empty': [RuleConfigSeverity.Error, 'never'],
 };
@@ -181,7 +182,7 @@ const getSpellingRules = (spelling: boolean | SpellingOptions) => {
       'Install `cspell-lib` or set `spelling` to `false`',
   );
 
-  const {check, ignoreWords = []}: SpellingOptions = spelling === true ? {} : spelling;
+  const {check, ignoreWords = []} = spelling === true ? {} : spelling;
   return Object.entries({...DEFAULT_SPELLING_CHECK, ...omitUndefined(check)}).map(
     ([part, severity]): [string, RuleConfigTuple<readonly string[]>] => [
       `${part}-spelling`,

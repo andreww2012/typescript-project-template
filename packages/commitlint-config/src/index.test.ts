@@ -1,4 +1,4 @@
-// cspell:ignore scoep featuer bodyy droped
+// cspell:ignore scoep featuer
 import assert from 'node:assert';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -24,10 +24,10 @@ const loadConfig = (options?: CommitlintConfigOptions, packageJson?: unknown) =>
 
 const getLintOutcome = async (message: string, options?: CommitlintConfigOptions) => {
   const {rules, parserPreset, plugins} = await loadConfig(options);
-  const parserOpts = parserPreset?.parserOpts;
-  assert.ok(typeof parserOpts === 'object' && parserOpts != null);
+  const parserOptions = parserPreset?.parserOpts;
+  assert.ok(typeof parserOptions === 'object' && parserOptions != null);
 
-  return await lint(message, rules, {parserOpts, plugins});
+  return await lint(message, rules, {parserOpts: parserOptions, plugins});
 };
 
 const lintMessage = async (message: string, options?: CommitlintConfigOptions) => {
@@ -95,14 +95,16 @@ describe('lengths', () => {
   it('merges lengths of a part with the default ones', async () => {
     const lengths = {header: {min: 10}};
 
-    await expect(lintMessage('docs: fix', {lengths})).resolves.toStrictEqual({
-      errors: ['header-min-length'],
-      warnings: [],
-    });
-    await expect(lintMessage(`docs: ${'a'.repeat(115)}`, {lengths})).resolves.toStrictEqual({
-      errors: ['header-max-length'],
-      warnings: [],
-    });
+    await Promise.all([
+      expect(lintMessage('docs: fix', {lengths})).resolves.toStrictEqual({
+        errors: ['header-min-length'],
+        warnings: [],
+      }),
+      expect(lintMessage(`docs: ${'a'.repeat(115)}`, {lengths})).resolves.toStrictEqual({
+        errors: ['header-max-length'],
+        warnings: [],
+      }),
+    ]);
   });
 
   it('disables length rules with `false`', async () => {
@@ -154,6 +156,7 @@ describe('types', () => {
 
 // The CSpell config of this repository is used
 describe('spelling', () => {
+  // cspell:disable-next-line
   const MESSAGE = 'feat(scoep): add a featuer\n\nThe bodyy\n\nBREAKING CHANGE: droped Node.js 22';
 
   it.each([
@@ -302,7 +305,7 @@ describe('co-authors', () => {
   });
 
   it('throws on unknown presets', async () => {
-    // @ts-expect-error -- Not a preset
+    // @ts-expect-error Not a preset
     const coAuthors: CoAuthorsOptions = {deny: ['claud']};
 
     await expect(

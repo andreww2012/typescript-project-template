@@ -145,7 +145,7 @@ export const promptForOptions = async (cliArguments: string[]) => {
             {
               value: 'yes',
               label: 'Yes',
-              hint: hasChangesets ? 'changesets tags releases like name@1.0.0' : undefined,
+              ...(hasChangesets && {hint: 'changesets tags releases like name@1.0.0'}),
             },
           ],
           initialValue: catalogs,
