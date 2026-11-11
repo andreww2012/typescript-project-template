@@ -2,6 +2,50 @@ packages:
   - ./ # The root is listed too, so that changesets releases it with the other packages
   - packages/*
 
+catalogPrune: true
+catalogs:
+  default:
+    '@andreww2012/ai-guidelines': ^0.2.6
+    '@clack/prompts': 1.8.1
+    '@commitlint/types': 21.2.3
+    bingo: 0.14.0
+    conventional-changelog-conventionalcommits: 10.4.1
+    utilery: 0.3.0
+    verkit: 0.5.0
+    yaml: 2.9.1
+    zod: 4.6.7
+  dev:
+    '@antfu/ni': 30.6.0
+    '@changesets/changelog-github': 1.0.1
+    '@changesets/cli': 3.0.3
+    '@commitlint/cli': 21.2.4
+    '@commitlint/config-conventional': 21.2.4
+    '@commitlint/lint': 21.2.4
+    '@commitlint/load': 21.2.4
+    '@eslint/config-inspector': 3.5.0
+    '@types/node': 24.19.2
+    '@vitest/coverage-v8': 5.0.5
+    '@vitest/eslint-plugin': 1.6.28
+    '@vitest/ui': 5.0.5
+    actions-up: 2.0.0
+    cspell: 10.4.0
+    cspell-lib: 10.4.0
+    eslint: 10.14.0
+    eslint-config-un: 1.0.0-rc.5
+    eslint-plugin-github-action: 0.4.0
+    eslint-plugin-sentences-per-line: 0.1.6
+    eslint-plugin-sonarjs: 4.2.2
+    knip: 6.44.1
+    lefthook: 2.2.2
+    npm-check-updates: 23.1.1
+    oxfmt: 0.75.0
+    publint: 0.3.25
+    tsdown: 0.23.4
+    tsx: 4.23.15
+    typescript: npm:@typescript/typescript6@6.0.2
+    typescript7: npm:typescript@7.0.2
+    vitest: 5.0.5
+
 saveExact: true
 autoDedupe: true
 saveTypes: true

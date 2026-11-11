@@ -34,13 +34,13 @@
     "check:package": "pnpm pack --out temp/package.tgz && publint temp/package.tgz --strict"
   },
   "dependencies": {
-    "verkit": "0.5.0",
-    "yaml": "2.9.1"
+    "verkit": "catalog:",
+    "yaml": "catalog:"
   },
   "devDependencies": {
-    "npm-check-updates": "23.1.1",
-    "tsdown": "0.23.4",
-    "utilery": "0.3.0"
+    "npm-check-updates": "catalog:dev",
+    "tsdown": "catalog:dev",
+    "utilery": "catalog:"
   },
   "peerDependencies": {
     "npm-check-updates": ">=19.0.0"
