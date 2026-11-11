@@ -1,5 +1,23 @@
 # @andreww2012/typescript-project-template
 
+## 0.6.0
+
+### Minor Changes
+
+- [`becf08f`](https://github.com/andreww2012/typescript-project-template/commit/becf08f05822ab8280a50cc28dadc1ccfd84a359) - Added the `--catalogs` option (off by default) to keep dependency versions of new projects in pnpm catalogs, with ESLint requiring `catalog:` in `package.json`
+
+- [`d48e7bb`](https://github.com/andreww2012/typescript-project-template/commit/d48e7bbf6304bb84e74ec825c76815d359b7bc9a) - Added the `--workspace` option to make new projects pnpm workspaces with the root as their only package, which ncu needs to update catalogs. It's on by default with `--catalogs yes` and changes the git tags of changesets releases from `v1.0.0` to `name@1.0.0`
+
+### Patch Changes
+
+- [`a6c51e0`](https://github.com/andreww2012/typescript-project-template/commit/a6c51e062eb818a7be3da4b86d1505e5d05125f0) - Updated `.gitignore` of new projects to [github/gitignore@`8ba69a4`](https://github.com/github/gitignore/tree/8ba69a4220df77b696fe97b60fb70eb668fb00e1)
+
+- [`e66bdc1`](https://github.com/andreww2012/typescript-project-template/commit/e66bdc1b5571e87abbdcc5a3a5b351aebd56bb56) - Enabled tsdown's `unbundle` mode in new `lib` projects, so the build output mirrors the source files
+
+- [`8da66e9`](https://github.com/andreww2012/typescript-project-template/commit/8da66e96f50ace1e7a5e3e065ff17e7edb289afe) - Moved the `attw` and `publint` checks of new `lib` projects from the `check:package` script into the `tsdown` config
+
+- [`b21b832`](https://github.com/andreww2012/typescript-project-template/commit/b21b83251270d31476d825f94d81705b080d78f8) - Fixed the `commit-msg` hook of new projects failing in a git worktree when the main repository's path has spaces
+
 ## 0.5.0
 
 ### Minor Changes
