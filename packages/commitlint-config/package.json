@@ -29,15 +29,14 @@
   ],
   "scripts": {
     "build": "tsdown",
-    "prepack": "nr build",
-    "prepublishOnly": "nr check:package",
-    "check:package": "pnpm pack --out temp/package.tgz && publint temp/package.tgz --strict"
+    "prepack": "nr build"
   },
   "dependencies": {
     "@commitlint/types": "catalog:",
     "conventional-changelog-conventionalcommits": "catalog:"
   },
   "devDependencies": {
+    "@arethetypeswrong/core": "catalog:dev",
     "@commitlint/config-conventional": "catalog:dev",
     "@commitlint/lint": "catalog:dev",
     "@commitlint/load": "catalog:dev",

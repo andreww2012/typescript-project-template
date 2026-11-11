@@ -200,6 +200,9 @@ catalogs:
     '@antfu/ni':
       specifier: 30.6.0
       version: 30.6.0
+    '@arethetypeswrong/core':
+      specifier: 0.18.5
+      version: 0.18.5
     '@changesets/changelog-github':
       specifier: 1.0.1
       version: 1.0.1
@@ -399,6 +402,9 @@ importers:
         specifier: 'catalog:'
         version: 10.4.1
     devDependencies:
+      '@arethetypeswrong/core':
+        specifier: catalog:dev
+        version: 0.18.5
       '@commitlint/config-conventional':
         specifier: catalog:dev
         version: 21.2.4
@@ -413,7 +419,7 @@ importers:
         version: 10.4.0
       tsdown:
         specifier: catalog:dev
-        version: 0.23.4(@typescript/typescript6@6.0.2)(oxc-resolver@11.24.2)(publint@0.3.25)(tsx@4.23.15)
+        version: 0.23.4(@arethetypeswrong/core@0.18.5)(@typescript/typescript6@6.0.2)(oxc-resolver@11.24.2)(publint@0.3.25)(tsx@4.23.15)
       utilery:
         specifier: 'catalog:'
         version: 0.3.0
@@ -427,12 +433,15 @@ importers:
         specifier: 'catalog:'
         version: 2.9.1
     devDependencies:
+      '@arethetypeswrong/core':
+        specifier: catalog:dev
+        version: 0.18.5
       npm-check-updates:
         specifier: catalog:dev
         version: 23.1.1
       tsdown:
         specifier: catalog:dev
-        version: 0.23.4(@typescript/typescript6@6.0.2)(oxc-resolver@11.24.2)(publint@0.3.25)(tsx@4.23.15)
+        version: 0.23.4(@arethetypeswrong/core@0.18.5)(@typescript/typescript6@6.0.2)(oxc-resolver@11.24.2)(publint@0.3.25)(tsx@4.23.15)
       utilery:
         specifier: 'catalog:'
         version: 0.3.0
@@ -441,6 +450,9 @@ packages:
 
   '@altano/repository-tools@2.1.2':
     resolution: {integrity: sha512-JjnlgaE/oHmCGwvfLmuB8OSuRfhuYtjRb7P0SVneal/14f0t6bDG3V1BqutqgqwdZPRRnyO8wxxN2XPt7aAhZw==}
+
+  '@andrewbranch/untar.js@1.0.4':
+    resolution: {integrity: sha512-pVXSwPsLuw8IGLo2Di0EaOfsk+ntVvpkk942J/sHYIkwvtKUakEcPh7HBgZ6tuimgzKSEHgCvO4XgQ05DEbwDw==}
 
   '@andreww2012/ai-guidelines@0.2.6':
     resolution: {integrity: sha512-c4bZMCImW1WnZDU7Bxbhc/dDUkaIcFqMqbZ3mRVD0by5tnJaUvqTNWONJAiVKi9kzdnR8fDDB2FrqI3aSKKomA==}
@@ -459,6 +471,10 @@ packages:
 
   '@antfu/utils@9.3.0':
     resolution: {integrity: sha512-9hFT4RauhcUzqOE4f1+frMKLZrgNog5b06I7VmZQV1BkvwvqrbC8EBZf3L1eEL2AKb6rNKjER0sEvJiSP1FXEA==}
+
+  '@arethetypeswrong/core@0.18.5':
+    resolution: {integrity: sha512-9ytjzGwxjm9Uz7I9avfbt5vlQt6uk9uRRESzJjqrznl6WKvI6dwYTo+vJ3U02Wrq/mR3iql/PzhvHhKdJIAjDQ==}
+    engines: {node: '>=20'}
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -484,6 +500,9 @@ packages:
   '@bcoe/v8-coverage@1.0.2':
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
+
+  '@braidai/lang@1.1.2':
+    resolution: {integrity: sha512-qBcknbBufNHlui137Hft8xauQMTZDKdophmLFv05r2eNmdIv/MlPuP4TdUknHG68UdWLgVZwgxVe735HzJNIwA==}
 
   '@cacheable/memory@2.2.0':
     resolution: {integrity: sha512-CTLKqLItRCEixEAewD3/j9DB3/o96gpTPD4eJ1v+DGOlxZRZncRQkGYqqnAGCscYd6RNeXfGeiuCphsPtqyIfQ==}
@@ -1240,6 +1259,9 @@ packages:
 
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
+
+  '@loaderkit/resolve@1.0.6':
+    resolution: {integrity: sha512-G8FdIoF5CypfwmD9rl8BXod5HDn8JqB0CCNBXDTaRZ+yRYhARrrSToX1zg1zy9jX3zLqigsELwhT4gNtkdQAUg==}
 
   '@manypkg/find-root@3.1.0':
     resolution: {integrity: sha512-BcSqCyKhBVZ5YkSzOiheMCV41kqAFptW6xGqYSTjkVTl9XQpr+pqHhwgGCOHQtjDCv7Is6EFyA14Sm5GVbVABA==}
@@ -2820,6 +2842,9 @@ packages:
   ci-info@4.4.0:
     resolution: {integrity: sha512-77PSwercCZU2Fc4sX94eF8k8Pxte6JAwL4/ICZLFjJLqegs7kCuAsqqj/70NQF6TvDpgFjkubQB2FW2ZZddvQg==}
     engines: {node: '>=8'}
+
+  cjs-module-lexer@1.4.3:
+    resolution: {integrity: sha512-9z8TZaGM1pfswYeXrUpzPrkx8UnWYdhJclsiYMm6x/w5+nN+8Tf/LnAgfLGQCm59qAOxU8WwHEq2vNwF6i4j+Q==}
 
   cleye@2.7.0:
     resolution: {integrity: sha512-vSxO418kPRu+oNh6dit+ZMUQf0fQYifZs/2cP85RQqbMtnlJ0tshkxyiMZlKOhMntct4hgi1GC1DXUS5T/zoxA==}
@@ -5540,6 +5565,11 @@ packages:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: '>=4.8.4 <6.1.0'
 
+  typescript@5.6.1-rc:
+    resolution: {integrity: sha512-E3b2+1zEFu84jB0YQi9BORDjz9+jGbwwy1Zi3G0LUNw7a7cePUrHMRNy8aPh53nXpkFGVHSxIZo5vKTfYaFiBQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   typescript@6.0.3:
     resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
     engines: {node: '>=14.17'}
@@ -5885,6 +5915,8 @@ snapshots:
 
   '@altano/repository-tools@2.1.2': {}
 
+  '@andrewbranch/untar.js@1.0.4': {}
+
   '@andreww2012/ai-guidelines@0.2.6':
     dependencies:
       '@clack/prompts': 1.8.1
@@ -5901,6 +5933,17 @@ snapshots:
       tinyglobby: 0.2.17
 
   '@antfu/utils@9.3.0': {}
+
+  '@arethetypeswrong/core@0.18.5':
+    dependencies:
+      '@andrewbranch/untar.js': 1.0.4
+      '@loaderkit/resolve': 1.0.6
+      cjs-module-lexer: 1.4.3
+      fflate: 0.8.3
+      lru-cache: 11.5.3
+      semver: 7.8.5
+      typescript: 5.6.1-rc
+      validate-npm-package-name: 5.0.1
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -5922,6 +5965,8 @@ snapshots:
       '@babel/helper-validator-identifier': 7.29.7
 
   '@bcoe/v8-coverage@1.0.2': {}
+
+  '@braidai/lang@1.1.2': {}
 
   '@cacheable/memory@2.2.0':
     dependencies:
@@ -6719,6 +6764,10 @@ snapshots:
       keyv: 5.6.0
 
   '@keyv/serialize@1.1.1': {}
+
+  '@loaderkit/resolve@1.0.6':
+    dependencies:
+      '@braidai/lang': 1.1.2
 
   '@manypkg/find-root@3.1.0':
     dependencies:
@@ -8071,6 +8120,8 @@ snapshots:
   chownr@3.0.0: {}
 
   ci-info@4.4.0: {}
+
+  cjs-module-lexer@1.4.3: {}
 
   cleye@2.7.0:
     dependencies:
@@ -10921,7 +10972,7 @@ snapshots:
     dependencies:
       typescript: 6.0.3
 
-  tsdown@0.23.4(@typescript/typescript6@6.0.2)(oxc-resolver@11.24.2)(publint@0.3.25)(tsx@4.23.15):
+  tsdown@0.23.4(@arethetypeswrong/core@0.18.5)(@typescript/typescript6@6.0.2)(oxc-resolver@11.24.2)(publint@0.3.25)(tsx@4.23.15):
     dependencies:
       cac: 7.1.0
       defu: 6.1.7
@@ -10938,6 +10989,7 @@ snapshots:
       unconfig-core: 7.5.0
       verkit: 0.5.0
     optionalDependencies:
+      '@arethetypeswrong/core': 0.18.5
       publint: 0.3.25
       tsx: 4.23.15
       typescript: '@typescript/typescript6@6.0.2'
@@ -10995,6 +11047,8 @@ snapshots:
       typescript: '@typescript/typescript6@6.0.2'
     transitivePeerDependencies:
       - supports-color
+
+  typescript@5.6.1-rc: {}
 
   typescript@6.0.3: {}
 

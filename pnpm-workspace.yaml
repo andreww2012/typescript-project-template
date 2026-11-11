@@ -16,6 +16,7 @@ catalogs:
     zod: 4.6.7
   dev:
     '@antfu/ni': 30.6.0
+    '@arethetypeswrong/core': 0.18.5
     '@changesets/changelog-github': 1.0.1
     '@changesets/cli': 3.0.3
     '@commitlint/cli': 21.2.4
