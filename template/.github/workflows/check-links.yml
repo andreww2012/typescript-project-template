@@ -1,4 +1,4 @@
-# cspell:ignore ACMR lycheeverse lycheecache pipefail
+# cspell:ignore ACMR pipefail
 name: Check links (lychee)
 on:
   # After https://github.com/SchemaStore/schemastore/commit/195da2efaeb9c5b7aa77f1cd8de25b22a53b13f0
@@ -48,11 +48,12 @@ jobs:
         if: steps.changed-files.outputs.count != '0'
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: .lycheecache
+          path: .lycheecache # cspell:disable-line
           key: lychee-${{ github.run_id }}
           restore-keys: lychee-
       - name: Check links
         if: steps.changed-files.outputs.count != '0'
+        # cspell:disable-next-line
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
           # Changed files containing no links at all is a normal outcome here

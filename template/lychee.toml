@@ -1,4 +1,3 @@
-# cspell:ignore Wayback
 #:schema https://www.schemastore.org/lychee.json
 #
 # Repo-specific overrides layered on top of `lychee-config-nick2bad4u`, which is
@@ -17,6 +16,7 @@
 # of silently passing as its redirect target
 max_redirects = 0
 
+# cspell:disable-next-line
 # Wayback snapshots are not a useful answer to a rejected redirect: the archived
 # copy is suggested instead of the URL the link actually moved to
 suggest = false
@@ -25,7 +25,7 @@ remap = [
   # GitHub throttles logged-out `blob` page views with 503s, hitting CI runners hardest. The raw
   # file still has Markdown heading fragments to verify; line anchors (`#L42`) are dropped
   '^https://github\.com/([\w.-]+/[\w.-]+)/blob/([^?#]+)(?:\?[^#]*)?(?:#L\d+(?:-L\d+)?)?(#.*)?$ https://raw.githubusercontent.com/$1/$2$3',
-  # New GitHub repo issue page redirects crawlers (non-auth users)
+  # New GitHub repo issue page redirects crawlers (logged-out users)
   '^(https://github\.com/[^/#]+/[^/#]+)/issues/new(?:\?.*)?$ $1/issues',
 
   # Drop anchors lychee cannot verify because they are inserted by JS after load;

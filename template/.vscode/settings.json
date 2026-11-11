@@ -22,7 +22,7 @@
     // @endif
     "editor.formatOnSave": true,
     // @if prettier
-    "editor.defaultFormatter": "esbenp.prettier-vscode", // cspell:disable-line
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     // @endif
     // @if oxfmt
     "editor.defaultFormatter": "oxc.oxc-vscode",

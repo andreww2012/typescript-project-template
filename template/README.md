@@ -126,7 +126,7 @@ Review these things and you're good to go:
 
 ## Contributors
 
-<!-- eslint-disable markdown-preferences/padding-line-between-blocks -->
+<!-- eslint-disable markdown-preferences/padding-line-between-blocks -- all-contributors generates this section -->
 <!-- cspell:disable -->
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
