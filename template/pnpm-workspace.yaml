@@ -1,9 +1,9 @@
-# @if catalogs
-# @if ncu
+# @if workspace
 packages:
-  - ./ # ncu only checks catalogs in workspaces
+  - ./
 
 # @endif
+# @if catalogs
 catalogPrune: true
 catalogs: {}
 

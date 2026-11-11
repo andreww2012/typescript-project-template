@@ -126,6 +126,33 @@ export const promptForOptions = async (cliArguments: string[]) => {
         }),
     },
     {
+      key: 'workspace',
+      ask: () => {
+        const catalogs = answers.get('catalogs');
+        const hasChangesets = answers.get('kind') === 'lib' && answers.get('changesets') !== 'none';
+        return prompts.select({
+          message: 'Set up a pnpm workspace, with the root as its package?',
+          options: [
+            {
+              value: 'no',
+              label: 'No',
+              hint:
+                [
+                  ...(catalogs === 'yes' ? ["ncu won't update the catalogs"] : []),
+                  ...(hasChangesets ? ['changesets tags releases like v1.0.0'] : []),
+                ].join(', ') || undefined,
+            },
+            {
+              value: 'yes',
+              label: 'Yes',
+              hint: hasChangesets ? 'changesets tags releases like name@1.0.0' : undefined,
+            },
+          ],
+          initialValue: catalogs,
+        });
+      },
+    },
+    {
       key: 'save-exact',
       ask: () =>
         prompts.select({

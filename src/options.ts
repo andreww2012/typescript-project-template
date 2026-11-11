@@ -49,6 +49,8 @@ export const optionsSchema = z.object({
   node: z.string().optional(),
   pnpm: z.literal(['12', '11']).default('12'),
   catalogs: z.literal(['no', 'yes']).default('no'),
+  // Defaults to `catalogs`, because ncu only updates catalogs in workspaces
+  workspace: z.literal(['no', 'yes']).optional(),
   'save-exact': z.literal(['yes', 'no']).default('yes'),
   formatter: z.literal(['oxfmt', 'prettier']).default('oxfmt'),
   'ts-extensions': z.literal(['yes', 'no']).default('yes'),
@@ -107,6 +109,9 @@ export const OPTION_FLAGS = {
     .optional()
     .describe('whether to use `.ts` extensions in imports, enforced by ESLint'),
   updater: optionsSchema.shape.updater.optional().describe('dependency updater'),
+  workspace: optionsSchema.shape.workspace.describe(
+    'whether to make the project a pnpm workspace with the root as its package (defaults to `--catalogs`): ncu only updates catalogs in workspaces, and changesets tags releases like `name@1.0.0` instead of `v1.0.0`',
+  ),
 } as const;
 
 // Supported version ranges by the lowest supported major version, from the lowest one

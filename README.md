@@ -22,7 +22,8 @@ Template options:
 - `--contributors`: only for `lib`, `no` (default) or `yes` to set up [all-contributors](https://allcontributors.org)
 - `--node`: the lowest Node.js major version to support, out of those in `engines.node` of `template/package.json` (the lowest one by default); `@types/node` and `target`/`lib` in `tsconfig.json` match it
 - `--pnpm`: `12` (default) or `11`
-- `--catalogs`: `no` (default) or `yes` to keep dependency versions in [pnpm catalogs](https://pnpm.io/catalogs), with ESLint requiring `catalog:` in `package.json`: dependencies go to the default catalog and dev dependencies to `dev`; with `--updater ncu`, `pnpm-workspace.yaml` also lists the root as a workspace package, because ncu only updates catalogs in workspaces
+- `--catalogs`: `no` (default) or `yes` to keep dependency versions in [pnpm catalogs](https://pnpm.io/catalogs), with ESLint requiring `catalog:` in `package.json`: dependencies go to the default catalog and dev dependencies to `dev`
+- `--workspace`: `yes` or `no` to make the project a pnpm workspace with the root as its only package, the same as `--catalogs` by default: ncu only updates catalogs in workspaces, and changesets tags releases like `name@1.0.0` in workspaces and like `v1.0.0` otherwise
 - `--save-exact`: `yes` (default) to use exact dependency versions: pnpm saves them instead of `^` ranges, and ESLint requires them in `package.json` (unless `--catalogs yes`, as it can't check catalogs); or `no`
 - `--formatter`: `oxfmt` (default) or `prettier`
 - `--ts-extensions`: `yes` (default) to use `.ts` extensions in imports, enforced by ESLint, or `no` to use `.js` ones; with `yes`, `tsconfig.json` has `allowImportingTsExtensions` and `noEmit`, because TypeScript can't rewrite `.ts` in imports like `@/foo.ts` when it builds the code

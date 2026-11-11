@@ -367,6 +367,7 @@ export const template = createTemplate({
       ...(ci === 'yes' && parsedOptions.lychee === 'yes' ? ['lychee'] : []),
       ...(parsedOptions.guidelines === 'local' ? ['local-guidelines'] : []),
       ...(parsedOptions.catalogs === 'yes' ? ['catalogs'] : []),
+      ...((parsedOptions.workspace || parsedOptions.catalogs) === 'yes' ? ['workspace'] : []),
       ...(parsedOptions['save-exact'] === 'yes' ? ['save-exact'] : []),
       ...(parsedOptions['ts-extensions'] === 'yes' ? ['ts-extensions'] : []),
     ]);
