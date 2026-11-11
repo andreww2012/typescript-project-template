@@ -117,7 +117,7 @@ const PACKAGE_FEATURES: Readonly<Record<string, string>> = {
   '@andreww2012/commitlint-config': 'commitlint',
   '@andreww2012/npm-check-updates-config': 'ncu',
   [UTILITY_LIBRARY]: 'utilery',
-  '@arethetypeswrong/cli': 'lib',
+  '@arethetypeswrong/core': 'lib',
   '@changesets/changelog-github': 'changelog-github',
   '@changesets/cli': 'changesets',
   '@commitlint/cli': 'commitlint',
@@ -145,9 +145,6 @@ const PACKAGE_FEATURES: Readonly<Record<string, string>> = {
 const SCRIPT_FEATURES: Readonly<Record<string, string>> = {
   build: 'lib',
   ch: 'changesets',
-  'check:package': 'lib',
-  'check:package:attw': 'lib',
-  'check:package:publint': 'publint',
   'check:spelling': 'cspell',
   'contrib:add': 'contributors',
   'contrib:gen': 'contributors',
@@ -155,7 +152,6 @@ const SCRIPT_FEATURES: Readonly<Record<string, string>> = {
   'knip:cycles': 'knip',
   'knip:main': 'knip',
   prepack: 'lib',
-  prepublishOnly: 'lib',
   release: 'changesets',
   t: 'vitest',
   't:cov': 'vitest',
@@ -180,9 +176,6 @@ const SCRIPT_REPLACEMENTS: Readonly<
   check: {
     cspell: ['check:(spelling|format)', 'check:format'],
     knip: ['knip|', ''],
-  },
-  'check:package': {
-    publint: [' && nr check:package:publint', ''],
   },
   test: {
     vitest: [' && nr test:vitest', ''],

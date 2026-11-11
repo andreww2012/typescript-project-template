@@ -17,7 +17,7 @@ Template options:
 - `--owner`: GitHub user or organization (inferred from the GitHub CLI if you're logged in)
 - `--author`: `package.json` author (defaults to `--owner`)
 - `--description`: short description for `package.json` and `README.md`
-- `--kind`: `app` (default) or `lib`, a published library: it's built with tsdown, its types are checked with [`attw`](https://npmx.dev/@arethetypeswrong/cli) on every build and before publishing, `package.json` isn't private and has `homepage`, `bugs`, `repository`, `exports`, `types` and `files`, and ESLint uses `mode: 'lib'`
+- `--kind`: `app` (default) or `lib`, a published library: it's built with tsdown, its types are checked with [attw](https://arethetypeswrong.github.io) on every build, `package.json` isn't private and has `homepage`, `bugs`, `repository`, `exports`, `types` and `files`, and ESLint uses `mode: 'lib'`
 - `--changesets`: only for `lib`, `none` (default), `github` (with `@changesets/changelog-github`) or `default` (with the default changelog format)
 - `--contributors`: only for `lib`, `no` (default) or `yes` to set up [all-contributors](https://allcontributors.org)
 - `--node`: the lowest Node.js major version to support, out of those in `engines.node` of `template/package.json` (the lowest one by default); `@types/node` and `target`/`lib` in `tsconfig.json` match it
@@ -27,7 +27,7 @@ Template options:
 - `--save-exact`: `yes` (default) to use exact dependency versions: pnpm saves them instead of `^` ranges, and ESLint requires them in `package.json` (unless `--catalogs yes`, as it can't check catalogs); or `no`
 - `--formatter`: `oxfmt` (default) or `prettier`
 - `--ts-extensions`: `yes` (default) to use `.ts` extensions in imports, enforced by ESLint, or `no` to use `.js` ones; with `yes`, `tsconfig.json` has `allowImportingTsExtensions` and `noEmit`, because TypeScript can't rewrite `.ts` in imports like `@/foo.ts` when it builds the code
-- `--tools`: comma-separated tools to set up: `knip`, `cspell`, `commitlint`, `lefthook`, `publint` (these are the default) and `vitest`; `publint` is only for `lib`: [publint](https://publint.dev) checks the package on every build and before publishing, like attw
+- `--tools`: comma-separated tools to set up: `knip`, `cspell`, `commitlint`, `lefthook`, `publint` (these are the default) and `vitest`; `publint` is only for `lib`: [publint](https://publint.dev) checks the package on every build, like attw
 - `--languages`: only with `cspell`, comma-separated extra CSpell languages, none by default: `en-GB`, `nl`, `fr`, `de`, `it`, `pl`, `pt`, `ru`, `es`, `tr`, `uk`
 - `--updater`: dependency updater, `ncu` (default, run by hand), `dependabot`, `renovate` or `none`
 - `--ci`: `yes` (default) to set up GitHub Actions like in this repository (checks for every chosen tool, tests on every supported Node.js version, and the changesets release), or `no`
