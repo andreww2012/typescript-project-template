@@ -1,3 +1,13 @@
+# @if catalogs
+# @if ncu
+packages:
+  - ./ # ncu only checks catalogs in workspaces
+
+# @endif
+catalogPrune: true
+catalogs: {}
+
+# @endif
 # shamefullyHoist: true
 # @if save-exact
 saveExact: true

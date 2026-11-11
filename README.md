@@ -22,7 +22,8 @@ Template options:
 - `--contributors`: only for `lib`, `no` (default) or `yes` to set up [all-contributors](https://allcontributors.org)
 - `--node`: the lowest Node.js major version to support, out of those in `engines.node` of `template/package.json` (the lowest one by default); `@types/node` and `target`/`lib` in `tsconfig.json` match it
 - `--pnpm`: `12` (default) or `11`
-- `--save-exact`: `yes` (default) to use exact dependency versions: pnpm saves them instead of `^` ranges, and ESLint requires them in `package.json`; or `no`
+- `--catalogs`: `no` (default) or `yes` to keep dependency versions in [pnpm catalogs](https://pnpm.io/catalogs), with ESLint requiring `catalog:` in `package.json`: dependencies go to the default catalog and dev dependencies to `dev`; with `--updater ncu`, `pnpm-workspace.yaml` also lists the root as a workspace package, because ncu only updates catalogs in workspaces
+- `--save-exact`: `yes` (default) to use exact dependency versions: pnpm saves them instead of `^` ranges, and ESLint requires them in `package.json` (unless `--catalogs yes`, as it can't check catalogs); or `no`
 - `--formatter`: `oxfmt` (default) or `prettier`
 - `--ts-extensions`: `yes` (default) to use `.ts` extensions in imports, enforced by ESLint, or `no` to use `.js` ones; with `yes`, `tsconfig.json` has `allowImportingTsExtensions` and `noEmit`, because TypeScript can't rewrite `.ts` in imports like `@/foo.ts` when it builds the code
 - `--tools`: comma-separated tools to set up: `knip`, `cspell`, `commitlint`, `lefthook`, `publint` (these are the default) and `vitest`; `publint` is only for `lib`: [publint](https://publint.dev) checks the package before publishing, like attw
@@ -72,10 +73,10 @@ That includes `@types/node` for every supported Node.js major version, with alia
 
 These files are also changed:
 
-- `package.json`: name, description and author come from the options, and `engines.node` only keeps the versions from `--node` on
+- `package.json`: name, description and author come from the options, `engines.node` only keeps the versions from `--node` on, and with `--catalogs yes`, dependencies point to the catalogs
 - `.github/actions/prepare/action.yml` and `.github/workflows/ci.yml`: Node.js versions match the supported ones
 - `tsconfig.json`: `target` and `lib` match the lowest supported Node.js version, like in [`@tsconfig/bases`](https://github.com/tsconfig/bases)
-- `pnpm-workspace.yaml`: the `allowBuilds` entry of lefthook gets its version from `template/package.json`
+- `pnpm-workspace.yaml`: the `allowBuilds` entry of lefthook gets its version from `template/package.json`, and with `--catalogs yes`, the catalogs get the dependency versions
 - `README.md`: gets the project name and description on top
 - `LICENSE.md`: gets the current year and the author
 - `cspell.config.ts`: gets the extra languages

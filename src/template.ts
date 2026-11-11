@@ -6,6 +6,7 @@ import {
   invariant,
   isEmptyObject,
   mapEntries,
+  mapValues,
   parseNpmPackageSpecifier,
   substringAfter,
 } from 'utilery';
@@ -58,6 +59,15 @@ const CI_NODE_VERSIONS_REGEX = /(?<=node-version: )\[[\d ,]+\]/;
 
 // Like `lefthook@1.2.3:` in `allowBuilds` of `pnpm-workspace.yaml`
 const LEFTHOOK_ALLOW_BUILDS_KEY_REGEX = /lefthook@[^\s:]+:/;
+
+// Replaced with the catalogs in `pnpm-workspace.yaml`
+const CATALOGS_PLACEHOLDER = 'catalogs: {}';
+
+// Dependencies go to the default catalog, dev dependencies go to this one
+const DEV_CATALOG = 'dev';
+
+// Other YAML strings, like `@types/node`, must be quoted
+const YAML_PLAIN_STRING_REGEX = /^[\w^~]/;
 
 // Same as `printWidth` in the formatter configs of the template
 const PRINT_WIDTH = 100;
@@ -203,6 +213,24 @@ const resolveTypesNodeAlias = ([packageName, version]: [string, string]): [strin
     : [packageName, version];
 };
 
+const toYamlString = (text: string) => (YAML_PLAIN_STRING_REGEX.test(text) ? text : `'${text}'`);
+
+const formatCatalogs = (catalogs: Record<string, Record<string, string> | undefined>) =>
+  [
+    'catalogs:',
+    ...Object.entries(catalogs).flatMap(([catalogName, packages]) =>
+      packages
+        ? [
+            `  ${catalogName}:`,
+            ...Object.entries(packages).map(
+              ([packageName, version]) =>
+                `    ${toYamlString(packageName)}: ${toYamlString(version)}`,
+            ),
+          ]
+        : [],
+    ),
+  ].join('\n');
+
 const formatArray = (prefix: string, items: string[], suffix: string) => {
   const singleLine = `${prefix}[${items.join(', ')}]${suffix}`;
   return singleLine.length <= PRINT_WIDTH
@@ -338,6 +366,7 @@ export const template = createTemplate({
       ...(ci === 'yes' && updater === 'ncu' ? ['actions-up'] : []),
       ...(ci === 'yes' && parsedOptions.lychee === 'yes' ? ['lychee'] : []),
       ...(parsedOptions.guidelines === 'local' ? ['local-guidelines'] : []),
+      ...(parsedOptions.catalogs === 'yes' ? ['catalogs'] : []),
       ...(parsedOptions['save-exact'] === 'yes' ? ['save-exact'] : []),
       ...(parsedOptions['ts-extensions'] === 'yes' ? ['ts-extensions'] : []),
     ]);
@@ -353,11 +382,16 @@ export const template = createTemplate({
         );
       return entries.length > 0 ? Object.fromEntries(entries) : undefined;
     };
+    const dependencies = filterPackages(packageJson.dependencies);
     const devDependencies = filterPackages(packageJson.devDependencies);
     invariant(
       devDependencies?.[TYPES_NODE] != null,
       `\`template/package.json\` has no \`${TYPES_NODE}\` for Node.js ${nodeMajor}`,
     );
+    const toCatalogReferences = (packages: Record<string, string> | undefined, catalog: string) =>
+      packages && features.has('catalogs')
+        ? mapValues(packages, () => `catalog:${catalog}`)
+        : packages;
 
     const scripts = Object.fromEntries(
       Object.entries(stringRecordSchema.parse(packageJson.scripts) || {})
@@ -426,19 +460,23 @@ export const template = createTemplate({
         types: kind === 'lib' ? json.types : undefined,
         files: kind === 'lib' ? json.files : undefined,
         scripts,
-        dependencies: filterPackages(json.dependencies),
-        devDependencies,
+        dependencies: toCatalogReferences(dependencies, ''),
+        devDependencies: toCatalogReferences(devDependencies, DEV_CATALOG),
         engines: {...stringRecordSchema.parse(json.engines), node: nodeVersionRange},
         devEngines:
           pnpm === '11'
             ? {packageManager: {name: 'pnpm', version: PNPM_11_VERSION}}
             : json.devEngines,
       })),
-      // Build scripts are allowed per version, so it must be the installed one
       'pnpm-workspace.yaml': (text) =>
-        text.replace(LEFTHOOK_ALLOW_BUILDS_KEY_REGEX, (key) =>
-          devDependencies.lefthook ? `lefthook@${devDependencies.lefthook}:` : key,
-        ),
+        text
+          // Build scripts are allowed per version, so it must be the installed one
+          .replace(LEFTHOOK_ALLOW_BUILDS_KEY_REGEX, (key) =>
+            devDependencies.lefthook ? `lefthook@${devDependencies.lefthook}:` : key,
+          )
+          .replace(CATALOGS_PLACEHOLDER, () =>
+            formatCatalogs({default: dependencies, [DEV_CATALOG]: devDependencies}),
+          ),
       'README.md': (text) => [`# ${name}`, options.description, text].filter(Boolean).join('\n\n'),
       'tsconfig.json': (text) =>
         text

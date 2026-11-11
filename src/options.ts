@@ -48,6 +48,7 @@ export const optionsSchema = z.object({
   // Its values and default come from `engines.node` of `template/package.json`
   node: z.string().optional(),
   pnpm: z.literal(['12', '11']).default('12'),
+  catalogs: z.literal(['no', 'yes']).default('no'),
   'save-exact': z.literal(['yes', 'no']).default('yes'),
   formatter: z.literal(['oxfmt', 'prettier']).default('oxfmt'),
   'ts-extensions': z.literal(['yes', 'no']).default('yes'),
@@ -63,6 +64,9 @@ export const DEFAULT_OPTIONS = Object.freeze(optionsSchema.parse({}));
 
 // Bingo passes the raw flag values to `produce`, so these only describe the flags
 export const OPTION_FLAGS = {
+  catalogs: optionsSchema.shape.catalogs
+    .optional()
+    .describe('whether to keep dependency versions in pnpm catalogs, enforced by ESLint'),
   changesets: optionsSchema.shape.changesets
     .optional()
     .describe('changesets setup with the GitHub or the default changelog format (only for `lib`)'),
@@ -91,7 +95,7 @@ export const OPTION_FLAGS = {
   'save-exact': optionsSchema.shape['save-exact']
     .optional()
     .describe(
-      'whether to use exact dependency versions: pnpm saves them and ESLint requires them in `package.json`',
+      'whether to use exact dependency versions: pnpm saves them and, without catalogs, ESLint requires them in `package.json`',
     ),
   tools: z
     .string()

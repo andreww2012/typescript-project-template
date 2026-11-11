@@ -47,8 +47,17 @@ export default eslintConfig({
       configSentencesPerLine: true,
     },
     // @if save-exact
+    // @if !catalogs
     nodeDependencies: {
       enforceAbsoluteVersion: true,
+    },
+    // @endif
+    // @endif
+    // @if catalogs
+    pnpm: {
+      configPackageJson: {
+        enforceCatalog: true,
+      },
     },
     // @endif
 

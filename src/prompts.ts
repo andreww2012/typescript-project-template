@@ -110,12 +110,36 @@ export const promptForOptions = async (cliArguments: string[]) => {
         }),
     },
     {
+      key: 'catalogs',
+      ask: () =>
+        prompts.select({
+          message: 'Enforce pnpm catalogs?',
+          options: [
+            {value: 'no', label: 'No'},
+            {
+              value: 'yes',
+              label: 'Yes',
+              hint: 'versions live in pnpm-workspace.yaml, ESLint requires `catalog:` in package.json',
+            },
+          ],
+          initialValue: DEFAULT_OPTIONS.catalogs,
+        }),
+    },
+    {
       key: 'save-exact',
       ask: () =>
         prompts.select({
           message: 'Use exact dependency versions?',
           options: [
-            {value: 'yes', label: 'Yes', hint: 'pnpm saves them and ESLint requires them'},
+            {
+              value: 'yes',
+              label: 'Yes',
+              // ESLint can't check the versions in catalogs
+              hint:
+                answers.get('catalogs') === 'yes'
+                  ? 'pnpm saves them'
+                  : 'pnpm saves them and ESLint requires them',
+            },
             {value: 'no', label: 'No', hint: 'pnpm saves ^ ranges'},
           ],
           initialValue: DEFAULT_OPTIONS['save-exact'],
