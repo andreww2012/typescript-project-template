@@ -49,3 +49,8 @@ allowBuilds:
 
 dedupePeers: true
 strictPeerDependencies: false
+# @if ci
+peerDependencyRules:
+  allowedVersions:
+    eslint-config-un@1.0.0-rc.7>eslint-plugin-github-action: '>=0.5.0 && < 1'
+# @endif

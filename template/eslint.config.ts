@@ -24,18 +24,21 @@ export default eslintConfig({
   defaultConfigsStatus: 'misc-enabled',
   configs: {
     format: {
-      // Only Markdown code blocks, other files are formatted by the formatter itself
       files: [],
-      configFencedCodeBlocks: true,
       // @if oxfmt
-      formatter: [
-        'oxfmt',
-        {
-          bracketSpacing: oxfmtConfig.bracketSpacing,
-          printWidth: oxfmtConfig.printWidth,
-          singleQuote: oxfmtConfig.singleQuote,
-        },
-      ],
+      configFencedCodeBlocks: {
+        formatter: [
+          'oxfmt',
+          {
+            bracketSpacing: oxfmtConfig.bracketSpacing,
+            printWidth: oxfmtConfig.printWidth,
+            singleQuote: oxfmtConfig.singleQuote,
+          },
+        ],
+      },
+      // @endif
+      // @if prettier
+      configFencedCodeBlocks: true,
       // @endif
     },
     // @if ts-extensions
@@ -60,28 +63,21 @@ export default eslintConfig({
       },
     },
     // @endif
-
-    // False positives:
-    // @if contributors
-    rxjs: false, // `all-contributors-cli` depends on it
+    // @if vitest
+    vitest: {
+      vitestGlobalsImporting: 'disallow',
+    },
     // @endif
-    zod: false,
   },
   // @if lychee
   extraConfigs: [
     {
       files: ['lychee.toml'],
       rules: {
-        // Reports TOML `#` comments as malformed `/* */` blocks, and its autofix
-        // corrupts them by inserting padding before the last character
-        'stylistic/spaced-comment': 0,
         // The `#:schema` directive must not have a space after `#`
         'toml/spaced-comment': 0,
       },
     },
   ],
-  // @endif
-  // @if !lychee
-  extraConfigs: [],
   // @endif
 });
