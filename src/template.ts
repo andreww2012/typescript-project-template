@@ -10,14 +10,14 @@ import {
   parseNpmPackageSpecifier,
   substringAfter,
 } from 'utilery';
-import {z} from 'zod';
+import * as z from 'zod';
 import {
   LANGUAGES,
   OPTION_FLAGS,
   SNAPSHOT_PATH,
   UTILITY_LIBRARY,
   isToolAvailable,
-  optionsSchema,
+  optionsZod,
   readNodeVersionRanges,
 } from './options.ts';
 
@@ -182,20 +182,23 @@ const SCRIPT_REPLACEMENTS: Readonly<
   },
 };
 
-const snapshotSchema = z.object({
+// eslint-disable-next-line zod/no-empty-custom-schema, zod/require-error-message -- The snapshot is written by our own script
+const createdEntryZod = z.custom<CreatedEntry>();
+
+const snapshotZod = z.object({
   files: z
     .object({
-      '.agents': z.record(z.string(), z.custom<CreatedEntry>()),
+      '.agents': z.record(z.string(), createdEntryZod),
       'package.json': z.string(),
     })
-    .catchall(z.custom<CreatedEntry>()),
+    .catchall(createdEntryZod),
   symlinks: z.record(z.string(), z.string()),
 });
 
 // Not `looseObject` with known fields, because it would move them first and break the key order
-const jsonObjectSchema = z.record(z.string(), z.unknown());
+const jsonObjectZod = z.record(z.string(), z.unknown());
 
-const stringRecordSchema = z.record(z.string(), z.string()).optional();
+const stringRecordZod = z.record(z.string(), z.string()).optional();
 
 // `template/package.json` has `@types/node` for every supported Node.js major version,
 // with aliases like `"@types/node24": "npm:@types/node@24.0.0"`
@@ -254,7 +257,7 @@ const applyMarkersToText = (text: string, features: ReadonlySet<string>) => {
 
 const updateJson =
   (update: (json: Record<string, unknown>) => Record<string, unknown>) => (text: string) =>
-    JSON.stringify(update(jsonObjectSchema.parse(JSON.parse(text))), null, 2);
+    JSON.stringify(update(jsonObjectZod.parse(JSON.parse(text))), null, 2);
 
 const hasFeature = (features: ReadonlySet<string>, feature: string | undefined) =>
   feature == null || features.has(feature);
@@ -297,32 +300,34 @@ export const template = createTemplate({
     },
   },
   options: {
-    author: z.string().optional().describe('`package.json` author (defaults to `--owner`)'),
+    author: z
+      .string()
+      .optional()
+      .meta({description: '`package.json` author (defaults to `--owner`)'}),
     description: z
       .string()
       .optional()
-      .describe('Short description for `package.json` and `README.md`'),
-    owner: z.string().describe('GitHub user or organization the repository is under'),
-    repository: z.string().describe('Repository name, also used as the package name'),
+      .meta({description: 'Short description for `package.json` and `README.md`'}),
+    owner: z.string().meta({description: 'GitHub user or organization the repository is under'}),
+    repository: z.string().meta({description: 'Repository name, also used as the package name'}),
     ...OPTION_FLAGS,
     // Bingo only prompts for options that are required or have a default.
-    // It reads the description from the inner schema, so `describe` must come before `default`.
     // Its CLI flags parser doesn't support `z.enum`, but supports unions of literals
     utils: z
       .union([z.literal(UTILITY_LIBRARY), z.literal('none')])
-      .describe('utility library')
-      .default(UTILITY_LIBRARY),
+      .default(UTILITY_LIBRARY)
+      .meta({description: 'utility library'}),
   },
   produce: async ({options}) => {
     const {kind, node, pnpm, formatter, tools, updater, ci, ...parsedOptions} =
-      optionsSchema.parse(options);
+      optionsZod.parse(options);
     const [snapshot, nodeVersionRanges, guidelines] = await Promise.all([
       fs.readFile(SNAPSHOT_PATH, 'utf8'),
       readNodeVersionRanges(),
       readDocument('guidelines'),
     ]);
-    const {files, symlinks} = snapshotSchema.parse(JSON.parse(snapshot));
-    const packageJson = jsonObjectSchema.parse(JSON.parse(files['package.json']));
+    const {files, symlinks} = snapshotZod.parse(JSON.parse(snapshot));
+    const packageJson = jsonObjectZod.parse(JSON.parse(files['package.json']));
     const nodeMajors = [...nodeVersionRanges.keys()];
     const nodeMajor = node || nodeMajors[0] || '';
     const nodeVersionRange = nodeVersionRanges.get(nodeMajor);
@@ -367,7 +372,7 @@ export const template = createTemplate({
     const author = options.author || options.owner;
     const repositoryUrl = `https://github.com/${options.owner}/${name}`;
     const filterPackages = (packages: unknown) => {
-      const entries = Object.entries(stringRecordSchema.parse(packages) || {})
+      const entries = Object.entries(stringRecordZod.parse(packages) || {})
         .filter(([packageName]) => hasFeature(features, PACKAGE_FEATURES[packageName]))
         .map(resolveTypesNodeAlias)
         .filter(
@@ -388,7 +393,7 @@ export const template = createTemplate({
         : packages;
 
     const scripts = Object.fromEntries(
-      Object.entries(stringRecordSchema.parse(packageJson.scripts) || {})
+      Object.entries(stringRecordZod.parse(packageJson.scripts) || {})
         .filter(([scriptName]) => hasFeature(features, SCRIPT_FEATURES[scriptName]))
         .map(([scriptName, script]) => [
           scriptName,
@@ -456,7 +461,7 @@ export const template = createTemplate({
         scripts,
         dependencies: toCatalogReferences(dependencies, ''),
         devDependencies: toCatalogReferences(devDependencies, DEV_CATALOG),
-        engines: {...stringRecordSchema.parse(json.engines), node: nodeVersionRange},
+        engines: {...stringRecordZod.parse(json.engines), node: nodeVersionRange},
         devEngines:
           pnpm === '11'
             ? {packageManager: {name: 'pnpm', version: PNPM_11_VERSION}}

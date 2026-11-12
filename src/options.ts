@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {z} from 'zod';
+import * as z from 'zod';
 
 const NODE_MAJOR_VERSION_REGEX = /\d+/;
 
@@ -30,18 +30,18 @@ export const LANGUAGES = [
   {id: 'uk', name: 'Ukrainian', dictionary: '@cspell/dict-uk-ua'},
 ] as const;
 
-const snapshotPackageJsonSchema = z.object({files: z.object({'package.json': z.string()})});
+const snapshotPackageJsonZod = z.object({files: z.object({'package.json': z.string()})});
 
-const packageJsonEnginesSchema = z.object({engines: z.object({node: z.string()})});
+const packageJsonEnginesZod = z.object({engines: z.object({node: z.string()})});
 
 const commaSeparatedList = <const Values extends readonly string[]>(values: Values) =>
   z
     .string()
     .transform((list) => list.split(',').filter(Boolean))
-    .pipe(z.array(z.literal(values)));
+    .pipe(z.literal(values).array());
 
 // Options asked by our own prompts, because Bingo can't ask conditional and multi-select questions
-export const optionsSchema = z.object({
+export const optionsZod = z.object({
   kind: z.literal(['app', 'lib']).default('app'),
   changesets: z.literal(['none', 'github', 'default']).default('none'),
   contributors: z.literal(['no', 'yes']).default('no'),
@@ -62,64 +62,71 @@ export const optionsSchema = z.object({
   guidelines: z.literal(['local', 'remote']).default('local'),
 });
 
-export const DEFAULT_OPTIONS = Object.freeze(optionsSchema.parse({}));
+export const DEFAULT_OPTIONS = Object.freeze(optionsZod.parse({}));
 
 // Bingo passes the raw flag values to `produce`, so these only describe the flags
 export const OPTION_FLAGS = {
-  catalogs: optionsSchema.shape.catalogs
+  catalogs: optionsZod.shape.catalogs.optional().meta({
+    description: 'whether to keep dependency versions in pnpm catalogs, enforced by ESLint',
+  }),
+  changesets: optionsZod.shape.changesets.optional().meta({
+    description:
+      'changesets setup with the GitHub or the default changelog format (only for `lib`)',
+  }),
+  ci: optionsZod.shape.ci
     .optional()
-    .describe('whether to keep dependency versions in pnpm catalogs, enforced by ESLint'),
-  changesets: optionsSchema.shape.changesets
+    .meta({description: 'whether to set up CI with GitHub Actions'}),
+  contributors: optionsZod.shape.contributors
     .optional()
-    .describe('changesets setup with the GitHub or the default changelog format (only for `lib`)'),
-  ci: optionsSchema.shape.ci.optional().describe('whether to set up CI with GitHub Actions'),
-  contributors: optionsSchema.shape.contributors
-    .optional()
-    .describe('whether to set up all-contributors (only for `lib`)'),
-  formatter: optionsSchema.shape.formatter.optional().describe('code formatter'),
-  guidelines: optionsSchema.shape.guidelines
-    .optional()
-    .describe(
+    .meta({description: 'whether to set up all-contributors (only for `lib`)'}),
+  formatter: optionsZod.shape.formatter.optional().meta({description: 'code formatter'}),
+  guidelines: optionsZod.shape.guidelines.optional().meta({
+    description:
       'how `AGENTS.md` links the AI guidelines: copied into the project (`local`) or on GitHub (`remote`)',
-    ),
-  kind: optionsSchema.shape.kind.optional().describe('project kind: app or published library'),
+  }),
+  kind: optionsZod.shape.kind
+    .optional()
+    .meta({description: 'project kind: app or published library'}),
   languages: z
     .string()
     .optional()
-    .describe(`comma-separated extra CSpell languages (${LANGUAGES.map(({id}) => id).join(', ')})`),
-  lychee: optionsSchema.shape.lychee
+    .meta({
+      description: `comma-separated extra CSpell languages (${LANGUAGES.map(({id}) => id).join(', ')})`,
+    }),
+  lychee: optionsZod.shape.lychee
     .optional()
-    .describe('whether to check links with lychee in CI (only with `--ci yes`)'),
-  node: optionsSchema.shape.node.describe(
-    'lowest supported Node.js major version, out of those in `engines.node` of this template (defaults to the lowest one)',
-  ),
-  pnpm: optionsSchema.shape.pnpm.optional().describe('major version of pnpm'),
-  'save-exact': optionsSchema.shape['save-exact']
-    .optional()
-    .describe(
+    .meta({description: 'whether to check links with lychee in CI (only with `--ci yes`)'}),
+  node: optionsZod.shape.node.meta({
+    description:
+      'lowest supported Node.js major version, out of those in `engines.node` of this template (defaults to the lowest one)',
+  }),
+  pnpm: optionsZod.shape.pnpm.optional().meta({description: 'major version of pnpm'}),
+  'save-exact': optionsZod.shape['save-exact'].optional().meta({
+    description:
       'whether to use exact dependency versions: pnpm saves them and, without catalogs, ESLint requires them in `package.json`',
-    ),
+  }),
   tools: z
     .string()
     .optional()
-    .describe(
-      `comma-separated tools to set up (${TOOLS.join(', ')}; ${[...LIB_ONLY_TOOLS].join(', ')} only for \`lib\`)`,
-    ),
-  'ts-extensions': optionsSchema.shape['ts-extensions']
+    .meta({
+      description: `comma-separated tools to set up (${TOOLS.join(', ')}; ${[...LIB_ONLY_TOOLS].join(', ')} only for \`lib\`)`,
+    }),
+  'ts-extensions': optionsZod.shape['ts-extensions']
     .optional()
-    .describe('whether to use `.ts` extensions in imports, enforced by ESLint'),
-  updater: optionsSchema.shape.updater.optional().describe('dependency updater'),
-  workspace: optionsSchema.shape.workspace.describe(
-    'whether to make the project a pnpm workspace with the root as its package (defaults to `--catalogs`): ncu only updates catalogs in workspaces, and changesets tags releases like `name@1.0.0` instead of `v1.0.0`',
-  ),
+    .meta({description: 'whether to use `.ts` extensions in imports, enforced by ESLint'}),
+  updater: optionsZod.shape.updater.optional().meta({description: 'dependency updater'}),
+  workspace: optionsZod.shape.workspace.meta({
+    description:
+      'whether to make the project a pnpm workspace with the root as its package (defaults to `--catalogs`): ncu only updates catalogs in workspaces, and changesets tags releases like `name@1.0.0` instead of `v1.0.0`',
+  }),
 } as const;
 
 // Supported version ranges by the lowest supported major version, from the lowest one
 export const readNodeVersionRanges = async () => {
-  const {files} = snapshotPackageJsonSchema.parse(
+  const {files} = snapshotPackageJsonZod.parse(
     JSON.parse(await fs.readFile(SNAPSHOT_PATH, 'utf8')),
   );
-  const {engines} = packageJsonEnginesSchema.parse(JSON.parse(files['package.json']));
+  const {engines} = packageJsonEnginesZod.parse(JSON.parse(files['package.json']));
   const ranges = engines.node.split('||').map((range) => range.trim());
 
   return new Map(

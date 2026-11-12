@@ -83,6 +83,7 @@
     "eslint-plugin-github-action": "catalog:dev",
     "eslint-plugin-sentences-per-line": "catalog:dev",
     "eslint-plugin-sonarjs": "catalog:dev",
+    "eslint-plugin-zod": "catalog:dev",
     "knip": "catalog:dev",
     "lefthook": "catalog:dev",
     "npm-check-updates": "catalog:dev",

@@ -11,18 +11,21 @@ export default eslintConfig({
   ],
   defaultConfigsStatus: 'misc-enabled',
   configs: {
+    eslintComments: {
+      requireDescriptions: true,
+    },
     format: {
-      // Only Markdown code blocks, other files are formatted by oxfmt itself
       files: [],
-      configFencedCodeBlocks: true,
-      formatter: [
-        'oxfmt',
-        {
-          bracketSpacing: oxfmtConfig.bracketSpacing,
-          printWidth: oxfmtConfig.printWidth,
-          singleQuote: oxfmtConfig.singleQuote,
-        },
-      ],
+      configFencedCodeBlocks: {
+        formatter: [
+          'oxfmt',
+          {
+            bracketSpacing: oxfmtConfig.bracketSpacing,
+            printWidth: oxfmtConfig.printWidth,
+            singleQuote: oxfmtConfig.singleQuote,
+          },
+        ],
+      },
     },
     import: {
       requireModuleExtensions: true,
@@ -41,9 +44,20 @@ export default eslintConfig({
         enforceCatalog: true,
       },
     },
-
-    // False positives:
-    zod: false,
+    un: {
+      overrides: {
+        'un/no-type-assertion': 2,
+        'un/prefer-array-for-each': 2,
+        'un/prefer-logical-or': 2,
+      },
+    },
+    vitest: {
+      vitestGlobalsImporting: 'disallow',
+    },
+    zod: {
+      configCore: false,
+      configMini: false,
+    },
   },
   extraConfigs: [
     {
