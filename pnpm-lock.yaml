@@ -170,8 +170,8 @@ settings:
 catalogs:
   default:
     '@andreww2012/ai-guidelines':
-      specifier: ^0.2.7
-      version: 0.2.7
+      specifier: ^0.2.9
+      version: 0.2.9
     '@clack/prompts':
       specifier: 1.8.1
       version: 1.8.1
@@ -300,7 +300,7 @@ importers:
     dependencies:
       '@andreww2012/ai-guidelines':
         specifier: 'catalog:'
-        version: 0.2.7
+        version: 0.2.9
       '@clack/prompts':
         specifier: 'catalog:'
         version: 1.8.1
@@ -460,8 +460,8 @@ packages:
   '@andrewbranch/untar.js@1.0.4':
     resolution: {integrity: sha512-pVXSwPsLuw8IGLo2Di0EaOfsk+ntVvpkk942J/sHYIkwvtKUakEcPh7HBgZ6tuimgzKSEHgCvO4XgQ05DEbwDw==}
 
-  '@andreww2012/ai-guidelines@0.2.7':
-    resolution: {integrity: sha512-SMmU7reYzdhDUXILuDgIQ/iSywm/SfHcA+0ljAxnuZxb1+oqfSD9gKh4pW0RDg95mLIgVswe73rxCFTt/TWuEQ==}
+  '@andreww2012/ai-guidelines@0.2.9':
+    resolution: {integrity: sha512-0xgrRkfvzeSdWwlVL/+GcVP/U9ROlKkvYPzsMyvIUI7Xtk0C6RrKaUzYeLDbwJBRpsIPZL0d7cyuDRYnEzrLjQ==}
     engines: {node: ^24.18.0 || >=26.4.0}
     hasBin: true
 
@@ -5959,7 +5959,7 @@ snapshots:
 
   '@andrewbranch/untar.js@1.0.4': {}
 
-  '@andreww2012/ai-guidelines@0.2.7':
+  '@andreww2012/ai-guidelines@0.2.9':
     dependencies:
       '@clack/prompts': 1.9.0
       cleye: 2.7.0

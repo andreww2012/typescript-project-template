@@ -19,7 +19,13 @@ const loadConfig = (options?: CommitlintConfigOptions, packageJson?: unknown) =>
     fs.rmSync(directory, {recursive: true, force: true});
   });
   // Otherwise commitlint would look for a config in the parent and global directories
-  fs.writeFileSync(path.join(directory, '.commitlintrc.json'), '{}'); // cspell:disable-line
+  fs.writeFileSync(
+    path.join(
+      directory,
+      '.commitlintrc.json', // cspell:disable-line
+    ),
+    '{}',
+  );
   if (packageJson != null) {
     fs.writeFileSync(path.join(directory, 'package.json'), JSON.stringify(packageJson));
   }
@@ -38,7 +44,10 @@ const getLintOutcome = async (message: string, options?: CommitlintConfigOptions
 const lintMessage = async (message: string, options?: CommitlintConfigOptions) => {
   const {errors, warnings} = await getLintOutcome(message, options);
   const [errorRules, warningRules] = [errors, warnings].map((outcomes) =>
-    outcomes.map(({name}) => name).toSorted(),
+    outcomes
+      .map(({name}) => name)
+      // eslint-disable-next-line unicorn/no-array-sort -- `map` returns a new array
+      .sort(),
   );
   return {errors: errorRules, warnings: warningRules};
 };
@@ -161,7 +170,6 @@ describe('types', () => {
 
 // The CSpell config of this repository is used
 describe('spelling', () => {
-  // cspell:disable-next-line
   const MESSAGE = 'feat(scoep): add a featuer\n\nThe bodyy\n\nBREAKING CHANGE: droped Node.js 22';
 
   it.each([
@@ -200,7 +208,9 @@ describe('spelling', () => {
   });
 
   it('merges `check` with the default one', async () => {
-    const spelling = {check: {header: true, scope: false, body: 'warn', footer: false}} as const;
+    const spelling: SpellingOptions = {
+      check: {header: true, scope: false, body: 'warn', footer: false},
+    };
 
     await expect(lintMessage(MESSAGE, {spelling})).resolves.toStrictEqual({
       errors: ['header-spelling', 'subject-spelling'],
@@ -244,7 +254,12 @@ describe('spelling', () => {
     const message = 'feat: add `featuer` by @scoep\n\nSee bodyy/bodyy#1\n\nSigned-off-by: Droped';
     const outcome = await getLintOutcome(message, {spelling: {builtInIgnores}});
 
-    expect(outcome.errors.map((error) => error.message).toSorted()).toStrictEqual(errors);
+    expect(
+      outcome.errors
+        .map((error) => error.message)
+        // eslint-disable-next-line unicorn/no-array-sort -- `map` returns a new array
+        .sort(),
+    ).toStrictEqual(errors);
   });
 
   it('throws on unknown built-in ignores', async () => {

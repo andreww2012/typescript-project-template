@@ -130,7 +130,8 @@ const PACKAGE_FEATURES: Readonly<Record<string, string>> = {
   oxfmt: 'oxfmt',
   prettier: 'prettier',
   publint: 'publint',
-  'smol-toml': 'lychee', // cspell:disable-line
+  'smol-toml': // cspell:disable-line
+    'lychee',
   tsdown: 'lib',
   vitest: 'vitest',
   '@vitest/coverage-v8': 'vitest',
@@ -182,8 +183,9 @@ const SCRIPT_REPLACEMENTS: Readonly<
   },
 };
 
-// eslint-disable-next-line zod/no-empty-custom-schema, zod/require-error-message -- The snapshot is written by our own script
-const createdEntryZod = z.custom<CreatedEntry>();
+const createdEntryZod =
+  // eslint-disable-next-line zod/no-empty-custom-schema, zod/require-error-message -- The snapshot is written by our own script
+  z.custom<CreatedEntry>();
 
 const snapshotZod = z.object({
   files: z

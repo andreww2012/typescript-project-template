@@ -2,4 +2,4 @@
 "@andreww2012/typescript-project-template": patch
 ---
 
-Updated the AI guidelines of new projects to [`@andreww2012/ai-guidelines`](https://npmx.dev/@andreww2012/ai-guidelines) v0.2.7
+Updated the AI guidelines of new projects to [`@andreww2012/ai-guidelines`](https://npmx.dev/@andreww2012/ai-guidelines) v0.2.9

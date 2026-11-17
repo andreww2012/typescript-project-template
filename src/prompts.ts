@@ -67,7 +67,7 @@ export const promptForOptions = async (cliArguments: string[]) => {
           message: 'Set up changesets?',
           options: [
             {value: 'none', label: 'No'},
-            {value: 'github', label: 'Yes, with @changesets/changelog-github'},
+            {value: 'github', label: 'Yes, with `@changesets/changelog-github`'},
             {value: 'default', label: 'Yes, with the default changelog format'},
           ],
           initialValue: DEFAULT_OPTIONS.changesets,
@@ -119,7 +119,7 @@ export const promptForOptions = async (cliArguments: string[]) => {
             {
               value: 'yes',
               label: 'Yes',
-              hint: 'versions live in pnpm-workspace.yaml, ESLint requires `catalog:` in package.json',
+              hint: 'versions live in `pnpm-workspace.yaml`, ESLint requires `catalog:` in `package.json`',
             },
           ],
           initialValue: DEFAULT_OPTIONS.catalogs,
@@ -139,13 +139,13 @@ export const promptForOptions = async (cliArguments: string[]) => {
               hint:
                 [
                   ...(catalogs === 'yes' ? ["ncu won't update the catalogs"] : []),
-                  ...(hasChangesets ? ['changesets tags releases like v1.0.0'] : []),
+                  ...(hasChangesets ? ['changesets tags releases like `v1.0.0`'] : []),
                 ].join(', ') || undefined,
             },
             {
               value: 'yes',
               label: 'Yes',
-              ...(hasChangesets && {hint: 'changesets tags releases like name@1.0.0'}),
+              ...(hasChangesets && {hint: 'changesets tags releases like `name@1.0.0`'}),
             },
           ],
           initialValue: catalogs,
@@ -167,7 +167,7 @@ export const promptForOptions = async (cliArguments: string[]) => {
                   ? 'pnpm saves them'
                   : 'pnpm saves them and ESLint requires them',
             },
-            {value: 'no', label: 'No', hint: 'pnpm saves ^ ranges'},
+            {value: 'no', label: 'No', hint: 'pnpm saves `^` ranges'},
           ],
           initialValue: DEFAULT_OPTIONS['save-exact'],
         }),
@@ -188,10 +188,10 @@ export const promptForOptions = async (cliArguments: string[]) => {
       key: 'ts-extensions',
       ask: () =>
         prompts.select({
-          message: 'Use .ts extensions in imports?',
+          message: 'Use `.ts` extensions in imports?',
           options: [
             {value: 'yes', label: 'Yes', hint: 'enforced by ESLint'},
-            {value: 'no', label: 'No', hint: 'use .js extensions'},
+            {value: 'no', label: 'No', hint: 'use `.js` extensions'},
           ],
           initialValue: DEFAULT_OPTIONS['ts-extensions'],
         }),
@@ -266,7 +266,7 @@ export const promptForOptions = async (cliArguments: string[]) => {
       key: 'guidelines',
       ask: () =>
         prompts.select({
-          message: 'How should AGENTS.md link the AI guidelines?',
+          message: 'How should `AGENTS.md` link the AI guidelines?',
           options: [
             {value: 'local', label: 'Local', hint: 'copy the guidelines into the project'},
             {value: 'remote', label: 'Remote', hint: 'link the file on GitHub'},
@@ -282,8 +282,9 @@ export const promptForOptions = async (cliArguments: string[]) => {
       continue;
     }
 
-    // eslint-disable-next-line no-await-in-loop -- questions are asked one by one
-    const answer = await ask();
+    const answer =
+      // eslint-disable-next-line no-await-in-loop -- Questions are asked one by one
+      await ask();
     if (prompts.isCancel(answer)) {
       return null;
     }

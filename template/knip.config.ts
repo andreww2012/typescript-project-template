@@ -2,7 +2,9 @@ import type {KnipConfig} from 'knip';
 
 export default {
   // @if ncu
-  entry: ['.ncurc.js'], // cspell:disable-line
+  entry: [
+    '.ncurc.js', // cspell:disable-line
+  ],
   // @endif
   ignoreDependencies: [
     // Not used yet, but handy for scripts

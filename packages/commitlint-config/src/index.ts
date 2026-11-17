@@ -244,7 +244,8 @@ export const commitlintConfig = ({
       Object.entries<boolean>({...DEFAULT_TYPES, ...types})
         .filter(([, isAllowed]) => isAllowed)
         .map(([type]) => type)
-        .toSorted(),
+        // eslint-disable-next-line unicorn/no-array-sort -- `map` returns a new array
+        .sort(),
     ],
     ...Object.fromEntries([...getLengthRules(DEFAULT_LENGTHS), ...getLengthRules(lengths)]),
     ...Object.fromEntries(getSpellingRules(spelling)),

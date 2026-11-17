@@ -87,7 +87,7 @@ These files are also changed:
 They come from [`@andreww2012/ai-guidelines`](https://npmx.dev/@andreww2012/ai-guidelines), so updating this dependency updates them too.
 
 Files ignored by git are skipped.
-Symlinks (like `.claude/skills`) are created again with `ln -s`, because npm packages can't contain them.
+Symlinks (like `.claude/skills`) are created again by a Node.js script, because npm packages can't contain them.
 The lockfile isn't part of the template, so dependencies are resolved on the first install.
 
 The CLI code is in [`src/`](./src):

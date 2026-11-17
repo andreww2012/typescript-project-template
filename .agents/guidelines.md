@@ -1,6 +1,6 @@
 # Guidelines
 
-Source: <https://github.com/andreww2012/ai-guidelines/blob/@andreww2012/ai-guidelines@0.2.7/.agents/guidelines.md>
+Source: <https://github.com/andreww2012/ai-guidelines/blob/@andreww2012/ai-guidelines@0.2.9/.agents/guidelines.md>
 
 These are generic guidelines that might be copied or linked from a different repository.
 If anything stated here conflicts with the origin repo or the prompt, prefer them.
@@ -25,7 +25,6 @@ If something can be said shorter and simpler without losing meaning, do it: peop
 Sound human.
 None of the above is a hard ban: use anything if it actually fits.
 This applies to all languages, not only English.
-Test data doesn't need the characters from the first item to look real: use them there only when the test is about one of those characters.
 
 Avoid British variants of words like *behaviour* or *organisation* unless the project allows them.
 
@@ -34,6 +33,8 @@ In Russian, prefer `ё` over `е`.
 In comments and docs, don't name symbols (variables), commands, files, etc. unless the reader needs the name: if the entity is renamed, the reference becomes stale.
 
 Code, comments, docs and other work artifacts must make sense without the session context: don't write anything that can't be understood without it, like `// as requested`, `// now uses X instead of Y` or mentions of earlier attempts.
+
+Wrap all technical names, code snippets and the like in backticks.
 
 ## Code
 
@@ -54,7 +55,7 @@ If you need a utility or a utility type, first look for it in the project's own 
   - ❌ `str`, `arr`, `cls`, `brk`, `err`, `val`, `pkg`, `dir`, etc.
 
   Exceptions:
-  - ✅ `acc`, `char`, `coeff`, `ctx`, `dev`, `dict`, `env`, `fn`, `impl`, `param`
+  - ✅ `acc`, `char`, `coeff`, `ctx`, `dev`, `dict`, `env`, `fn`, `impl`, `param`, `w/(o)`
   - ✅ `docs` (when it's shorthand for "documentation", not "documents")
   - ✅ index variables like `i`/`j`/etc.
 
@@ -77,7 +78,7 @@ If you need a utility or a utility type, first look for it in the project's own 
   - ✅ `a ? b : c`, `if (a) { ... } else { ... }`
   - ❌ `!a ? c : b`, `if (!a) { ... } else { ... }`
 - If `||` and `??` operators work the same, prefer using `||`.
-- Use CONSTANT_CASE only for constants holding a primitive, a read-only array/object (`as const`, `Object.freeze`, `: Readonly<T>`, etc.), a `Set`/`Map` typed as `ReadonlySet`/`ReadonlyMap` or a `RegExp`, no matter how its values are computed:
+- Use `CONSTANT_CASE` only for constants holding a primitive, a read-only array/object (`as const`, `Object.freeze`, `: Readonly<T>`, etc.), a `Set`/`Map` typed as `ReadonlySet`/`ReadonlyMap` or a `RegExp`, no matter how its values are computed:
   - ✅ `const FOO = 'bar'`
   - ✅ `const FOO = ['bar', 1 + 2, Math.random()] as const`
   - ✅ `const FOO = Object.freeze({bar: Math.random()})`
@@ -94,6 +95,9 @@ If you need a utility or a utility type, first look for it in the project's own 
 - If `!== ''`/`=== ''` work the same as `.length > 0`/`.length === 0`, prefer the latter.
 - Put units in names: `MAX_SIZE_BYTES` or `DURATION_MS`, not `MAX_SIZE` or `DURATION`.
 - Prefer reading `.json` files with a static `import` rather than with file system utilities, unless the path is only known at runtime.
+- If `.toSorted()` and `.sort()` work the same, prefer `.sort()`, even if an ESLint rule like `unicorn/no-array-sort` requires the former: it's overly strict.
+  The same goes for the other copying methods, like `.toReversed()`.
+  Don't disable such lint rules globally though: they are still useful.
 
 ### Performance
 
@@ -106,7 +110,11 @@ If you need a utility or a utility type, first look for it in the project's own 
   Safe type casting exceptions: `as unknown`, `as const`, `satisfies T as T`.
 - Prefer `Record<string, unknown>` over the `object` type as the former is usually simpler to reason about.
 - Don't use `satisfies T` if the regular type annotation (`: T`) would work the same.
-  Tip: if `as const` is only there for the CONSTANT_CASE rule, use `: Readonly<T>` instead of `as const satisfies T` if possible.
+  Tip: if `as const` is only there for the `CONSTANT_CASE` rule, use `: Readonly<T>` instead of `as const satisfies T` if possible.
+- The same goes for `as const`: use it sparingly, only when really necessary.
+- Use descriptive names for type parameters: `Value`, `Key`, `Item`, `Element`, `Length`, etc. - NOT `T`, `U`, `V`, `K` and the like.
+- Beware that a type guard (`value is T`) also narrows the `false` branch.
+  If a value that already has the type `T` fails the check, it becomes `never` there - this is likely not intended.
 
 ### Style
 
@@ -188,7 +196,7 @@ Always put package names inside backticks in commit messages.
 Always use the imperative mood in commit headers.
 Unless you're allowed/asked to, never add yourself as a co-author.
 
-Use git stash only if there's no other way: prefer git worktrees or throwaway repos.
+Use `git stash` only if there's no other way: prefer git worktrees or throwaway repos.
 
 ### Writing on the hosting platform
 
@@ -232,6 +240,7 @@ You may use another conventional commit type, like `fix`, `feat`, etc., if it ma
 ## Testing tools, linters and other QA tools
 
 When the task is done, run *all* the available tools on *all changed* files - take the list of changed files from version control, e.g. `git status`.
+Before running them, check the machine's free RAM and CPU to decide whether to run them in an optimal way, likely parallel or one by one.
 Ignore the pre-existing unrelated issues.
 Prefer the tool's `package.json` script if you can limit it to the changed files (usually by passing their paths).
 Otherwise, call the tool directly on the changed files, with the same options the script uses.
@@ -250,12 +259,17 @@ If you encounter a linter error that can be fixed in multiple ways, always weigh
 These are comments like `eslint-disable-next-line <rule> -- <reason>`, `cspell:ignore <words>`, `@ts-expect-error` and others.
 
 - Always include that `<reason>` in ESLint, TypeScript and other tool comments wherever that makes sense.
-- Contrary to popular belief, `--` between the directive and the reason is an ESLint requirement, not a general one: other tools have their own syntax.
+  Start it with an uppercase letter.
+- `--` between the directive and the reason is an ESLint requirement, not a general one: other tools have their own syntax.
+  If the tool doesn't require a delimiter, don't invent one: separate them with a plain space.
 - They don't have to satisfy the max line length requirement if that is impossible.
 - Put them in comments of their own.
   Never add them to an existing comment, and never put them into content like strings or commands, unless there is clearly no other way of using them.
-- Prefer minimizing the impact of these comments: for example, a `*-disable-line` comment may accidentally hide more problems than it was supposed to.
-  To do so, you may need to reformat the code around it.
+- Make these comments cover only exactly the code that causes the report, so that they don't hide other problems.
+  For example, a `eslint-disable(-next)-line` comment covers the whole (next) line, which might have other code without issues.
+  In that case, break (re-format) the code so that the reported part gets a line of its own, unless the syntax or the formatter doesn't allow it.
+  To do that, put an argument, an array item, a chained call or the value after `=` on a new line, or move the value into a variable first.
+  Linters don't check this, so before you finish, look at what else is on the lines that these comments cover.
 
 #### CSpell
 
