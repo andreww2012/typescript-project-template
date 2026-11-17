@@ -1,4 +1,4 @@
-// cspell:ignore scoep featuer
+// cspell:ignore bodyy brzeczyszczykiewicz droped featuer scoep
 import assert from 'node:assert';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -6,7 +6,12 @@ import path from 'node:path';
 import lint from '@commitlint/lint';
 import load from '@commitlint/load';
 import {RuleConfigSeverity} from '@commitlint/types';
-import {type CoAuthorsOptions, type CommitlintConfigOptions, commitlintConfig} from './index.ts';
+import {
+  type CoAuthorsOptions,
+  type CommitlintConfigOptions,
+  type SpellingOptions,
+  commitlintConfig,
+} from './index.ts';
 
 const loadConfig = (options?: CommitlintConfigOptions, packageJson?: unknown) => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'commitlint-config-'));
@@ -203,19 +208,129 @@ describe('spelling', () => {
     });
   });
 
-  it('allows `ignoreWords`', async () => {
-    const spelling = {ignoreWords: ['scoep', 'featuer']};
+  it.each<{name: string; spelling: SpellingOptions}>([
+    {name: '`ignoreWords`', spelling: {ignoreWords: ['scoep', 'featuer']}},
+    {name: '`ignorePatterns`', spelling: {ignorePatterns: [/scoep|featuer/gu]}},
+    // CSpell would only skip the first match
+    {
+      name: '`ignorePatterns` without the `g` flag',
+      spelling: {ignorePatterns: [/scoep/u, /featuer/u]},
+    },
+  ])('allows $name', async ({spelling}) => {
+    const message = MESSAGE.replace('featuer', 'featuer featuer');
 
-    await expect(lintMessage(MESSAGE, {spelling})).resolves.toStrictEqual({
+    await expect(lintMessage(message, {spelling})).resolves.toStrictEqual({
       errors: ['body-spelling', 'footer-spelling'],
       warnings: [],
     });
+  });
+
+  it.each<{builtInIgnores: SpellingOptions['builtInIgnores']; errors: string[]}>([
+    {builtInIgnores: true, errors: []},
+    {builtInIgnores: {}, errors: []},
+    {builtInIgnores: {code: false}, errors: ['unknown words in subject: featuer']},
+    {builtInIgnores: {mentions: false}, errors: ['unknown words in subject: scoep']},
+    {builtInIgnores: {issues: false, code: true}, errors: ['unknown words in body: bodyy']},
+    {builtInIgnores: {trailers: false}, errors: ['unknown words in footer: Droped']},
+    {
+      builtInIgnores: false,
+      errors: [
+        'unknown words in body: bodyy',
+        'unknown words in footer: Droped',
+        'unknown words in subject: featuer, scoep',
+      ],
+    },
+  ])('turns off built-in ignores with $builtInIgnores', async ({builtInIgnores, errors}) => {
+    const message = 'feat: add `featuer` by @scoep\n\nSee bodyy/bodyy#1\n\nSigned-off-by: Droped';
+    const outcome = await getLintOutcome(message, {spelling: {builtInIgnores}});
+
+    expect(outcome.errors.map((error) => error.message).toSorted()).toStrictEqual(errors);
+  });
+
+  it('throws on unknown built-in ignores', async () => {
+    // @ts-expect-error Not a built-in ignore
+    const builtInIgnores: SpellingOptions['builtInIgnores'] = {cod: false};
+
+    await expect(
+      getLintOutcome('feat: add a feature', {spelling: {builtInIgnores}}),
+    ).rejects.toThrow('Unknown built-in ignore `cod`');
+  });
+
+  it('passes the options except `check` to the rules', async () => {
+    const {rules} = await loadConfig({
+      spelling: {check: {body: 'warn'}, ignoreWords: ['featuer'], builtInIgnores: false},
+    });
+
+    expect(rules['body-spelling']).toStrictEqual([
+      RuleConfigSeverity.Warning,
+      'always',
+      {ignoreWords: ['featuer'], builtInIgnores: false},
+    ]);
   });
 
   it('lists each unknown word once', async () => {
     const {errors} = await getLintOutcome('feat: add featuer and featuer', {spelling: true});
 
     expect(errors.map(({message}) => message)).toStrictEqual(['unknown words in subject: featuer']);
+  });
+
+  it.each([
+    'feat: add a feature\n\nCo-authored-by: Jan Brzeczyszczykiewicz <jan@example.com>',
+    'feat: add a feature\n\nCo-Authored-By : Jan Brzeczyszczykiewicz <jan@example.com>',
+    'feat: add a feature\n\nSigned-off-by: Brzeczyszczykiewicz\nReviewed-by: Brzeczyszczykiewicz',
+    'feat: add a feature\n\nThe body\n\nAssisted-by: Brzeczyszczykiewicz',
+    'feat: add a feature by @brzeczyszczykiewicz',
+    'feat: add @brzeczyszczykiewicz/brzeczyszczykiewicz',
+    'fix: add a workaround\n\nSee brzeczyszczykiewicz/brzeczyszczykiewicz#123',
+    'fix: add a workaround\n\nSee brzeczyszczykiewicz/brzeczyszczykiewicz/brzeczyszczykiewicz#1',
+    'feat: add `brzeczyszczykiewicz` and `brzeczyszczykiewicz`',
+    'feat: add `` `brzeczyszczykiewicz` ``',
+    'feat: add a feature\n\n```ts\nconst brzeczyszczykiewicz = 1;\n```\n\nThe body',
+    'feat: add a feature\n\n  ```\n  brzeczyszczykiewicz\n  ````',
+    'feat: add a feature\n\nThe body\n\n```\nbrzeczyszczykiewicz',
+  ])('skips names and code in %j', async (message) => {
+    await expect(lintMessage(message, {spelling: true})).resolves.toStrictEqual({
+      errors: [],
+      warnings: [],
+    });
+  });
+
+  it.each([
+    {
+      message:
+        'feat: add a feature\n\nBREAKING CHANGE: droped Node.js 22\nCo-authored-by: Foo <foo@example.com>',
+      error: 'unknown words in footer: droped',
+    },
+    {
+      message: 'feat: add a feature\n\nThe body written-by: bodyy',
+      error: 'unknown words in body: bodyy',
+    },
+    {message: 'feat: add a feature\n\nThe foo@bodyy', error: 'unknown words in body: bodyy'},
+    {message: 'feat: add `foo` and bodyy`', error: 'unknown words in subject: bodyy'},
+    {
+      message: 'feat: add a feature\n\nThe `foo\nbodyy` bar',
+      error: 'unknown words in body: bodyy',
+    },
+    {
+      message: 'feat: add a feature\n\n```\nfoo\n```\nThe bodyy ```foo```',
+      error: 'unknown words in body: bodyy',
+    },
+    {
+      message: 'feat: add a feature\n\n```\n```ts\nbrzeczyszczykiewicz\n```\nThe bodyy',
+      error: 'unknown words in body: bodyy',
+    },
+    // The parser starts the footer at `key: value`
+    {
+      message:
+        'feat: add a feature\n\nThe body\n\n```yaml\nkey: brzeczyszczykiewicz\n```\n\nThe bodyy\n\nSigned-off-by: Brzeczyszczykiewicz',
+      error: 'unknown words in footer: bodyy',
+    },
+  ])('checks the rest of $message', async ({message, error}) => {
+    const {errors} = await getLintOutcome(message, {spelling: true});
+
+    expect(
+      errors.filter(({name}) => name.endsWith('-spelling')).map((outcome) => outcome.message),
+    ).toStrictEqual([error]);
   });
 });
 
@@ -343,7 +458,7 @@ it('keeps the defaults for `undefined` values', async () => {
   ]).toStrictEqual([
     [RuleConfigSeverity.Error, 'always', 120],
     [RuleConfigSeverity.Error, 'never'],
-    [RuleConfigSeverity.Error, 'always', []],
+    [RuleConfigSeverity.Error, 'always', {}],
   ]);
 });
 

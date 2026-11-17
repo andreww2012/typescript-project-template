@@ -75,11 +75,20 @@ The extra options are:
   It needs `cspell-lib` v10, an optional peer dependency.
   pnpm and npm make the one installed with `cspell` available, so there's usually nothing else to install.
   Otherwise (for example, with Yarn PnP), install `cspell-lib` too: if spelling is enabled without it, the config throws an error.
-  Each commit message part has its own rule, like `subject-spelling`.
+  Each commit message part has its own rule, like `subject-spelling`, which takes the options except `check` as its value, like `[2, 'always', {ignoreWords: ['monorepo']}]`.
   The options are:
   - `check`: parts to check, `true` for errors, `'warn'` for warnings and `false` to skip a part.
     It's merged with the default one, which checks all parts except `header`: it has `type`, `scope` and `subject` in it, so their mistakes would be reported twice.
   - `ignoreWords`: words to allow in commit messages, in addition to the CSpell config.
+  - `ignorePatterns`: regular expressions of text to skip, in addition to the built-in ones and the CSpell config.
+    The `g` flag is added to the ones without it, as otherwise only the first match would be skipped.
+  - `builtInIgnores`: patterns of text to skip that CSpell doesn't skip by default, unlike URLs and emails.
+    `true`, the default, turns on all of them, `false` turns off all of them, and an object only some of them, like `{code: false}`.
+    The patterns are:
+    - `code`: code blocks and inline code in backticks, which can't span lines.
+    - `trailers`: `*-by` trailers, like `Co-authored-by` and `Signed-off-by`.
+    - `mentions`: GitHub mentions and scoped packages, like `@user` and `@scope/name`.
+    - `issues`: issues of other repositories, like `owner/repo#123`.
 - `coAuthors`: co-authors to forbid in `Co-authored-by` trailers.
   `false` forbids all of them, and `true`, the default, allows all of them.
   An object chooses which ones to forbid:

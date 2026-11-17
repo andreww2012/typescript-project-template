@@ -19,7 +19,12 @@ import {
 } from 'utilery';
 import {type CoAuthorsOptions, coAuthoredByRule} from './rules/co-authored-by.ts';
 import {scopeNoWhitespaceRule} from './rules/scope-no-whitespace.ts';
-import {SPELLING_PARTS, type SpellingPart, createSpellingRule} from './rules/spelling.ts';
+import {
+  SPELLING_PARTS,
+  type SpellingPart,
+  type SpellingRuleOptions,
+  createSpellingRule,
+} from './rules/spelling.ts';
 
 /** Lengths in characters, `false` disables a rule */
 export interface PartLengths {
@@ -41,15 +46,12 @@ export interface Lengths {
   footer?: MultilinePartLengths;
 }
 
-export interface SpellingOptions {
+export interface SpellingOptions extends SpellingRuleOptions {
   /**
    * Parts to check: `true` reports errors, `'warn'` reports warnings and `false` skips a part.
    * Merged with the default ones: all parts except `header`
    */
   check?: Partial<Record<SpellingPart, boolean | 'warn'>>;
-
-  /** Words to allow in commit messages, in addition to the CSpell config of the project */
-  ignoreWords?: string[];
 }
 
 export interface CommitlintConfigOptions extends UserConfig {
@@ -182,11 +184,11 @@ const getSpellingRules = (spelling: boolean | SpellingOptions) => {
       'Install `cspell-lib` or set `spelling` to `false`',
   );
 
-  const {check, ignoreWords = []} = spelling === true ? {} : spelling;
+  const {check, ...ruleOptions} = spelling === true ? {} : spelling;
   return Object.entries({...DEFAULT_SPELLING_CHECK, ...omitUndefined(check)}).map(
-    ([part, severity]): [string, RuleConfigTuple<readonly string[]>] => [
+    ([part, severity]): [string, RuleConfigTuple<SpellingRuleOptions>] => [
       `${part}-spelling`,
-      [SPELLING_SEVERITIES.get(severity) || RuleConfigSeverity.Disabled, 'always', ignoreWords],
+      [SPELLING_SEVERITIES.get(severity) || RuleConfigSeverity.Disabled, 'always', ruleOptions],
     ],
   );
 };
@@ -254,3 +256,4 @@ export const commitlintConfig = ({
 });
 
 export {type CoAuthorsOptions} from './rules/co-authored-by.ts';
+export {type SpellingRuleOptions} from './rules/spelling.ts';
