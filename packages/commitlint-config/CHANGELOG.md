@@ -1,5 +1,15 @@
 # @andreww2012/commitlint-config
 
+## 0.2.0
+
+### Minor Changes
+
+- [`cde6109`](https://github.com/andreww2012/typescript-project-template/commit/cde61099cd7e471aa1886ed07d67be33fef38f8b) - Added the `ignorePatterns` and `builtInIgnores` options of `spelling` to skip more text or turn off the built-in patterns. The `*-spelling` rules now take these options and `ignoreWords` as an object, not an array of words
+
+### Patch Changes
+
+- [`cde6109`](https://github.com/andreww2012/typescript-project-template/commit/cde61099cd7e471aa1886ed07d67be33fef38f8b) - Spell checking now skips code in backticks, names in `*-by` trailers like `Co-authored-by`, GitHub mentions, scoped packages and issues of other repositories, like `owner/repo#123`
+
 ## 0.1.0
 
 ### Minor Changes

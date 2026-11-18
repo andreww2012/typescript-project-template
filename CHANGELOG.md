@@ -1,5 +1,39 @@
 # @andreww2012/typescript-project-template
 
+## 0.6.0
+
+### Minor Changes
+
+- [`6aa0496`](https://github.com/andreww2012/typescript-project-template/commit/6aa04963c2cbec0373d26a17ba6f973959912706) - Added the `--release-age-fallback` option (off by default) to set pnpm's [`minimumReleaseAgeStrict: false`](https://pnpm.io/settings/dependency-resolution#minimumreleaseagestrict) in new projects
+
+- [`a6b8cd4`](https://github.com/andreww2012/typescript-project-template/commit/a6b8cd421e6872f47bbe0085f7540c9a215facc4) - Added support for repeating the `--tools` and `--languages` flags, like `--tools knip --tools cspell`. Comma-separated lists still work
+
+- [`526f14e`](https://github.com/andreww2012/typescript-project-template/commit/526f14e866ac4ec446aa624682bc0ee767f3dfc4) - Added the `--actions-lock` option (on by default with `--ci yes`) to lock GitHub Actions dependencies of new projects with [`gh actions-lock`](https://github.com/github/gh-actions-lock) instead of pinning commit SHAs in workflows
+
+- [`becf08f`](https://github.com/andreww2012/typescript-project-template/commit/becf08f05822ab8280a50cc28dadc1ccfd84a359) - Added the `--catalogs` option (off by default) to keep dependency versions of new projects in pnpm catalogs, with ESLint requiring `catalog:` in `package.json`
+
+- [`d48e7bb`](https://github.com/andreww2012/typescript-project-template/commit/d48e7bbf6304bb84e74ec825c76815d359b7bc9a) - Added the `--workspace` option (on by default with `--catalogs yes`) to make new projects pnpm workspaces, which changes the git tags of changesets releases from `v1.0.0` to `name@1.0.0`
+
+- [`5d7131f`](https://github.com/andreww2012/typescript-project-template/commit/5d7131f2c0b9610518a05725d9560c703ca1c604) - `cspell.config.ts` of new projects now uses [`@andreww2012/cspell-config`](https://npmx.dev/@andreww2012/cspell-config). It skips exactly the files that git ignores instead of using CSpell's `useGitignore` (via [`gitignore-reader-x`](https://npmx.dev/gitignore-reader-x)), and doesn't report GitHub advisory ids like `GHSA-xxxx-xxxx-xxxx`
+
+### Patch Changes
+
+- [`a6c51e0`](https://github.com/andreww2012/typescript-project-template/commit/a6c51e062eb818a7be3da4b86d1505e5d05125f0) - Updated `.gitignore` of new projects to [github/gitignore@`8ba69a4`](https://github.com/github/gitignore/tree/8ba69a4220df77b696fe97b60fb70eb668fb00e1)
+
+- [`e66bdc1`](https://github.com/andreww2012/typescript-project-template/commit/e66bdc1b5571e87abbdcc5a3a5b351aebd56bb56) - Enabled tsdown's `unbundle` mode in new `lib` projects, so the build output mirrors the source files
+
+- [`a3b5c46`](https://github.com/andreww2012/typescript-project-template/commit/a3b5c4664917cb31e4514969488a5def49fb0314) - Made CI job names of new projects shorter and clearer, like `Types` instead of `Typecheck (tsgo)`
+
+- [`8da66e9`](https://github.com/andreww2012/typescript-project-template/commit/8da66e96f50ace1e7a5e3e065ff17e7edb289afe) - Moved the `attw` and `publint` checks of new `lib` projects from the `check:package` script into the `tsdown` config
+
+- [`b21b832`](https://github.com/andreww2012/typescript-project-template/commit/b21b83251270d31476d825f94d81705b080d78f8) - Fixed the `commit-msg` hook of new projects failing in a git worktree when the main repository's path has spaces
+
+- [`beae84a`](https://github.com/andreww2012/typescript-project-template/commit/beae84acc8abba80587472675aaec2555c55b691) - Enabled pnpm's [`trustPolicyExcludePrune`](https://pnpm.io/settings/dependency-resolution#trustpolicyexcludeprune) and, in workspaces, [`disallowWorkspaceCycles`](https://pnpm.io/workspaces#disallowworkspacecycles) in new projects
+
+- [`86f7c88`](https://github.com/andreww2012/typescript-project-template/commit/86f7c8858108777a7c9df9625a4ae1366fd056fd) - Made `pnpm-lock.yaml` changes hidden in `git diff` output via the `.gitattributes` rule
+
+- [`927ab39`](https://github.com/andreww2012/typescript-project-template/commit/927ab396ca865cad8fa3acafc69e0ec28ff4f9fd) - Updated the AI guidelines of new projects to [`@andreww2012/ai-guidelines`](https://npmx.dev/@andreww2012/ai-guidelines) v0.2.11
+
 ## 0.5.0
 
 ### Minor Changes
