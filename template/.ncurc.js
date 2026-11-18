@@ -6,9 +6,6 @@ export default ncuConfig({
   targets: {
     // Their `latest` dist-tag lags behind the prerelease channel we actually follow
     'eslint-config-un': 'greatest',
-    // @if contributors
-    'all-contributors-cli': 'greatest',
-    // @endif
   },
   groups: {
     // '@commitlint': {},
