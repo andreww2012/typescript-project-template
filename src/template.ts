@@ -396,6 +396,7 @@ export const template = createTemplate({
         parsedOptions.guidelines === 'local' && 'local-guidelines',
         parsedOptions.catalogs === 'yes' && 'catalogs',
         (parsedOptions.workspace || parsedOptions.catalogs) === 'yes' && 'workspace',
+        parsedOptions['release-age-fallback'] === 'yes' && 'release-age-fallback',
         parsedOptions['save-exact'] === 'yes' && 'save-exact',
         parsedOptions['ts-extensions'] === 'yes' && 'ts-extensions',
       ]),

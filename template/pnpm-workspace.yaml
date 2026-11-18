@@ -23,6 +23,9 @@ lockfile:
 minimumReleaseAge: 960 # 16 hours in minutes
 minimumReleaseAgeExclude: []
 minimumReleaseAgeExcludePrune: true
+# @if release-age-fallback
+minimumReleaseAgeStrict: false
+# @endif
 
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 43200 # 30 days in minutes

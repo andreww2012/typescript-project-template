@@ -55,6 +55,7 @@ export const optionsZod = z.object({
   catalogs: z.literal(['no', 'yes']).default('no'),
   // Defaults to `catalogs`, because ncu only updates catalogs in workspaces
   workspace: z.literal(['no', 'yes']).optional(),
+  'release-age-fallback': z.literal(['no', 'yes']).default('no'),
   'save-exact': z.literal(['yes', 'no']).default('yes'),
   formatter: z.literal(['oxfmt', 'prettier']).default('oxfmt'),
   'ts-extensions': z.literal(['yes', 'no']).default('yes'),
@@ -111,6 +112,10 @@ export const OPTION_FLAGS = {
       'lowest supported Node.js major version, out of those in `engines.node` of this template (defaults to the lowest one)',
   }),
   pnpm: optionsZod.shape.pnpm.optional().meta({description: 'major version of pnpm'}),
+  'release-age-fallback': optionsZod.shape['release-age-fallback'].optional().meta({
+    description:
+      'whether pnpm can install versions newer than `minimumReleaseAge` when no older version fits, by setting `minimumReleaseAgeStrict: false`',
+  }),
   'save-exact': optionsZod.shape['save-exact'].optional().meta({
     description:
       'whether to use exact dependency versions: pnpm saves them and, without catalogs, ESLint requires them in `package.json`',

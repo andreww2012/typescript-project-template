@@ -157,6 +157,18 @@ export const promptForOptions = async (cliArguments: string[]) => {
       },
     },
     {
+      key: 'release-age-fallback',
+      ask: () =>
+        prompts.select({
+          message: 'Let pnpm install versions newer than `minimumReleaseAge` if no older one fits?',
+          options: [
+            {value: 'no', label: 'No', hint: 'the installation fails'},
+            {value: 'yes', label: 'Yes', hint: 'sets `minimumReleaseAgeStrict: false`'},
+          ],
+          initialValue: DEFAULT_OPTIONS['release-age-fallback'],
+        }),
+    },
+    {
       key: 'save-exact',
       ask: () =>
         prompts.select({
