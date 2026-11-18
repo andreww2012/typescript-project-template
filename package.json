@@ -26,6 +26,7 @@
     "prepublishOnly": "nr check:package",
     "u": "ncu",
     "u:m": "ncu -t minor",
+    "u:template": "ncu --packageFile template/package.json --configFilePath . --no-workspaces --install never",
     "u:pm": "pnpm self-update",
     "u:actions": "actions-up --style preserve",
     "deps:audit": "pnpm audit --audit-level high",
