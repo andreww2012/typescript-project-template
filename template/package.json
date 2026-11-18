@@ -105,7 +105,7 @@
     "prettier": "3.9.10",
     "publint": "0.3.25",
     "smol-toml": "1.9.1",
-    "tsdown": "0.23.2",
+    "tsdown": "0.23.7",
     "tsx": "4.23.15",
     "typescript": "npm:@typescript/typescript6@6.0.2",
     "typescript7": "npm:typescript@7.0.2",
