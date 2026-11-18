@@ -15,7 +15,7 @@ runs:
       shell: bash
       run: echo "version=$(jq -r '.devEngines.packageManager.version' package.json)" >> "$GITHUB_OUTPUT"
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.1.0
+      uses: pnpm/action-setup@v6.1.1
       with:
         # TODO remove the explicit version after
         # https://github.com/pnpm/action-setup/issues/227 is fixed
