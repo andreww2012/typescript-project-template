@@ -62,7 +62,7 @@ export const optionsZod = z.object({
   guidelines: z.literal(['local', 'remote']).default('local'),
 });
 
-export const DEFAULT_OPTIONS = Object.freeze(optionsZod.parse({}));
+export const DEFAULT_OPTIONS: Readonly<z.output<typeof optionsZod>> = optionsZod.parse({});
 
 // Bingo passes the raw flag values to `produce`, so these only describe the flags
 export const OPTION_FLAGS = {

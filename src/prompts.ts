@@ -1,4 +1,4 @@
-import {parseArgs} from 'node:util';
+import {type ParseArgsOptionsConfig, parseArgs} from 'node:util';
 import * as prompts from '@clack/prompts';
 import {mapValues} from 'utilery';
 import {
@@ -19,11 +19,11 @@ const TOOL_HINTS: Readonly<Record<(typeof TOOLS)[number], string>> = {
   vitest: 'unit tests',
 };
 
-const PARSE_ARGS_OPTIONS = {
+const PARSE_ARGS_OPTIONS: Readonly<ParseArgsOptionsConfig> = {
   ...mapValues(OPTION_FLAGS, () => ({type: 'string' as const})),
   help: {type: 'boolean'},
   version: {type: 'boolean'},
-} as const;
+};
 
 /**
  * Asks the questions Bingo can't ask on its own.

@@ -263,8 +263,10 @@ describe('spelling', () => {
   });
 
   it('throws on unknown built-in ignores', async () => {
-    // @ts-expect-error Not a built-in ignore
-    const builtInIgnores: SpellingOptions['builtInIgnores'] = {cod: false};
+    const builtInIgnores: SpellingOptions['builtInIgnores'] = {
+      // @ts-expect-error Not a built-in ignore
+      cod: false,
+    };
 
     await expect(
       getLintOutcome('feat: add a feature', {spelling: {builtInIgnores}}),
@@ -364,8 +366,9 @@ const getErrors = async (message: string, coAuthors: CommitlintConfigOptions['co
 describe('co-authors', () => {
   const FOO = 'Foo <foo@example.com>';
   const CLAUDE = 'Claude Opus 5.5 <noreply@anthropic.com>';
-  // eslint-disable-next-line no-secrets/no-secrets -- An email
-  const COPILOT = 'Copilot <175728472+Copilot@users.noreply.github.com>';
+  const COPILOT =
+    // eslint-disable-next-line no-secrets/no-secrets -- An email
+    'Copilot <175728472+Copilot@users.noreply.github.com>';
   const CURSOR = 'Cursor <cursoragent@cursor.com>';
 
   it.each([
@@ -403,8 +406,12 @@ describe('co-authors', () => {
     {coAuthor: 'Claude <noreply@anthropic.com>', isAi: true},
     {coAuthor: 'aider (gpt-4o) <aider@aider.chat>', isAi: true},
     {coAuthor: 'Copilot <copilot@github.com>', isAi: true},
-    // eslint-disable-next-line no-secrets/no-secrets -- An email
-    {coAuthor: 'Copilot App <223556219+Copilot@users.noreply.github.com>', isAi: true},
+    {
+      coAuthor:
+        // eslint-disable-next-line no-secrets/no-secrets -- An email
+        'Copilot App <223556219+Copilot@users.noreply.github.com>',
+      isAi: true,
+    },
     {
       coAuthor: 'coderabbitai[bot] <136622811+coderabbitai[bot]@users.noreply.github.com>',
       isAi: true,
@@ -435,8 +442,12 @@ describe('co-authors', () => {
   });
 
   it('throws on unknown presets', async () => {
-    // @ts-expect-error Not a preset
-    const coAuthors: CoAuthorsOptions = {deny: ['claud']};
+    const coAuthors: CoAuthorsOptions = {
+      deny: [
+        // @ts-expect-error Not a preset
+        'claud',
+      ],
+    };
 
     await expect(
       getErrors(`feat: add a feature\n\n${toTrailers(CLAUDE)}`, coAuthors),
