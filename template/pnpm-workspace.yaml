@@ -1,6 +1,7 @@
 # @if workspace
 packages:
   - ./
+disallowWorkspaceCycles: true
 
 # @endif
 # @if catalogs
@@ -37,6 +38,7 @@ trustPolicyExclude: # []
   # Published by hand after its release workflow failed. Same code as v2.2.1
   - lefthook@2.2.2
 # @endif
+trustPolicyExcludePrune: true
 
 audit:
   ignore: # []
