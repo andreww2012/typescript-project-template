@@ -31,6 +31,7 @@ Template options:
 - `--languages`: only with `cspell`, extra CSpell languages, passed like `--tools`, none by default: `en-GB`, `nl`, `fr`, `de`, `it`, `pl`, `pt`, `ru`, `es`, `tr`, `uk`
 - `--updater`: dependency updater, `ncu` (default, run by hand), `dependabot`, `renovate` or `none`
 - `--ci`: `yes` (default) to set up GitHub Actions like in this repository (checks for every chosen tool, tests on every supported Node.js version, and the changesets release), or `no`
+- `--actions-lock`: only with `--ci yes`, `yes` (default) to lock GitHub Actions dependencies with [`gh actions-lock`](https://github.com/github/gh-actions-lock), which CI verifies, or `no` to pin commit SHAs in workflows
 - `--lychee`: only with `--ci yes`, `no` (default) or `yes` to check links with [lychee](https://lychee.cli.rs) in CI
 - `--guidelines`: how `AGENTS.md` links [the AI guidelines](https://github.com/andreww2012/ai-guidelines), `local` (default) to copy them into `.agents/guidelines.md` or `remote` to link the file on GitHub
 - `--utils`: utility library to install, [`utilery`](https://npmx.dev/utilery) (default) or `none`
@@ -76,6 +77,8 @@ These files are also changed:
 
 - `package.json`: name, description and author come from the options, `engines.node` only keeps the versions from `--node` on, and with `--catalogs yes`, dependencies point to the catalogs
 - `.github/actions/prepare/action.yml` and `.github/workflows/ci.yml`: Node.js versions match the supported ones
+- `.github/workflows/actions.lock`: only keeps the workflows and actions the project uses
+- `.github/actions/prepare/action.yml` and `.github/workflows/*.yml`: with `--actions-lock no`, actions are pinned to the commits from `template/.github/workflows/actions.lock`
 - `tsconfig.json`: `target` and `lib` match the lowest supported Node.js version, like in [`@tsconfig/bases`](https://github.com/tsconfig/bases)
 - `pnpm-workspace.yaml`: the `allowBuilds` entry of lefthook gets its version from `template/package.json`, and with `--catalogs yes`, the catalogs get the dependency versions
 - `README.md`: gets the project name and description on top
@@ -102,6 +105,13 @@ The CLI code is in [`src/`](./src):
 It runs automatically before publishing.
 
 The pnpm 11 version isn't stored in any `package.json`, so update it in [`src/template.ts`] by hand.
+
+After changing any `uses:` in `template/`, update its lockfile:
+
+```sh
+cd template
+GH_ACTIONS_LOCK_REPO_ROOT=. gh actions-lock
+```
 
 To try the template from source:
 

@@ -28,7 +28,7 @@
     "u": "ncu",
     "u:m": "ncu -t minor",
     "u:pm": "pnpm self-update",
-    "u:actions": "actions-up",
+    "u:actions": "actions-up --style preserve",
     "deps:audit": "pnpm audit --audit-level high",
     "deps:audit:fix": "nr deps:audit --fix override",
     "deps:audit:fix:update": "nr deps:audit --fix update",

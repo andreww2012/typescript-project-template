@@ -55,6 +55,18 @@ const CI_DEFAULT_NODE_VERSION_REGEX = /(?<=default: )'\d+'/;
 // Node.js versions in the CI test matrix, like `node-version: [22, 24, 26]`
 const CI_NODE_VERSIONS_REGEX = /(?<=node-version: )\[[\d ,]+\]/;
 
+// Like `actions/checkout@v7.0.1` in `uses: actions/checkout@v7.0.1`
+const CI_ACTION_REGEX = /(?<=uses: )([\w-]+\/[\w-]+)@(v\S+)$/gm;
+
+// A workflow in the actions lockfile, with the list of its actions
+const ACTIONS_LOCK_WORKFLOW_REGEX = /^ {4}'(\.github\/[^']+)':\n(?: {8}- .+\n)+/gm;
+
+// An action in the actions lockfile: an item of a workflow's list or a whole dependency
+const ACTIONS_LOCK_ACTION_REGEX = /^(?: {8}- | {4})'([^'@]+)@[^']+'(?::\n(?: {8}\w.+\n)+|\n)/gm;
+
+// A dependency in the actions lockfile, like `'actions/checkout@v7.0.1'`, with its commit
+const ACTIONS_LOCK_COMMIT_REGEX = /^ {4}'([^']+)':\n {8}ref: .+\n {8}commit: 'sha1-(\w+)'$/gm;
+
 // Like `lefthook@1.2.3:` in `allowBuilds` of `pnpm-workspace.yaml`
 const LEFTHOOK_ALLOW_BUILDS_KEY_REGEX = /lefthook@[^\s:]+:/;
 
@@ -92,6 +104,7 @@ const FILE_FEATURES: Readonly<Record<string, string>> = {
   '.github/actions': 'ci',
   '.github/dependabot.yml': 'dependabot',
   '.github/workflows': 'ci',
+  '.github/workflows/actions.lock': 'actions-lock',
   '.github/workflows/check-links.yml': 'lychee',
   '.ncurc.js': 'ncu',
   '.prettierignore': 'prettier',
@@ -108,6 +121,12 @@ const FILE_FEATURES: Readonly<Record<string, string>> = {
   'src/index.ts': 'lib',
   'tsdown.config.ts': 'lib',
   'vitest.config.ts': 'vitest',
+};
+const ACTION_FEATURES: Readonly<Record<string, string>> = {
+  'actions/cache': 'lychee',
+  'changesets/action': 'changesets',
+  'lycheeverse/lychee-action': // cspell:disable-line
+    'lychee',
 };
 const PACKAGE_FEATURES: Readonly<Record<string, string>> = {
   'actions-up': 'actions-up',
@@ -169,7 +188,7 @@ const OXFMT_SCRIPTS: Readonly<Record<string, string>> = {
   format: 'oxfmt',
 };
 
-// Scripts running other scripts, which only exist with the given feature
+// Parts of scripts that are only needed with the given feature
 const SCRIPT_REPLACEMENTS: Readonly<
   Record<string, Record<string, [search: string, replacement: string]>>
 > = {
@@ -179,6 +198,9 @@ const SCRIPT_REPLACEMENTS: Readonly<
   },
   test: {
     vitest: [' && nr test:vitest', ''],
+  },
+  'u:actions': {
+    'actions-lock': [' --style preserve', ''],
   },
 };
 
@@ -190,6 +212,11 @@ const snapshotZod = z.object({
   files: z
     .object({
       '.agents': z.record(z.string(), createdEntryZod),
+      '.github': z
+        .object({
+          workflows: z.object({'actions.lock': z.string()}).catchall(createdEntryZod),
+        })
+        .catchall(createdEntryZod),
       'package.json': z.string(),
     })
     .catchall(createdEntryZod),
@@ -362,6 +389,7 @@ export const template = createTemplate({
         options.utils === UTILITY_LIBRARY && 'utilery',
         updater !== 'none' && updater,
         ci === 'yes' && 'ci',
+        ci === 'yes' && parsedOptions['actions-lock'] === 'yes' && 'actions-lock',
         // Dependabot and Renovate update GitHub Actions on their own
         ci === 'yes' && updater === 'ncu' && 'actions-up',
         ci === 'yes' && parsedOptions.lychee === 'yes' && 'lychee',
@@ -425,6 +453,24 @@ export const template = createTemplate({
           ])
         : [];
 
+    const lockedCommits = new Map(
+      Array.from(
+        files['.github'].workflows['actions.lock'].matchAll(ACTIONS_LOCK_COMMIT_REGEX),
+        ([, action, commit]) => [action, commit],
+      ),
+    );
+    // The template's workflows are written for the lockfile, which has all the commits
+    const pinActions = (text: string) =>
+      features.has('actions-lock')
+        ? text
+        : text
+            .replaceAll('uses: $/', 'uses: ./')
+            .replaceAll(
+              CI_ACTION_REGEX,
+              (locked, action: string, version: string) =>
+                `${action}@${lockedCommits.get(locked)} # ${version}`,
+            );
+
     const transforms: Record<string, (text: string) => string> = {
       '.all-contributorsrc': updateJson((config) => ({
         ...config,
@@ -442,9 +488,20 @@ export const template = createTemplate({
             : config.changelog,
       })),
       '.github/actions/prepare/action.yml': (text) =>
-        text.replace(CI_DEFAULT_NODE_VERSION_REGEX, () => `'${nodeMajor}'`),
+        pinActions(text.replace(CI_DEFAULT_NODE_VERSION_REGEX, () => `'${nodeMajor}'`)),
+      '.github/workflows/actions.lock': (text) =>
+        text
+          .replaceAll(ACTIONS_LOCK_WORKFLOW_REGEX, (entry, workflow: string) =>
+            hasFeature(features, FILE_FEATURES[workflow]) ? entry : '',
+          )
+          .replaceAll(ACTIONS_LOCK_ACTION_REGEX, (entry, action: string) =>
+            hasFeature(features, ACTION_FEATURES[action]) ? entry : '',
+          ),
+      '.github/workflows/check-links.yml': pinActions,
       '.github/workflows/ci.yml': (text) =>
-        text.replace(CI_NODE_VERSIONS_REGEX, () => `[${supportedNodeMajors.join(', ')}]`),
+        pinActions(
+          text.replace(CI_NODE_VERSIONS_REGEX, () => `[${supportedNodeMajors.join(', ')}]`),
+        ),
       'cspell.config.ts': (text) =>
         text.replace('  words: ', (wordsLine) => [...cspellLanguageLines, wordsLine].join('\n')),
       'LICENSE.md': (text) =>

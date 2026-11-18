@@ -62,6 +62,7 @@ export const optionsZod = z.object({
   languages: listFlag(LANGUAGES.map(({id}) => id)).default([]),
   updater: z.literal(['ncu', 'dependabot', 'renovate', 'none']).default('ncu'),
   ci: z.literal(['yes', 'no']).default('yes'),
+  'actions-lock': z.literal(['yes', 'no']).default('yes'),
   lychee: z.literal(['no', 'yes']).default('no'),
   guidelines: z.literal(['local', 'remote']).default('local'),
 });
@@ -70,6 +71,10 @@ export const DEFAULT_OPTIONS: Readonly<z.output<typeof optionsZod>> = optionsZod
 
 // Bingo passes the raw flag values to `produce`, so these only describe the flags
 export const OPTION_FLAGS = {
+  'actions-lock': optionsZod.shape['actions-lock'].optional().meta({
+    description:
+      'whether to lock GitHub Actions dependencies with `gh actions-lock` instead of pinning commit SHAs in workflows (only with `--ci yes`)',
+  }),
   catalogs: optionsZod.shape.catalogs.optional().meta({
     description: 'whether to keep dependency versions in pnpm catalogs, enforced by ESLint',
   }),

@@ -254,6 +254,19 @@ export const promptForOptions = async (cliArguments: string[]) => {
         }),
     },
     {
+      key: 'actions-lock',
+      when: () => answers.get('ci') === 'yes',
+      ask: () =>
+        prompts.select({
+          message: 'Lock GitHub Actions dependencies with `gh actions-lock`?',
+          options: [
+            {value: 'yes', label: 'Yes', hint: 'commits are pinned in `actions.lock`'},
+            {value: 'no', label: 'No', hint: 'commits are pinned in workflows'},
+          ],
+          initialValue: DEFAULT_OPTIONS['actions-lock'],
+        }),
+    },
+    {
       key: 'lychee',
       when: () => answers.get('ci') === 'yes',
       ask: () =>

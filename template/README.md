@@ -65,6 +65,9 @@ Review these things and you're good to go:
 ### CI
 
 - [ ] Review [the CI workflow](./.github/workflows/ci.yml)
+<!-- @if actions-lock -->
+- [ ] Install [`gh actions-lock`](https://github.com/github/gh-actions-lock) with `gh extension install github/gh-actions-lock`, and run it after changing any `uses:` in workflows or actions
+<!-- @endif -->
 <!-- @if changesets -->
 - [ ] Allow GitHub Actions to create pull requests in the repository settings (Actions → General), so that changesets can open release pull requests
 - [ ] Set up [trusted publishing](https://docs.npmjs.com/trusted-publishers) on npm, so that CI can publish the package

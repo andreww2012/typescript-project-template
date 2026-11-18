@@ -14,20 +14,37 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
+  actions-lock:
+    name: Actions lockfile
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - run: gh extension install github/gh-actions-lock --pin v0.4.1
+      - run: gh actions-lock --verify
+      - name: Verify the lockfile of the template
+        working-directory: template
+        env:
+          GH_ACTIONS_LOCK_REPO_ROOT: .
+        run: gh actions-lock --verify
+
   install:
     name: Install dependencies
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/prepare
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/prepare
 
   knip:
     name: Knip
     needs: install
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/prepare
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/prepare
       - run: pnpm knip
 
   spellcheck:
@@ -35,8 +52,8 @@ jobs:
     needs: install
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/prepare
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/prepare
       - run: pnpm check:spelling
 
   formatting:
@@ -44,8 +61,8 @@ jobs:
     needs: install
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/prepare
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/prepare
       - run: pnpm check:format
 
   typecheck:
@@ -53,8 +70,8 @@ jobs:
     needs: install
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/prepare
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/prepare
       - run: pnpm ts
 
   eslint:
@@ -62,8 +79,8 @@ jobs:
     needs: install
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/prepare
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/prepare
       - run: pnpm eslint
 
   test:
@@ -74,8 +91,8 @@ jobs:
       matrix:
         node-version: [22, 24, 26]
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/prepare
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/prepare
         with:
           node-version: ${{ matrix.node-version }}
       - run: pnpm test:vitest
@@ -85,21 +102,21 @@ jobs:
     needs: install
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: ./.github/actions/prepare
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/prepare
       - run: pnpm -r build
       - run: pnpm check:package
 
   release-main:
     name: Create release PR / Publish on merge
-    needs: [knip, spellcheck, formatting, typecheck, eslint, test, build]
+    needs: [actions-lock, knip, spellcheck, formatting, typecheck, eslint, test, build]
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
-      - uses: ./.github/actions/prepare
+      - uses: $/.github/actions/prepare
       # Based on https://github.com/changesets/action/issues/303#issuecomment-1888167265
       - name: Capture new release versions
         env:
@@ -116,7 +133,7 @@ jobs:
           git clean -fdq
       - name: Create release / Publish
         id: changesets
-        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+        uses: changesets/action@v2.1.2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           publish-script: pnpm release

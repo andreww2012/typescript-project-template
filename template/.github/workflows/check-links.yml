@@ -13,12 +13,12 @@ jobs:
     name: Lychee
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
       # Only needed for `node_modules/lychee-config-nick2bad4u/lychee.toml` and the
       # changed files filtering script below
-      - uses: ./.github/actions/prepare
+      - uses: $/.github/actions/prepare
       - name: Collect changed files
         id: changed-files
         env:
@@ -46,7 +46,7 @@ jobs:
           echo "count=$(wc -l < "${RUNNER_TEMP}/changed-files.txt")" >> "$GITHUB_OUTPUT"
       - name: Restore lychee cache
         if: steps.changed-files.outputs.count != '0'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        uses: actions/cache@v6.1.0
         with:
           path: .lycheecache # cspell:disable-line
           key: lychee-${{ github.run_id }}
@@ -54,7 +54,7 @@ jobs:
       - name: Check links
         if: steps.changed-files.outputs.count != '0'
         # cspell:disable-next-line
-        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        uses: lycheeverse/lychee-action@v2.9.0
         with:
           # Changed files containing no links at all is a normal outcome here
           failIfEmpty: false
