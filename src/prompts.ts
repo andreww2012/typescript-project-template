@@ -23,6 +23,8 @@ const TOOL_HINTS: Readonly<Record<(typeof TOOLS)[number], string>> = {
 
 const PARSE_ARGS_OPTIONS: Readonly<ParseArgsOptionsConfig> = {
   ...mapValues(OPTION_FLAGS, () => ({type: 'string' as const})),
+  languages: {type: 'string', multiple: true},
+  tools: {type: 'string', multiple: true},
   help: {type: 'boolean'},
   version: {type: 'boolean'},
 };
@@ -39,7 +41,7 @@ export const promptForOptions = async (cliArguments: string[]) => {
 
   const answers = new Map(
     Object.entries(values).flatMap(([key, value]) =>
-      typeof value === 'string' ? [[key, value]] : [],
+      value == null || typeof value === 'boolean' ? [] : [[key, arrayify(value).join(',')]],
     ),
   );
   const nodeVersionRanges = await readNodeVersionRanges();

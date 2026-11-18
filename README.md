@@ -27,8 +27,8 @@ Template options:
 - `--save-exact`: `yes` (default) to use exact dependency versions: pnpm saves them instead of `^` ranges, and ESLint requires them in `package.json` (unless `--catalogs yes`, as it can't check catalogs); or `no`
 - `--formatter`: `oxfmt` (default) or `prettier`
 - `--ts-extensions`: `yes` (default) to use `.ts` extensions in imports, enforced by ESLint, or `no` to use `.js` ones; with `yes`, `tsconfig.json` has `allowImportingTsExtensions` and `noEmit`, because TypeScript can't rewrite `.ts` in imports like `@/foo.ts` when it builds the code
-- `--tools`: comma-separated tools to set up: `knip`, `cspell`, `commitlint`, `lefthook`, `publint` (these are the default) and `vitest`; `publint` is only for `lib`: [publint](https://publint.dev) checks the package on every build, like attw
-- `--languages`: only with `cspell`, comma-separated extra CSpell languages, none by default: `en-GB`, `nl`, `fr`, `de`, `it`, `pl`, `pt`, `ru`, `es`, `tr`, `uk`
+- `--tools`: tools to set up, comma-separated (`--tools knip,cspell`) or in repeated flags (`--tools knip --tools cspell`): `knip`, `cspell`, `commitlint`, `lefthook`, `publint` (these are the default) and `vitest`; `publint` is only for `lib`: [publint](https://publint.dev) checks the package on every build, like attw
+- `--languages`: only with `cspell`, extra CSpell languages, passed like `--tools`, none by default: `en-GB`, `nl`, `fr`, `de`, `it`, `pl`, `pt`, `ru`, `es`, `tr`, `uk`
 - `--updater`: dependency updater, `ncu` (default, run by hand), `dependabot`, `renovate` or `none`
 - `--ci`: `yes` (default) to set up GitHub Actions like in this repository (checks for every chosen tool, tests on every supported Node.js version, and the changesets release), or `no`
 - `--lychee`: only with `--ci yes`, `no` (default) or `yes` to check links with [lychee](https://lychee.cli.rs) in CI

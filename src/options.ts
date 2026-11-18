@@ -36,10 +36,12 @@ const snapshotPackageJsonZod = z.object({files: z.object({'package.json': z.stri
 
 const packageJsonEnginesZod = z.object({engines: z.object({node: z.string()})});
 
-const commaSeparatedList = <const Values extends readonly string[]>(values: Values) =>
+// The flag can be repeated, and each of its values can be a comma-separated list
+const listFlag = <const Values extends readonly string[]>(values: Values) =>
   z
     .string()
-    .transform((list) => arrayWithoutFalsy(list.split(',')))
+    .array()
+    .transform((lists) => arrayWithoutFalsy(lists.flatMap((list) => list.split(','))))
     .pipe(z.literal(values).array());
 
 // Options asked by our own prompts, because Bingo can't ask conditional and multi-select questions
@@ -56,8 +58,8 @@ export const optionsZod = z.object({
   'save-exact': z.literal(['yes', 'no']).default('yes'),
   formatter: z.literal(['oxfmt', 'prettier']).default('oxfmt'),
   'ts-extensions': z.literal(['yes', 'no']).default('yes'),
-  tools: commaSeparatedList(TOOLS).default(['knip', 'cspell', 'commitlint', 'lefthook', 'publint']),
-  languages: commaSeparatedList(LANGUAGES.map(({id}) => id)).default([]),
+  tools: listFlag(TOOLS).default(['knip', 'cspell', 'commitlint', 'lefthook', 'publint']),
+  languages: listFlag(LANGUAGES.map(({id}) => id)).default([]),
   updater: z.literal(['ncu', 'dependabot', 'renovate', 'none']).default('ncu'),
   ci: z.literal(['yes', 'no']).default('yes'),
   lychee: z.literal(['no', 'yes']).default('no'),
@@ -91,9 +93,10 @@ export const OPTION_FLAGS = {
     .meta({description: 'project kind: app or published library'}),
   languages: z
     .string()
+    .array()
     .optional()
     .meta({
-      description: `comma-separated extra CSpell languages (${LANGUAGES.map(({id}) => id).join(', ')})`,
+      description: `extra CSpell languages, comma-separated or in repeated flags (${LANGUAGES.map(({id}) => id).join(', ')})`,
     }),
   lychee: optionsZod.shape.lychee
     .optional()
@@ -109,9 +112,10 @@ export const OPTION_FLAGS = {
   }),
   tools: z
     .string()
+    .array()
     .optional()
     .meta({
-      description: `comma-separated tools to set up (${TOOLS.join(', ')}; ${[...LIB_ONLY_TOOLS].join(', ')} only for \`lib\`)`,
+      description: `tools to set up, comma-separated or in repeated flags (${TOOLS.join(', ')}; ${[...LIB_ONLY_TOOLS].join(', ')} only for \`lib\`)`,
     }),
   'ts-extensions': optionsZod.shape['ts-extensions']
     .optional()

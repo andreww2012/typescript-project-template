@@ -6,9 +6,9 @@ catalogPrune: true
 catalogs:
   default:
     '@andreww2012/ai-guidelines': ^0.2.11
-    '@clack/prompts': 1.8.1
+    '@clack/prompts': 1.9.0
     '@commitlint/types': 21.2.3
-    bingo: 0.14.0
+    bingo: 0.16.2
     conventional-changelog-conventionalcommits: 10.4.1
     utilery: 0.4.0
     verkit: 0.5.0
@@ -60,6 +60,7 @@ minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeStrict: false
 minimumReleaseAgeExclude: # []
   - '@andreww2012/ai-guidelines@0.2.11'
+  - bingo@0.16.2
 
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 43200 # 30 days in minutes

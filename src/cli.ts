@@ -8,10 +8,7 @@ const flags = await promptForOptions(process.argv.slice(2));
 
 if (flags) {
   process.argv.push(...flags);
-  process.exitCode = await runTemplateCLI(
-    // @ts-expect-error Bingo's types reject required options under `strictFunctionTypes`
-    template,
-  );
+  process.exitCode = await runTemplateCLI(template);
 } else {
   prompts.cancel('Operation cancelled');
   // Same as Bingo's exit code for cancelled runs
