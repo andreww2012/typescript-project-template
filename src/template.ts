@@ -113,6 +113,7 @@ const PACKAGE_FEATURES: Readonly<Record<string, string>> = {
   'actions-up': 'actions-up',
   'all-contributors-cli': 'contributors',
   '@andreww2012/commitlint-config': 'commitlint',
+  '@andreww2012/cspell-config': 'cspell',
   '@andreww2012/npm-check-updates-config': 'ncu',
   [UTILITY_LIBRARY]: 'utilery',
   '@arethetypeswrong/core': 'lib',
@@ -445,9 +446,7 @@ export const template = createTemplate({
       '.github/workflows/ci.yml': (text) =>
         text.replace(CI_NODE_VERSIONS_REGEX, () => `[${supportedNodeMajors.join(', ')}]`),
       'cspell.config.ts': (text) =>
-        text.replace('  dictionaries: [', (dictionariesLine) =>
-          [...cspellLanguageLines, dictionariesLine].join('\n'),
-        ),
+        text.replace('  words: ', (wordsLine) => [...cspellLanguageLines, wordsLine].join('\n')),
       'LICENSE.md': (text) =>
         text.replace(
           LICENSE_COPYRIGHT_REGEX,

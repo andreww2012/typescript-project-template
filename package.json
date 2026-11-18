@@ -66,6 +66,7 @@
   },
   "devDependencies": {
     "@andreww2012/commitlint-config": "workspace:*",
+    "@andreww2012/cspell-config": "workspace:*",
     "@andreww2012/npm-check-updates-config": "workspace:*",
     "@antfu/ni": "catalog:dev",
     "@changesets/changelog-github": "catalog:dev",

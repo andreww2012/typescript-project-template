@@ -114,6 +114,7 @@ nr dev --directory ../my-test-project
 This repository is a pnpm workspace, and [`packages/`](./packages) has other packages published from it:
 
 - [`@andreww2012/commitlint-config`](./packages/commitlint-config): the commitlint config, used in `commitlint.config.ts` here and in new projects
+- [`@andreww2012/cspell-config`](./packages/cspell-config): the CSpell config, used in `cspell.config.ts` here and in new projects
 - [`@andreww2012/npm-check-updates-config`](./packages/npm-check-updates-config): the npm-check-updates config, used in `.ncurc.js` here and in new projects
 
 Changesets releases them together with the template.

@@ -40,7 +40,7 @@ Review these things and you're good to go:
 <!-- @if cspell -->
 ### CSpell
 
-- [ ] Review [the CSpell config file](./cspell.config.ts)
+- [ ] Review [the CSpell config file](./cspell.config.ts), see [its options](https://github.com/andreww2012/typescript-project-template/tree/main/packages/cspell-config#options)
 
 <!-- @endif -->
 <!-- @if knip -->

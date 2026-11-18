@@ -1,0 +1,62 @@
+{
+  "name": "@andreww2012/cspell-config",
+  "version": "0.0.0",
+  "description": "@andreww2012's configurable CSpell config that skips the files git ignores",
+  "keywords": [
+    "config",
+    "cspell",
+    "cspell-config",
+    "gitignore",
+    "spell-checker"
+  ],
+  "homepage": "https://github.com/andreww2012/typescript-project-template/tree/main/packages/cspell-config",
+  "bugs": {
+    "url": "https://github.com/andreww2012/typescript-project-template/issues/new"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreww2012/typescript-project-template.git",
+    "directory": "packages/cspell-config"
+  },
+  "license": "MIT",
+  "author": "andreww2012",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "prepack": "nr build"
+  },
+  "dependencies": {
+    "gitignore-reader-x": "catalog:"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/core": "catalog:dev",
+    "cspell": "catalog:dev",
+    "cspell-lib": "catalog:dev",
+    "tsdown": "catalog:dev",
+    "utilery": "catalog:"
+  },
+  "peerDependencies": {
+    "cspell": "^10.0.0"
+  },
+  "peerDependenciesMeta": {
+    "cspell": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": "^22.23.1 || ^24.18.0 || >=26.4.0"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": "./dist/index.mjs",
+      "./package.json": "./package.json"
+    }
+  }
+}

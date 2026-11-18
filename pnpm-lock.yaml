@@ -184,6 +184,9 @@ catalogs:
     conventional-changelog-conventionalcommits:
       specifier: 10.4.1
       version: 10.4.1
+    gitignore-reader-x:
+      specifier: 0.1.0
+      version: 0.1.0
     utilery:
       specifier: 0.4.0
       version: 0.4.0
@@ -317,6 +320,9 @@ importers:
       '@andreww2012/commitlint-config':
         specifier: workspace:*
         version: link:packages/commitlint-config
+      '@andreww2012/cspell-config':
+        specifier: workspace:*
+        version: link:packages/cspell-config
       '@andreww2012/npm-check-updates-config':
         specifier: workspace:*
         version: link:packages/npm-check-updates-config
@@ -420,6 +426,28 @@ importers:
       '@commitlint/load':
         specifier: catalog:dev
         version: 21.2.4(@typescript/typescript6@6.0.2)
+      cspell-lib:
+        specifier: catalog:dev
+        version: 10.4.0
+      tsdown:
+        specifier: catalog:dev
+        version: 0.23.4(@arethetypeswrong/core@0.18.5)(@typescript/typescript6@6.0.2)(oxc-resolver@11.24.2)(publint@0.3.25)(tsx@4.23.15)
+      utilery:
+        specifier: 'catalog:'
+        version: 0.4.0
+
+  packages/cspell-config:
+    dependencies:
+      gitignore-reader-x:
+        specifier: 'catalog:'
+        version: 0.1.0
+    devDependencies:
+      '@arethetypeswrong/core':
+        specifier: catalog:dev
+        version: 0.18.5
+      cspell:
+        specifier: catalog:dev
+        version: 10.4.0
       cspell-lib:
         specifier: catalog:dev
         version: 10.4.0

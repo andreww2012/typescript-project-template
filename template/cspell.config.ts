@@ -1,4 +1,4 @@
-import type {CSpellSettings} from 'cspell';
+import {cspellConfig} from '@andreww2012/cspell-config';
 
 const GLOBALLY_IGNORED_WORDS: Readonly<Record<string, string[]>> = {
   // @if utilery
@@ -16,20 +16,21 @@ const GLOBALLY_IGNORED_WORDS: Readonly<Record<string, string[]>> = {
   englishIshWords: [],
 };
 
-export default {
-  useGitignore: true,
-  enableGlobDot: true,
-  ignorePaths: [
-    '**/.gitignore',
-    '**/.git/**',
-    '**/pnpm-lock.yaml',
-    'patches/**',
-    '.agents/guidelines.md',
-    // @if contributors
-    '.all-contributorsrc',
-    // @endif
-  ],
-  dictionaries: ['npm', 'node', 'typescript', 'fullstack'],
-  words: Object.values(GLOBALLY_IGNORED_WORDS).flat(),
+export default cspellConfig({
+  cwd: import.meta.dirname,
+  // @if local-guidelines
+  // @if contributors
+  ignorePaths: ['.agents/guidelines.md', '.all-contributorsrc'],
+  // @endif
+  // @if !contributors
+  ignorePaths: ['.agents/guidelines.md'],
+  // @endif
+  // @endif
+  // @if !local-guidelines
+  // @if contributors
+  ignorePaths: ['.all-contributorsrc'],
+  // @endif
+  // @endif
+  words: GLOBALLY_IGNORED_WORDS,
   overrides: [],
-} satisfies CSpellSettings;
+});

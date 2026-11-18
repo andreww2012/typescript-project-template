@@ -1,37 +1,25 @@
-import type {CSpellSettings} from 'cspell';
+import {cspellConfig} from '@andreww2012/cspell-config';
 
-const GLOBALLY_IGNORED_WORDS: Readonly<Record<string, string[]>> = {
-  names: ['andreww', 'unutils', 'utilery', 'verkit'],
-  aiTools: [
-    'bito',
-    'coderabbit',
-    'coderabbitai',
-    'greptile',
-    'junie',
-    'kiro',
-    'opencode',
-    'openhands',
-    'qodo',
-    'qwen',
-    'roomote',
-    'trae',
-  ],
-  misc: ['knipignore', 'ncurc'],
-  englishIshWords: [],
-};
-
-export default {
-  useGitignore: true,
-  enableGlobDot: true,
-  ignorePaths: [
-    '**/.gitignore',
-    '**/.git/**',
-    '**/pnpm-lock.yaml',
-    'patches/**',
-    'template/**',
-    '.agents/guidelines.md',
-  ],
-  dictionaries: ['npm', 'node', 'typescript', 'fullstack'],
-  words: Object.values(GLOBALLY_IGNORED_WORDS).flat(),
-  overrides: [],
-} satisfies CSpellSettings;
+export default cspellConfig({
+  cwd: import.meta.dirname,
+  ignorePaths: ['template/**', '.agents/guidelines.md'],
+  words: {
+    names: ['andreww', 'unutils', 'utilery', 'verkit'],
+    aiTools: [
+      'bito',
+      'coderabbit',
+      'coderabbitai',
+      'greptile',
+      'junie',
+      'kiro',
+      'opencode',
+      'openhands',
+      'qodo',
+      'qwen',
+      'roomote',
+      'trae',
+    ],
+    misc: ['knipignore', 'ncurc'],
+    englishIshWords: [],
+  },
+});

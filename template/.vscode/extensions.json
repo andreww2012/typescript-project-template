@@ -1,6 +1,6 @@
 {
   "recommendations": [
-    "dbaeumer.vscode-eslint", // cspell:disable-line
+    "dbaeumer.vscode-eslint",
     // @if prettier
     "esbenp.prettier-vscode",
     // @endif
@@ -11,12 +11,11 @@
     "streetsidesoftware.code-spell-checker",
     // @endif
     // @if knip
-    "webpro.vscode-knip", // cspell:disable-line
+    "webpro.vscode-knip",
     // @endif
     // @if vitest
     "vitest.explorer",
     // @endif
-    // cspell:disable-next-line
     // "bradlc.vscode-tailwindcss",
   ],
 }
