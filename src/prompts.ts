@@ -1,6 +1,8 @@
+// cspell:ignore arrayify
 import {type ParseArgsOptionsConfig, parseArgs} from 'node:util';
 import * as prompts from '@clack/prompts';
-import {mapValues} from 'utilery';
+import {arrayWithoutFalsy, arrayify} from 'utilery/array';
+import {mapValues} from 'utilery/object';
 import {
   DEFAULT_OPTIONS,
   LANGUAGES,
@@ -137,10 +139,10 @@ export const promptForOptions = async (cliArguments: string[]) => {
               value: 'no',
               label: 'No',
               hint:
-                [
-                  ...(catalogs === 'yes' ? ["ncu won't update the catalogs"] : []),
-                  ...(hasChangesets ? ['changesets tags releases like `v1.0.0`'] : []),
-                ].join(', ') || undefined,
+                arrayWithoutFalsy([
+                  catalogs === 'yes' && "ncu won't update the catalogs",
+                  hasChangesets && 'changesets tags releases like `v1.0.0`',
+                ]).join(', ') || undefined,
             },
             {
               value: 'yes',
@@ -289,7 +291,7 @@ export const promptForOptions = async (cliArguments: string[]) => {
       return null;
     }
 
-    const value = Array.isArray(answer) ? answer.join(',') : answer;
+    const value = arrayify(answer).join(',');
     answers.set(key, value);
     flags.push(`--${key}=${value}`);
   }

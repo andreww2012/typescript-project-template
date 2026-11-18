@@ -3,6 +3,7 @@ import path from 'node:path';
 import type {RcOptions} from 'npm-check-updates';
 import {
   isPlainObject,
+  jsonParse,
   parseNpmPackageSpecifier,
   substringAfter,
   substringAfterLast,
@@ -121,7 +122,7 @@ const readWorkspaceManifests = (cwd: string, workspacePackages: unknown[]) =>
       ),
       {cwd, exclude: IGNORED_PACKAGE_GLOBS},
     )
-    .map((filePath) => parseFile(path.join(cwd, filePath), JSON.parse));
+    .map((filePath) => parseFile(path.join(cwd, filePath), jsonParse));
 
 const getDependencyNames = (manifest: unknown, field: string) => {
   const dependencies: unknown = isPlainObject(manifest) ? manifest[field] : undefined;
@@ -154,7 +155,7 @@ export const ncuConfig = ({
   groupFunction,
   ...ncuOptions
 }: NcuConfigOptions = {}) => {
-  const packageJson = parseFile(path.join(cwd, 'package.json'), JSON.parse);
+  const packageJson = parseFile(path.join(cwd, 'package.json'), jsonParse);
   const workspacePackages = [
     ...getWorkspacePackages(parseFile(path.join(cwd, 'pnpm-workspace.yaml'), parseYaml)),
     ...getWorkspacePackages(isPlainObject(packageJson) && packageJson.workspaces),

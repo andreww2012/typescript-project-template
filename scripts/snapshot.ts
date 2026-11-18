@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type {Creation} from 'bingo';
-import {arrayPartition, setByPath} from 'utilery';
+import {arrayPartition, arrayWithoutFalsy, setByPath} from 'utilery';
 import {exec, writeJsonFile} from 'utilery/server';
 
 const TEMPLATE_DIRECTORY = path.join(import.meta.dirname, '../template');
@@ -12,15 +12,12 @@ const {stdout} = await exec(
   ['ls-files', '-z', '--cached', '--others', '--exclude-standard'],
   {spawnOptions: {cwd: TEMPLATE_DIRECTORY}},
 );
-const entries = stdout
-  .split('\0')
-  .filter(Boolean)
-  .flatMap((filePath) => {
-    const absolutePath = path.join(TEMPLATE_DIRECTORY, filePath);
-    // Tracked files deleted from disk are still listed
-    const stats = fs.lstatSync(absolutePath, {throwIfNoEntry: false});
-    return stats ? {absolutePath, filePath, stats} : [];
-  });
+const entries = arrayWithoutFalsy(stdout.split('\0')).flatMap((filePath) => {
+  const absolutePath = path.join(TEMPLATE_DIRECTORY, filePath);
+  // Tracked files deleted from disk are still listed
+  const stats = fs.lstatSync(absolutePath, {throwIfNoEntry: false});
+  return stats ? {absolutePath, filePath, stats} : [];
+});
 
 const [symlinkEntries, fileEntries] = arrayPartition(entries, ({stats}) => stats.isSymbolicLink());
 

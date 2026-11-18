@@ -185,8 +185,8 @@ catalogs:
       specifier: 10.4.1
       version: 10.4.1
     utilery:
-      specifier: 0.3.0
-      version: 0.3.0
+      specifier: 0.4.0
+      version: 0.4.0
     verkit:
       specifier: 0.5.0
       version: 0.5.0
@@ -309,7 +309,7 @@ importers:
         version: 0.14.0(zod@4.6.7)
       utilery:
         specifier: 'catalog:'
-        version: 0.3.0
+        version: 0.4.0
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -428,7 +428,7 @@ importers:
         version: 0.23.4(@arethetypeswrong/core@0.18.5)(@typescript/typescript6@6.0.2)(oxc-resolver@11.24.2)(publint@0.3.25)(tsx@4.23.15)
       utilery:
         specifier: 'catalog:'
-        version: 0.3.0
+        version: 0.4.0
 
   packages/npm-check-updates-config:
     dependencies:
@@ -450,7 +450,7 @@ importers:
         version: 0.23.4(@arethetypeswrong/core@0.18.5)(@typescript/typescript6@6.0.2)(oxc-resolver@11.24.2)(publint@0.3.25)(tsx@4.23.15)
       utilery:
         specifier: 'catalog:'
-        version: 0.3.0
+        version: 0.4.0
 
 packages:
 
@@ -5698,9 +5698,9 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  utilery@0.3.0:
-    resolution: {integrity: sha512-LXxVlsR4NSRwB6mkq/MY6c8irun6gdQ7fcaCnNUGSHHnXzHmoueYz4GhwfIZYdYQOKwXzYdmdg1nEk8CCUQdJw==}
-    engines: {node: ^22.23.1 || ^24.18.0 || >=26.4.0}
+  utilery@0.4.0:
+    resolution: {integrity: sha512-zAjAWaFSP8e8eg192o7HISUE5zn5blCVb5LpRM3JSwbYvw1fCn818VGsOScl6Y3guMgMm3yb1HNitbyv7avKBg==}
+    engines: {bun: '>=1.4.0', node: ^22.23.1 || ^24.18.0 || >=26.4.0}
 
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
@@ -11287,7 +11287,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  utilery@0.3.0: {}
+  utilery@0.4.0: {}
 
   validate-npm-package-license@3.0.4:
     dependencies:

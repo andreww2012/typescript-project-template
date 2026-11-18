@@ -2,14 +2,12 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {getInstruction, readDocument} from '@andreww2012/ai-guidelines';
 import {type Creation, createTemplate} from 'bingo';
-import {
-  invariant,
-  isEmptyObject,
-  mapEntries,
-  mapValues,
-  parseNpmPackageSpecifier,
-  substringAfter,
-} from 'utilery';
+import {arrayWithoutFalsy} from 'utilery/array';
+import {jsonParse} from 'utilery/json';
+import {invariant, parseNpmPackageSpecifier} from 'utilery/misc';
+import {mapEntries, mapValues} from 'utilery/object';
+import {isEmptyObject} from 'utilery/predicate';
+import {substringAfter} from 'utilery/string';
 import * as z from 'zod';
 import {
   LANGUAGES,
@@ -259,7 +257,7 @@ const applyMarkersToText = (text: string, features: ReadonlySet<string>) => {
 
 const updateJson =
   (update: (json: Record<string, unknown>) => Record<string, unknown>) => (text: string) =>
-    JSON.stringify(update(jsonObjectZod.parse(JSON.parse(text))), null, 2);
+    JSON.stringify(update(jsonObjectZod.parse(jsonParse(text))), null, 2);
 
 const hasFeature = (features: ReadonlySet<string>, feature: string | undefined) =>
   feature == null || features.has(feature);
@@ -328,8 +326,8 @@ export const template = createTemplate({
       readNodeVersionRanges(),
       readDocument('guidelines'),
     ]);
-    const {files, symlinks} = snapshotZod.parse(JSON.parse(snapshot));
-    const packageJson = jsonObjectZod.parse(JSON.parse(files['package.json']));
+    const {files, symlinks} = snapshotZod.parse(jsonParse(snapshot));
+    const packageJson = jsonObjectZod.parse(jsonParse(files['package.json']));
     const nodeMajors = [...nodeVersionRanges.keys()];
     const nodeMajor = node || nodeMajors[0] || '';
     const nodeVersionRange = nodeVersionRanges.get(nodeMajor);
@@ -350,38 +348,43 @@ export const template = createTemplate({
     const spellCheckedLanguages = tools.includes('cspell')
       ? LANGUAGES.filter(({id}) => parsedOptions.languages.includes(id))
       : [];
-    const features = new Set<string>([
-      kind,
-      formatter,
-      `pnpm${pnpm}`,
-      ...tools.filter((tool) => isToolAvailable(tool, kind)),
-      ...spellCheckedLanguages.map(({id}) => id),
-      ...(changesets === 'none' ? [] : ['changesets']),
-      ...(changesets === 'github' ? ['changelog-github'] : []),
-      ...(kind === 'lib' && parsedOptions.contributors === 'yes' ? ['contributors'] : []),
-      ...(options.utils === UTILITY_LIBRARY ? ['utilery'] : []),
-      ...(updater === 'none' ? [] : [updater]),
-      ...(ci === 'yes' ? ['ci'] : []),
-      // Dependabot and Renovate update GitHub Actions on their own
-      ...(ci === 'yes' && updater === 'ncu' ? ['actions-up'] : []),
-      ...(ci === 'yes' && parsedOptions.lychee === 'yes' ? ['lychee'] : []),
-      ...(parsedOptions.guidelines === 'local' ? ['local-guidelines'] : []),
-      ...(parsedOptions.catalogs === 'yes' ? ['catalogs'] : []),
-      ...((parsedOptions.workspace || parsedOptions.catalogs) === 'yes' ? ['workspace'] : []),
-      ...(parsedOptions['save-exact'] === 'yes' ? ['save-exact'] : []),
-      ...(parsedOptions['ts-extensions'] === 'yes' ? ['ts-extensions'] : []),
-    ]);
+    const features = new Set<string>(
+      arrayWithoutFalsy([
+        kind,
+        formatter,
+        `pnpm${pnpm}`,
+        ...tools.filter((tool) => isToolAvailable(tool, kind)),
+        ...spellCheckedLanguages.map(({id}) => id),
+        changesets !== 'none' && 'changesets',
+        changesets === 'github' && 'changelog-github',
+        kind === 'lib' && parsedOptions.contributors === 'yes' && 'contributors',
+        options.utils === UTILITY_LIBRARY && 'utilery',
+        updater !== 'none' && updater,
+        ci === 'yes' && 'ci',
+        // Dependabot and Renovate update GitHub Actions on their own
+        ci === 'yes' && updater === 'ncu' && 'actions-up',
+        ci === 'yes' && parsedOptions.lychee === 'yes' && 'lychee',
+        parsedOptions.guidelines === 'local' && 'local-guidelines',
+        parsedOptions.catalogs === 'yes' && 'catalogs',
+        (parsedOptions.workspace || parsedOptions.catalogs) === 'yes' && 'workspace',
+        parsedOptions['save-exact'] === 'yes' && 'save-exact',
+        parsedOptions['ts-extensions'] === 'yes' && 'ts-extensions',
+      ]),
+    );
     const author = options.author || options.owner;
     const repositoryUrl = `https://github.com/${options.owner}/${name}`;
     const filterPackages = (packages: unknown) => {
-      const entries = Object.entries(stringRecordZod.parse(packages) || {})
-        .filter(([packageName]) => hasFeature(features, PACKAGE_FEATURES[packageName]))
-        .map(resolveTypesNodeAlias)
-        .filter(
-          ([packageName, version]) =>
-            packageName !== TYPES_NODE || version.startsWith(`${nodeMajor}.`),
-        );
-      return entries.length > 0 ? Object.fromEntries(entries) : undefined;
+      const filteredPackages = mapEntries(
+        stringRecordZod.parse(packages) || {},
+        (packageName, version) => {
+          const entry = resolveTypesNodeAlias([packageName, version]);
+          return hasFeature(features, PACKAGE_FEATURES[packageName]) &&
+            (entry[0] !== TYPES_NODE || entry[1].startsWith(`${nodeMajor}.`))
+            ? entry
+            : undefined;
+        },
+      );
+      return isEmptyObject(filteredPackages) ? undefined : filteredPackages;
     };
     const dependencies = filterPackages(packageJson.dependencies);
     const devDependencies = filterPackages(packageJson.devDependencies);
@@ -394,18 +397,20 @@ export const template = createTemplate({
         ? mapValues(packages, () => `catalog:${catalog}`)
         : packages;
 
-    const scripts = Object.fromEntries(
-      Object.entries(stringRecordZod.parse(packageJson.scripts) || {})
-        .filter(([scriptName]) => hasFeature(features, SCRIPT_FEATURES[scriptName]))
-        .map(([scriptName, script]) => [
-          scriptName,
-          (formatter === 'oxfmt' && OXFMT_SCRIPTS[scriptName]) ||
-            Object.entries(SCRIPT_REPLACEMENTS[scriptName] || {}).reduce(
-              (result, [feature, [search, replacement]]) =>
-                features.has(feature) ? result : result.replace(search, () => replacement),
-              script,
-            ),
-        ]),
+    const scripts = mapEntries(
+      stringRecordZod.parse(packageJson.scripts) || {},
+      (scriptName, script) =>
+        hasFeature(features, SCRIPT_FEATURES[scriptName])
+          ? [
+              scriptName,
+              (formatter === 'oxfmt' && OXFMT_SCRIPTS[scriptName]) ||
+                Object.entries(SCRIPT_REPLACEMENTS[scriptName] || {}).reduce(
+                  (result, [feature, [search, replacement]]) =>
+                    features.has(feature) ? result : result.replace(search, () => replacement),
+                  script,
+                ),
+            ]
+          : undefined,
     );
 
     const dictionaries = spellCheckedLanguages.flatMap((language) =>
@@ -413,10 +418,10 @@ export const template = createTemplate({
     );
     const cspellLanguageLines =
       spellCheckedLanguages.length > 0
-        ? [
+        ? arrayWithoutFalsy([
             `  language: '${['en', ...spellCheckedLanguages.map(({id}) => id)].join(',')}',`,
-            ...(dictionaries.length > 0 ? [formatArray('  import: ', dictionaries, ',')] : []),
-          ]
+            dictionaries.length > 0 && formatArray('  import: ', dictionaries, ','),
+          ])
         : [];
 
     const transforms: Record<string, (text: string) => string> = {
@@ -478,7 +483,8 @@ export const template = createTemplate({
           .replace(CATALOGS_PLACEHOLDER, () =>
             formatCatalogs({default: dependencies, [DEV_CATALOG]: devDependencies}),
           ),
-      'README.md': (text) => [`# ${name}`, options.description, text].filter(Boolean).join('\n\n'),
+      'README.md': (text) =>
+        arrayWithoutFalsy([`# ${name}`, options.description, text]).join('\n\n'),
       'tsconfig.json': (text) =>
         text
           .replace(TSCONFIG_TARGET_REGEX, () => `"target": "${tsconfigOptions.target}"`)

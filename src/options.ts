@@ -1,5 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import {arrayWithoutFalsy} from 'utilery/array';
+import {jsonParse} from 'utilery/json';
 import * as z from 'zod';
 
 const NODE_MAJOR_VERSION_REGEX = /\d+/;
@@ -37,7 +39,7 @@ const packageJsonEnginesZod = z.object({engines: z.object({node: z.string()})});
 const commaSeparatedList = <const Values extends readonly string[]>(values: Values) =>
   z
     .string()
-    .transform((list) => list.split(',').filter(Boolean))
+    .transform((list) => arrayWithoutFalsy(list.split(',')))
     .pipe(z.literal(values).array());
 
 // Options asked by our own prompts, because Bingo can't ask conditional and multi-select questions
@@ -123,10 +125,8 @@ export const OPTION_FLAGS = {
 
 // Supported version ranges by the lowest supported major version, from the lowest one
 export const readNodeVersionRanges = async () => {
-  const {files} = snapshotPackageJsonZod.parse(
-    JSON.parse(await fs.readFile(SNAPSHOT_PATH, 'utf8')),
-  );
-  const {engines} = packageJsonEnginesZod.parse(JSON.parse(files['package.json']));
+  const {files} = snapshotPackageJsonZod.parse(jsonParse(await fs.readFile(SNAPSHOT_PATH, 'utf8')));
+  const {engines} = packageJsonEnginesZod.parse(jsonParse(files['package.json']));
   const ranges = engines.node.split('||').map((range) => range.trim());
 
   return new Map(

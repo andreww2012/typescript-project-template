@@ -10,11 +10,16 @@ import {
 } from '@commitlint/types';
 import createConventionalCommitsPreset from 'conventional-changelog-conventionalcommits';
 import {
+  attempt,
   invariant,
   isPlainObject,
   isPropertyNotNullish,
+  isTruthy,
+  jsonParse,
   mapEntries,
   objectEntriesUnsafe,
+  objectHasOwn,
+  pick,
   toKebabCase,
 } from 'utilery';
 import {type CoAuthorsOptions, coAuthoredByRule} from './rules/co-authored-by.ts';
@@ -164,14 +169,7 @@ const getLengthRules = (lengths: Lengths = {}) =>
       ]),
   );
 
-const canImportCspellLib = () => {
-  try {
-    import.meta.resolve('cspell-lib');
-    return true;
-  } catch {
-    return false;
-  }
-};
+const canImportCspellLib = () => attempt(() => import.meta.resolve('cspell-lib'))[0] == null;
 
 const getSpellingRules = (spelling: boolean | SpellingOptions) => {
   if (!spelling) {
@@ -196,11 +194,11 @@ const getSpellingRules = (spelling: boolean | SpellingOptions) => {
 const hasCspellDependency = (cwd: string) => {
   const packageJsonPath = path.join(cwd, 'package.json');
   const packageJson: unknown =
-    fs.existsSync(packageJsonPath) && JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+    fs.existsSync(packageJsonPath) && jsonParse(fs.readFileSync(packageJsonPath, 'utf8'));
   return (
     isPlainObject(packageJson) &&
-    [packageJson.dependencies, packageJson.devDependencies].some(
-      (dependencies) => isPlainObject(dependencies) && 'cspell' in dependencies,
+    [packageJson.dependencies, packageJson.devDependencies].some((dependencies) =>
+      objectHasOwn(dependencies, 'cspell'),
     )
   );
 };
@@ -241,10 +239,8 @@ export const commitlintConfig = ({
     'type-enum': [
       RuleConfigSeverity.Error,
       'always',
-      Object.entries<boolean>({...DEFAULT_TYPES, ...types})
-        .filter(([, isAllowed]) => isAllowed)
-        .map(([type]) => type)
-        // eslint-disable-next-line unicorn/no-array-sort -- `map` returns a new array
+      Object.keys(pick({...DEFAULT_TYPES, ...types}, isTruthy))
+        // eslint-disable-next-line unicorn/no-array-sort -- `Object.keys` returns a new array
         .sort(),
     ],
     ...Object.fromEntries([...getLengthRules(DEFAULT_LENGTHS), ...getLengthRules(lengths)]),

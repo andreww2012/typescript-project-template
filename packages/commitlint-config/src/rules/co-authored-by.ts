@@ -73,7 +73,10 @@ const CO_AUTHORED_BY_REGEX = /^co-authored-by[\t ]*:(.*)$/gimu;
 
 // GitHub accounts have emails like `<id>+<name>@users.noreply.github.com`
 const createCoAuthorEmailsRegex = (emails: readonly string[]) =>
-  new RegExp(String.raw`<(?:\d+\+)?(?:${emails.map(regexEscape).join('|')})>$`, 'iu');
+  new RegExp(
+    String.raw`<(?:\d+\+)?(?:${emails.map((email) => regexEscape(email)).join('|')})>$`,
+    'iu',
+  );
 
 const CO_AUTHOR_PRESETS: ReadonlyMap<string, RegExp> = new Map(
   Object.entries(
