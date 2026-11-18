@@ -36,7 +36,10 @@ trustPolicyExclude: # []
 # @endif
 
 audit:
-  ignore: []
+  ignore: # []
+    # `picomatch` from dev tools has no patched version yet
+    # cspell:disable-next-line
+    - GHSA-fc5q-39xc-vjpf
   ignorePrune: true
 
 allowBuilds:
