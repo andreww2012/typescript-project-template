@@ -45,7 +45,7 @@ jobs:
   # @if cspell
 
   spellcheck:
-    name: Spellcheck (cspell)
+    name: Spelling
     needs: install
     runs-on: ubuntu-24.04
     steps:
@@ -55,12 +55,7 @@ jobs:
   # @endif
 
   formatting:
-    # @if oxfmt
-    name: Formatting check (oxfmt)
-    # @endif
-    # @if prettier
-    name: Formatting check (Prettier)
-    # @endif
+    name: Formatting
     needs: install
     runs-on: ubuntu-24.04
     steps:
@@ -69,7 +64,7 @@ jobs:
       - run: pnpm check:format
 
   typecheck:
-    name: Typecheck (tsgo)
+    name: Types
     needs: install
     runs-on: ubuntu-24.04
     steps:
@@ -88,7 +83,7 @@ jobs:
   # @if lychee
 
   check-links:
-    name: Check links
+    name: Links checker
     needs: install
     uses: ./.github/workflows/check-links.yml
   # @endif
@@ -111,12 +106,7 @@ jobs:
   # @if lib
 
   build:
-    # @if publint
-    name: Build (tsdown) & lint package (attw, publint)
-    # @endif
-    # @if !publint
-    name: Build (tsdown) & lint package (attw)
-    # @endif
+    name: Build
     needs: install
     runs-on: ubuntu-24.04
     steps:
@@ -127,7 +117,7 @@ jobs:
   # @if changesets
 
   release-main:
-    name: Create release PR _OR_ Publish on merge
+    name: Create release PR / Publish on merge
     needs:
       # @if knip
       - knip
