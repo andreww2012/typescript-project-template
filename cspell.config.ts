@@ -2,7 +2,7 @@ import {cspellConfig} from '@andreww2012/cspell-config';
 
 export default cspellConfig({
   cwd: import.meta.dirname,
-  ignorePaths: ['template/**', '.agents/guidelines.md'],
+  ignorePaths: ['template/', '.agents/guidelines.md', '**/CHANGELOG.md'],
   words: {
     names: ['andreww', 'unutils', 'utilery', 'verkit'],
     aiTools: [

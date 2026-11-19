@@ -7,7 +7,7 @@ export default eslintConfig({
     // otherwise ESLint lints template files with the template's own config
     'template/',
     '.agents/guidelines.md',
-    'CHANGELOG.md',
+    '**/CHANGELOG.md',
   ],
   defaultConfigsStatus: 'misc-enabled',
   configs: {
@@ -32,11 +32,7 @@ export default eslintConfig({
     },
     markdown: {
       configSentencesPerLine: {
-        ignores: [
-          // Putting every sentence on its own line causes line wraps in the changelog
-          '.changeset/**/*.md',
-          'packages/*/LICENSE.md',
-        ],
+        ignores: ['**/LICENSE.md'],
       },
     },
     pnpm: {
